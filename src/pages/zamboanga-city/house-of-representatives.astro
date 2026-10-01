@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { HouseOfRepresentativesDirectory } from '../../components/representatives/HouseOfRepresentativesDirectory';
+
+const title = "House of Representatives Directory | Zamboanga City | Better Zamboanga City";
+const description = "Explore profile cards, photo portraits, and legislative records of Zamboanga City District 1 and District 2 House of Representatives members.";
+---
+
+<Layout title={title} description={description} mainClass="grow bg-slate-50 font-sans pb-16">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-6xl w-full">
+    <HouseOfRepresentativesDirectory client:load />
+  </main>
+</Layout>

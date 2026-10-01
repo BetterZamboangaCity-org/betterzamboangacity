@@ -1,0 +1,232 @@
+[
+  {
+    "id": "office-of-the-city-mayor",
+    "name": "Office of the City Mayor",
+    "code": "OCM",
+    "category": "Executive",
+    "description": "Executive branch of the Zamboanga City Government responsible for overall administration, governance, and strategic direction of city policies and programs.",
+    "icon": "Building2",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-administrator",
+    "name": "Office of the City Administrator",
+    "code": "OCA",
+    "category": "Executive",
+    "description": "Integrates and coordinates the operational work of all departments, offices, and administrative units of the Zamboanga City Government.",
+    "icon": "Briefcase",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-accountant",
+    "name": "Office of the City Accountant",
+    "code": "OACCT",
+    "category": "Finance & Revenue",
+    "description": "Manages city accounting, financial reporting, internal auditing, and maintains municipal financial records to ensure fiscal transparency.",
+    "icon": "Calculator",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-assessor",
+    "name": "Office of the City Assessor",
+    "code": "OASSESSOR",
+    "category": "Finance & Revenue",
+    "description": "Responsible for the appraisal and assessment of real properties (land, buildings, machinery) for taxation purposes in Zamboanga City.",
+    "icon": "FileText",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-treasurer",
+    "name": "Office of the City Treasurer",
+    "code": "OCT",
+    "category": "Finance & Revenue",
+    "description": "Custodian of municipal funds, handles local tax collection, revenue management, license processing, and disbursement of city funds.",
+    "icon": "Coins",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-engineer",
+    "name": "Office of the City Engineer",
+    "code": "CEO",
+    "category": "Infrastructure & Public Works",
+    "description": "Plans, designs, constructs, and maintains city infrastructure, public works, bridges, roads, and municipal physical facilities.",
+    "icon": "HardHat",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-legal",
+    "name": "Office of the City Legal",
+    "code": "OCL",
+    "category": "Legal Affairs",
+    "description": "Serves as chief legal counsel to the City Government, providing legal opinions, drafting contracts, and representing the city in court litigation.",
+    "icon": "Scale",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "general-services-office",
+    "name": "General Services Office",
+    "code": "GSO",
+    "category": "Logistics & Asset Management",
+    "description": "Manages procurement of goods and services, maintenance of city properties, custodianship of municipal assets, and general administrative support.",
+    "icon": "Boxes",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-budget",
+    "name": "Office of the City Budget",
+    "code": "OCB",
+    "category": "Finance & Revenue",
+    "description": "Formulates, evaluates, and executes the annual executive budget, fiscal plans, and budgetary allocations of Zamboanga City.",
+    "icon": "PieChart",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-planning-and-development",
+    "name": "Office of the City Planning and Development",
+    "code": "CPDO",
+    "category": "Planning & Urban Development",
+    "description": "Formulates comprehensive land use plans, socio-economic development strategies, zoning guidelines, and spatial development policies.",
+    "icon": "MapPin",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-health",
+    "name": "Office of the City Health",
+    "code": "CHO",
+    "category": "Health & Social Services",
+    "description": "Delivers primary healthcare services, public health campaigns, disease prevention, sanitation supervision, and health center management across all barangays.",
+    "icon": "Stethoscope",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-social-welfare-and-development",
+    "name": "Office of the City Social Welfare and Development",
+    "code": "CSWDO",
+    "category": "Health & Social Services",
+    "description": "Provides social protection programs, child and youth welfare assistance, senior citizen benefits, crisis intervention, and family development services.",
+    "icon": "Heart",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-veterinarian",
+    "name": "Office of the City Veterinarian",
+    "code": "OCVET",
+    "category": "Agriculture & Environment",
+    "description": "Oversees animal disease prevention, anti-rabies vaccination drives, livestock safety regulation, public slaughterhouse operations, and animal welfare.",
+    "icon": "Dog",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-agriculturist",
+    "name": "Office of the City Agriculturist",
+    "code": "OCAG",
+    "category": "Agriculture & Environment",
+    "description": "Promotes agricultural productivity, fishery resources management, farmer assistance, crop protection, and food security initiatives in rural barangays.",
+    "icon": "Wheat",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-civil-registrar",
+    "name": "Office of the City Civil Registrar",
+    "code": "OCCR",
+    "category": "Vital Records",
+    "description": "Registers vital civil events (birth, marriage, death), maintains civil register archives, and issues official certified documents for residents.",
+    "icon": "FileCheck",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-environment-and-natural-resources",
+    "name": "Office of the City Environment and Natural Resources",
+    "code": "OCENR",
+    "category": "Agriculture & Environment",
+    "description": "Leads solid waste management, environmental protection, urban forestry, coastal ecosystem conservation, and climate change adaptation initiatives.",
+    "icon": "Trees",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "colegio-de-la-ciudad-de-zamboanga",
+    "name": "Colegio De La Ciudad De Zamboanga",
+    "code": "CCZ",
+    "category": "Education",
+    "description": "Local tertiary educational institution operated by the Zamboanga City Government offering technical-vocational and higher degree programs.",
+    "icon": "GraduationCap",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "secretary-to-the-sangguniang-panlungsod",
+    "name": "Secretary to the Sangguniang Panlungsod",
+    "code": "SEC-SP",
+    "category": "Legislative",
+    "description": "Provides administrative and technical support to the city council, keeps council records, prepares session agendas, and archives approved ordinances.",
+    "icon": "FileCode",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "sangguniang-panlungsod",
+    "name": "Sangguniang Panlungsod",
+    "code": "SP",
+    "category": "Legislative",
+    "description": "The unicameral legislative body of Zamboanga City responsible for enacting local ordinances, passing resolutions, and approving the annual budget.",
+    "icon": "Landmark",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "office-of-the-city-disaster-risk-reduction-management",
+    "name": "Office of the City Disaster Risk Reduction Management",
+    "code": "CDRRMO",
+    "category": "Emergency & Public Safety",
+    "description": "Directs disaster risk prevention, mitigation, early warning systems, search and rescue operations, and community disaster preparedness.",
+    "icon": "ShieldAlert",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "city-human-resource-management-office",
+    "name": "City Human Resource Management Office",
+    "code": "CHRMO",
+    "category": "Human Resources",
+    "description": "Manages personnel recruitment, civil service compliance, employee welfare, capacity building, performance evaluation, and organizational development.",
+    "icon": "Users",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "cmo-gender-and-development-services",
+    "name": "CMO – Gender and Development Services (GAD)",
+    "code": "CMO-GAD",
+    "category": "Special Services",
+    "description": "Special division under the Mayor's Office dedicated to gender mainstreaming, women empowerment initiatives, and gender-responsive public policy.",
+    "icon": "UserCheck",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  },
+  {
+    "id": "cmo-local-economic-development-and-investment-promotion-services",
+    "name": "CMO – Local Economic Development and Investment Promotion Services (LEDIPS)",
+    "code": "CMO-LEDIPS",
+    "category": "Special Services",
+    "description": "Special division under the Mayor's Office focused on business investment attraction, local economic growth, trade promotion, and enterprise support.",
+    "icon": "TrendingUp",
+    "city": "Zamboanga City",
+    "region": "Region IX"
+  }
+]
