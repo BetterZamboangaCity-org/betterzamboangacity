@@ -5,7 +5,26 @@
     "code": "OCM",
     "category": "Executive",
     "description": "Executive branch of the Zamboanga City Government responsible for overall administration, governance, and strategic direction of city policies and programs.",
-    "icon": "Building2",
+    "logo": "src/assets/departments/Seal_of_Zamboanga_City-1.png",
+    "mission": [
+      "To formulate policy guidelines",
+      "To business/ occupational permits",
+      "To conduct internal Audit",
+      "To provide secretariat support services"
+    ],
+    "vision": "The role model in the delivery of fast, reliable and efficient public service utilizing the full benefits of information technology, proactive to the needs of the people, vigorously promoting development under a transparent and actively preserving a strong and united Zamboanga",
+    "departmentHead": {
+      "name": "Mayor Khymer Adan T. Olaso",
+      "contact": "(062)991-2295; 991-4525; 991-6403",
+      "fax": "(062)991-1889",
+      "address": "2nd Floor, City Hall, Valderrosa Street"
+    },
+    "contactInformation": {
+      "phone": "(632) 991- 4525",
+      "email": "cmayorsoffice@gmail.com",
+      "address": "2nd Floor, City Hall, NS Valderosa St., Zone IV, Zamboanga City"
+    },
+    "link": "https://zamboangacity.gov.ph/office-of-the-city-mayor/",
     "city": "Zamboanga City",
     "region": "Region IX"
   },
