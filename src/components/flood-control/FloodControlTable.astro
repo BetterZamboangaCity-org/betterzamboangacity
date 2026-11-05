@@ -2,7 +2,7 @@
 import { floodControlProjects, formatPHP } from '../../data/flood-control-data';
 ---
 
-<div id="fc-table-wrapper" class="bg-white rounded-xl border border-slate-200/80 shadow-2xs p-4 sm:p-5">
+<div id="fc-table-wrapper" class="bg-white border border-slate-200/80 shadow-2xs p-4 sm:p-5 rounded-[4px]">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
     <div>
       <h2 class="text-base font-semibold text-slate-900 tracking-tight flex items-center gap-2">
@@ -17,14 +17,14 @@ import { floodControlProjects, formatPHP } from '../../data/flood-control-data';
     </div>
 
     <div class="flex items-center gap-2 self-start sm:self-center">
-      <span id="fc-table-count" class="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200/60">
+      <span id="fc-table-count" class="text-xs font-mono font-semibold px-2.5 py-1 bg-slate-50 text-slate-700 border border-slate-200/60 rounded-[2px]">
         Showing 1–5 of {floodControlProjects.length} projects
       </span>
     </div>
   </div>
 
   <!-- Data Table Container -->
-  <div class="overflow-x-auto rounded-lg border border-slate-200/80 shadow-2xs">
+  <div class="overflow-x-auto border border-slate-200/80 shadow-2xs rounded-[4px]">
     <table class="w-full text-left border-collapse font-sans text-xs sm:text-sm">
       <thead>
         <tr class="bg-slate-50 border-b border-slate-200/80 font-semibold uppercase tracking-wider text-slate-600 text-xs">
@@ -85,14 +85,14 @@ import { floodControlProjects, formatPHP } from '../../data/flood-control-data';
 
               <!-- Year -->
               <td class="py-3.5 px-2 text-center whitespace-nowrap font-mono">
-                <span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-semibold">
+                <span class="inline-flex items-center px-2 py-0.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-[2px]">
                   {p.infraYear}
                 </span>
               </td>
 
               <!-- District -->
               <td class="py-3.5 px-3 whitespace-nowrap">
-                <span class={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold uppercase tracking-wider ${isD1 ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
+                <span class={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-[2px] ${isD1 ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
                   {p.district}
                 </span>
               </td>
@@ -130,7 +130,7 @@ import { floodControlProjects, formatPHP } from '../../data/flood-control-data';
     <button
       id="fc-page-prev"
       type="button"
-      class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer flex items-center gap-1"
+      class="px-3 py-1.5 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer flex items-center gap-1 rounded-[4px]"
     >
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -145,7 +145,7 @@ import { floodControlProjects, formatPHP } from '../../data/flood-control-data';
     <button
       id="fc-page-next"
       type="button"
-      class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer flex items-center gap-1"
+      class="px-3 py-1.5 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer flex items-center gap-1 rounded-[4px]"
     >
       <span>Next</span>
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

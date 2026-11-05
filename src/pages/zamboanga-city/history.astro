@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import InteractiveTimeline from '../../components/history/InteractiveTimeline';
+import TribeTabs from '../../components/history/TribeTabs';
+import ZamboangaSiegeSection from '../../components/history/ZamboangaSiegeSection';
+
+const title = "History of Zamboanga City - Jambangan to Asia's Latin City";
+const description = "Discover the rich cultural tapestry and historical milestones of Zamboanga City, from the early indigenous peoples to its founding as a highly urbanized city.";
+---
+
+<Layout title={title} description={description} mainClass="grow bg-slate-50 font-sans pb-16">
+  
+  {/* Hero Section */}
+  <section class="relative w-full py-20 lg:py-32 bg-white overflow-hidden border-b border-slate-200">
+    
+    {/* Abstract Flower Pattern Overlay */}
+    <div class="absolute inset-0 opacity-40">
+      <svg class="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="flower-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+            <g transform="translate(30,30) scale(1.2)">
+              {/* Petals */}
+              <circle cx="0" cy="-8" r="6" fill="#fca5a5" opacity="0.8" />
+              <circle cx="8" cy="-2" r="6" fill="#fde047" opacity="0.8" />
+              <circle cx="5" cy="7" r="6" fill="#86efac" opacity="0.8" />
+              <circle cx="-5" cy="7" r="6" fill="#93c5fd" opacity="0.8" />
+              <circle cx="-8" cy="-2" r="6" fill="#d8b4fe" opacity="0.8" />
+              {/* Center */}
+              <circle cx="0" cy="0" r="4" fill="#ffffff" opacity="0.9"/>
+            </g>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="100%" height="100%" fill="url(#flower-pattern)" />
+      </svg>
+    </div>
+    
+    <div class="container relative mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center space-y-6">
+      <h1 class="text-4xl sm:text-6xl font-black tracking-tight drop-shadow-sm">
+        <span class="text-[#B32435]">The </span>
+        <span class="text-[#0032A0]">History </span>
+        <span class="text-amber-500">of </span>
+        <span class="text-[#1A9714]">Zamboanga</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-slate-600 font-medium max-w-3xl mx-auto drop-shadow-sm leading-relaxed">
+        From the early Malay settlers of "Jambangan" to the founding of Fort Pilar and modern historical resilience, explore the vibrant legacy of Asia's Latin City.
+      </p>
+    </div>
+  </section>
+
+  {/* Main Content Area */}
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl space-y-12 sm:space-y-20 -mt-8 relative z-20">
+    
+    {/* Intro Paper Card */}
+    <div class="max-w-4xl mx-auto bg-white shadow-md border border-slate-200 p-8 sm:p-12 text-slate-700 text-lg sm:text-xl leading-relaxed text-center font-medium">
+      The evolution of the name <span class="text-[#0032A0] font-black">"Zamboanga"</span> provides an interesting insight into its historical background. The early Malay settlers called the region <span class="font-bold text-amber-600">"Jambangan"</span>, which means <span class="italic">Land of the Flowers</span>.
+    </div>
+
+    {/* Interactive Components (React) */}
+    <TribeTabs client:load />
+    
+    <InteractiveTimeline client:load />
+
+    <ZamboangaSiegeSection client:load />
+
+  </main>
+</Layout>

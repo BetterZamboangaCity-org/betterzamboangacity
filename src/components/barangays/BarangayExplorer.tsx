@@ -1,21 +1,36 @@
-import React, { useState, useMemo } from 'react';
-import {
-  allBarangays,
-  district1Count,
-  district2Count,
-  type Barangay,
-} from '../../data/barangay-data';
+import React, { useState, useMemo, useEffect } from 'react';
+import { fetchBarangays, type Barangay } from '../../lib/supabase';
 
-export const BarangayExplorer: React.FC = () => {
+interface Props {
+  initialBarangays?: Barangay[];
+}
+
+export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => {
+  const [barangays, setBarangays] = useState<Barangay[]>(initialBarangays);
+  const [isLoading, setIsLoading] = useState<boolean>(initialBarangays.length === 0);
   const [selectedDistrict, setSelectedDistrict] = useState<'all' | '1' | '2'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Filter logic on exported data module
+  useEffect(() => {
+    if (initialBarangays.length > 0) return;
+    async function loadData() {
+      setIsLoading(true);
+      const res = await fetchBarangays();
+      setBarangays(res.data);
+      setIsLoading(false);
+    }
+    loadData();
+  }, [initialBarangays]);
+
+  const district1Count = useMemo(() => barangays.filter((b) => b.district === 1).length, [barangays]);
+  const district2Count = useMemo(() => barangays.filter((b) => b.district === 2).length, [barangays]);
+
+  // Filter logic on state data
   const filteredBarangays = useMemo(() => {
-    return allBarangays.filter((b) => {
+    return barangays.filter((b) => {
       // District filter
       if (selectedDistrict === '1' && b.district !== 1) return false;
       if (selectedDistrict === '2' && b.district !== 2) return false;
@@ -200,7 +215,7 @@ export const BarangayExplorer: React.FC = () => {
                         <svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <span>2020 Population: <strong className="text-slate-900 font-bold">{b.population || '—'}</strong></span>
+                        <span>2024 Population: <strong className="text-slate-900 font-bold">{b.population || '—'}</strong></span>
                       </div>
                     </div>
                   </div>

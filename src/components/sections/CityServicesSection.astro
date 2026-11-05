@@ -3,51 +3,74 @@ import ServiceCard from '../ServiceCard.astro';
 
 const services = [
   {
-    title: 'Animal Welfare',
-    description: 'Veterinary services, pet registration, animal bite treatment centers, and responsible pet ownership programs.',
-    href: '/services?category=Animal+Welfare',
+    title: 'Animal Welfare & Health',
+    description: 'Veterinary services, pet registration, animal bite treatment centers, free anti-rabies vaccination, and responsible pet ownership.',
+    href: '/contact/disaster',
     icon: 'animal',
     color: 'emerald',
+    badge: 'City Vet Office',
+    features: ['Pet Registration', 'Rabies Vaccine', 'Bite Clinic'],
   },
   {
-    title: 'Business, Trade and Investment',
-    description: 'Resources and services for starting, managing, and growing a business, including permits, taxes, and local investment opportunities.',
-    href: '/services?category=Business%2C+Trade+and+Investment',
+    title: 'Business Permits & Trade',
+    description: 'Business permit licensing (BPLO), mayor’s permit applications, local tax clearances, and investment registration support.',
+    href: '/ordinances/regulatory-ordinances',
     icon: 'business',
     color: 'blue',
+    badge: 'BPLO Office',
+    features: ['Mayor’s Permit', 'Tax Clearance', 'Trade License'],
   },
   {
-    title: 'Certificates and Vital Records',
-    description: 'Official documentation services including birth, marriage, and death certificates, as well as clearances and personal records.',
-    href: '/services?category=Certificates+and+Vital+Records',
+    title: 'Certificates & Vital Records',
+    description: 'Civil Registry Office services for birth, marriage, and death certificates, legitimation records, and personal status documents.',
+    href: '/government/barangays',
     icon: 'records',
     color: 'amber',
+    badge: 'Civil Registrar',
+    features: ['Birth Certificate', 'Marriage Record', 'Civil Registry'],
   },
   {
-    title: 'Disaster Preparedness',
-    description: 'Emergency response resources, evacuation protocols, flood warnings, and community disaster risk reduction management.',
-    href: '/disaster',
+    title: 'Disaster Preparedness & 911',
+    description: '24/7 ZCDRRMO emergency response, flood warning alerts, evacuation center protocols, and community disaster management.',
+    href: '/contact/disaster',
     icon: 'disaster',
     color: 'red',
+    badge: 'ZCDRRMO 24/7',
+    features: ['24/7 Hotline 911', 'Flood Alerts', 'Rescue Unit'],
   },
 ];
 ---
 
-<section class="py-16 md:py-24 bg-white font-sans">
-  <div class="container mx-auto px-4">
+<section class="py-16 md:py-24 bg-white font-sans border-t border-slate-100">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full">
     
     <!-- Section Header -->
-    <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
-        City Services
-      </h2>
-      <p class="text-slate-600 text-sm sm:text-base font-normal leading-relaxed">
-        Access all list of services quickly and easily. Find what you need for citizenship, business, education, and more.
-      </p>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div>
+        <div class="text-xs font-black uppercase text-blue-600 tracking-wider mb-2">
+          CITIZEN & MUNICIPAL SERVICES
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-2">
+          Public Services Directory
+        </h2>
+        <p class="text-slate-600 text-sm sm:text-base font-medium max-w-xl">
+          Quickly locate government offices, vital records registration, business permits, and emergency response services in Zamboanga City.
+        </p>
+      </div>
+
+      <a
+        href="/contact/disaster"
+        class="shrink-0 inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-xs hover:shadow transition-all rounded-[4px]"
+      >
+        <span>View Emergency Contacts</span>
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
     </div>
 
     <!-- 4 Card Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {services.map((service) => (
         <ServiceCard
           title={service.title}
@@ -55,18 +78,10 @@ const services = [
           href={service.href}
           icon={service.icon}
           color={service.color}
+          badge={service.badge}
+          features={service.features}
         />
       ))}
-    </div>
-
-    <!-- Bottom Center CTA Button -->
-    <div class="text-center">
-      <a
-        href="/services"
-        class="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-2xl shadow-sm hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-      >
-        View All Services
-      </a>
     </div>
 
   </div>

@@ -17,20 +17,28 @@ const navigation: NavItem[] = [
     href: '#',
     dropdown: [
       { name: 'City Overview', href: '#', upcoming: true },
-      { name: 'Flood Control Projects', href: '/zamboanga-city/flood-control' },
-      { name: 'History & Culture', href: '#', upcoming: true },
+      { name: 'History & Culture', href: '/zamboanga-city/history' },
       { name: 'City Map & Geography', href: '#', upcoming: true },
+      { name: 'City Officials', href: '/zamboanga-city/officials' },
+      { name: 'House of Representatives', href: '/zamboanga-city/house-of-representatives' },
+      { name: 'City Departments', href: '#', upcoming: true },
+      { name: 'Barangay Directory', href: '/government/barangays' },
     ],
   },
   {
     name: 'Services',
-    href: '/disaster',
+    href: '/services',
     dropdown: [
-      { name: 'Disaster Preparedness', href: '/disaster' },
-      { name: 'All Services', href: '#', upcoming: true },
-      { name: 'Business & Trade', href: '#', upcoming: true },
-      { name: 'Certificates & Vital Records', href: '#', upcoming: true },
-      { name: 'Health & Wellness', href: '#', upcoming: true },
+      { name: 'Certificates & Vital Records', href: '/services' },
+      { name: 'Business, Trade & Investment', href: '/services' },
+      { name: 'Social Services & Assistance', href: '/services' },
+      { name: 'Health & Wellness', href: '/services' },
+      { name: 'Taxation & Payments', href: '/services' },
+      { name: 'Agriculture & Economic Development', href: '/services' },
+      { name: 'Infrastructure & Public Works', href: '/services' },
+      { name: 'Education & Scholarship', href: '/services' },
+      { name: 'Public Safety & Security', href: '/services' },
+      { name: 'Environment & Natural Resources', href: '/services' },
     ],
   },
   {
@@ -43,24 +51,31 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    name: 'Government',
-    href: '#',
-    dropdown: [
-      { name: 'City Officials', href: '#', upcoming: true },
-      { name: 'City Departments', href: '#', upcoming: true },
-      { name: 'Barangay Directory', href: '/government/barangays' },
-    ],
+    name: 'Transparency',
+    href: '/zamboanga-city/flood-control',
   },
   {
-    name: 'About',
-    href: '#',
-    dropdown: [
-      { name: 'About Better Zamboanga', href: '#', upcoming: true },
-      { name: 'Open Data Initiative', href: '#', upcoming: true },
-      { name: 'Volunteer & Contribute', href: '#', upcoming: true },
-    ],
+    name: 'Contact',
+    href: '/contact/disaster',
   },
 ];
+
+const currentPath = Astro.url.pathname;
+
+function isItemActive(item: NavItem): boolean {
+  if (item.href !== '#' && item.href !== '/' && currentPath.startsWith(item.href)) {
+    return true;
+  }
+  if (item.href === '/' && currentPath === '/') {
+    return true;
+  }
+  if (item.dropdown) {
+    return item.dropdown.some(
+      (sub) => sub.href !== '#' && currentPath.startsWith(sub.href)
+    );
+  }
+  return false;
+}
 ---
 
 <header class="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 font-sans shadow-xs transition-all">
@@ -73,12 +88,16 @@ const navigation: NavItem[] = [
     <div class="w-[16.66%] h-full bg-[#fca5a5]"></div>
     <div class="w-[16.66%] h-full bg-[#fde047]"></div>
   </div>
-  <div class="container mx-auto px-4 sm:px-6 max-w-[1600px] w-full">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full">
     <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
       
       <!-- Brand Logo & Emblem -->
       <div class="shrink-0 flex items-center gap-3">
-        <a href="/" class="flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600 rounded-xl p-1 group" aria-label="Better Zamboanga City Homepage">
+        <a
+          href="/"
+          class="relative flex items-center gap-2.5 focus:outline-none focus:ring-2 focus:ring-blue-600 p-1 group"
+          aria-label="Better Zamboanga City Homepage"
+        >
           <!-- Official Zamboanga City Emblem -->
           <img src="/images/ZC.svg" alt="Zamboanga City Seal" class="w-11 h-11 sm:w-13 sm:h-13 object-contain" />
           
@@ -95,53 +114,69 @@ const navigation: NavItem[] = [
 
       <!-- Desktop Navigation Menu -->
       <nav aria-label="Main Navigation" class="hidden lg:flex items-center gap-1 h-full">
-        {navigation.map((item) => (
-          <div class="relative group h-full flex items-center">
-            <a
-              href={item.href}
-              class="flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50/80 px-3.5 py-2 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-blue-600"
-              aria-haspopup={item.dropdown ? "true" : "false"}
-            >
-              <span>{item.name}</span>
-              {item.dropdown && (
-                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              )}
-            </a>
+        {navigation.map((item) => {
+          const active = isItemActive(item);
+          return (
+            <div class="relative group h-full flex items-center">
+              <a
+                href={item.href}
+                class={`relative flex items-center gap-1 text-sm font-semibold px-3.5 py-2 transition-all focus:outline-none focus:ring-2 focus:ring-blue-600
+                  after:content-[''] after:absolute after:-bottom-0.5 after:left-3.5 after:right-3.5 after:h-[3px]
+                  after:bg-gradient-to-r after:from-[#c084fc] after:via-[#38bdf8] after:via-[#4ade80] after:via-[#fca5a5] after:to-[#fbbf24]
+                  after:transition-transform after:duration-300 after:origin-left
+                  ${active
+                    ? 'text-blue-600 font-bold after:scale-x-100'
+                    : 'text-slate-700 hover:text-blue-600 after:scale-x-0 hover:after:scale-x-100'
+                  }`}
+                aria-haspopup={item.dropdown ? "true" : "false"}
+              >
+                <span>{item.name}</span>
+                {item.dropdown && (
+                  <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </a>
 
-            {item.dropdown && (
-              <div class="absolute top-full left-0 w-80 bg-white border border-slate-200/90 shadow-2xl shadow-blue-900/10 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 transform origin-top -translate-y-2 group-hover:translate-y-0 z-50 p-2">
-                <ul class="space-y-0.5" role="menu" aria-label={`${item.name} Submenu`}>
-                  {item.dropdown.map((subItem) => (
-                    <li role="none">
-                      {subItem.upcoming ? (
-                        <div class="px-3 py-2 text-xs sm:text-sm font-medium text-slate-400 flex items-center justify-between cursor-not-allowed select-none rounded-xl transition-colors hover:bg-amber-50/30">
-                          <span class="text-slate-500 font-medium">{subItem.name}</span>
-                          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200/80 text-[10px] font-bold tracking-tight shadow-2xs shrink-0">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                            <span>Under Development</span>
-                          </span>
-                        </div>
-                      ) : (
-                        <a
-                          href={subItem.href}
-                          role="menuitem"
-                          class="block px-3 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-xl focus:bg-blue-50 focus:text-blue-700 focus:outline-none transition-all flex items-center justify-between group/sub"
-                        >
-                          <span>{subItem.name}</span>
-                          <svg class="w-3.5 h-3.5 opacity-0 group-hover/sub:opacity-100 text-blue-600 -translate-x-1 group-hover/sub:translate-x-0 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
+              {item.dropdown && (
+                <div class="absolute top-full left-0 w-80 bg-white border border-slate-200 shadow-2xl shadow-blue-900/10 rounded-[4px] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 transform origin-top -translate-y-2 group-hover:translate-y-0 z-50 p-2">
+                  <ul class="space-y-0.5" role="menu" aria-label={`${item.name} Submenu`}>
+                    {item.dropdown.map((subItem) => {
+                      const isSubActive = subItem.href !== '#' && currentPath === subItem.href;
+                      return (
+                        <li role="none">
+                          {subItem.upcoming ? (
+                            <div class="px-3 py-2 text-xs sm:text-sm font-medium text-slate-400 flex items-center justify-between cursor-not-allowed select-none rounded-[2px] transition-colors hover:bg-amber-50/30">
+                              <span class="text-slate-500 font-medium">{subItem.name}</span>
+                              <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold tracking-tight rounded-[2px] shrink-0">
+                                <span>DEVELOPMENT</span>
+                              </span>
+                            </div>
+                          ) : (
+                            <a
+                              href={subItem.href}
+                              role="menuitem"
+                              class={`block px-3 py-2 text-xs sm:text-sm font-semibold transition-all flex items-center justify-between rounded-[2px] group/sub ${
+                                isSubActive
+                                  ? 'bg-blue-50 text-blue-700 font-bold'
+                                  : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700'
+                              }`}
+                            >
+                              <span>{subItem.name}</span>
+                              <svg class={`w-3.5 h-3.5 text-blue-600 transition-all ${isSubActive ? 'opacity-100 translate-x-0' : 'opacity-0 group-hover/sub:opacity-100 -translate-x-1 group-hover/sub:translate-x-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </a>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
 
       <!-- Right Action Button -->
@@ -150,19 +185,21 @@ const navigation: NavItem[] = [
           href="https://discord.gg/HC43M83js"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-[#5865F2] hover:bg-[#4752C4] active:bg-[#3c45a5] rounded-xl shadow-sm hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-[#5865F2] focus:ring-offset-2 group"
+          class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-black bg-white hover:bg-slate-50 border border-slate-200/90 rounded-[4px] shadow-xs hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 group"
         >
-          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current text-sky-500 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
           </svg>
-          <span>Join Now</span>
+          <span class="bg-gradient-to-r from-[#c084fc] via-[#38bdf8] via-[#4ade80] via-[#fca5a5] to-[#fbbf24] bg-clip-text text-transparent font-black tracking-wide">
+            Join Now
+          </span>
         </a>
 
         <!-- Mobile Menu Toggle Button -->
         <button
           id="hdr-mobile-menu-btn"
           type="button"
-          class="lg:hidden p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
+          class="lg:hidden p-2.5 bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
           aria-expanded="false"
           aria-controls="hdr-mobile-menu"
           aria-label="Toggle navigation menu"
@@ -184,43 +221,51 @@ const navigation: NavItem[] = [
     class="hidden absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-2xl flex-col lg:hidden max-h-[85vh] overflow-y-auto divide-y divide-slate-100 animate-fade-in"
   >
     <div class="p-4 space-y-2">
-      {navigation.map((item) => (
-        <div class="py-1">
-          {item.dropdown ? (
-            <details class="group">
-              <summary class="flex items-center justify-between py-2.5 px-2 text-sm font-bold text-slate-800 cursor-pointer rounded-lg hover:bg-slate-50 list-none">
-                <span>{item.name}</span>
-                <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <ul class="pl-3 py-1 space-y-1 border-l-2 border-blue-400 bg-slate-50/80 rounded-r-xl my-1">
-                {item.dropdown.map((subItem) => (
-                  <li>
-                    {subItem.upcoming ? (
-                      <div class="py-2 px-3 text-xs font-medium text-slate-400 flex items-center justify-between cursor-not-allowed select-none">
-                        <span class="text-slate-500 font-medium">{subItem.name}</span>
-                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold tracking-tight shrink-0">
-                          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                          <span>Under Development</span>
-                        </span>
-                      </div>
-                    ) : (
-                      <a href={subItem.href} class="block py-2 px-3 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                        {subItem.name}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </details>
-          ) : (
-            <a href={item.href} class="block py-2.5 px-2 text-sm font-bold text-slate-800 hover:text-blue-600">
-              {item.name}
-            </a>
-          )}
-        </div>
-      ))}
+      {navigation.map((item) => {
+        const active = isItemActive(item);
+        return (
+          <div class="py-1">
+            {item.dropdown ? (
+              <details class="group" open={active}>
+                <summary class={`flex items-center justify-between py-2.5 px-2 text-sm font-bold cursor-pointer rounded-[4px] hover:bg-slate-50 list-none ${
+                  active ? 'text-blue-600 bg-blue-50/50' : 'text-slate-800'
+                }`}>
+                  <span>{item.name}</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <ul class="pl-3 py-1 space-y-1 border-l-2 border-blue-400 bg-slate-50/80 rounded-[4px] my-1">
+                  {item.dropdown.map((subItem) => (
+                    <li>
+                      {subItem.upcoming ? (
+                        <div class="py-2 px-3 text-xs font-medium text-slate-400 flex items-center justify-between cursor-not-allowed select-none">
+                          <span class="text-slate-500 font-medium">{subItem.name}</span>
+                          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[2px] bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold tracking-tight shrink-0">
+                            <span>Under Development</span>
+                          </span>
+                        </div>
+                      ) : (
+                        <a href={subItem.href} class={`block py-2 px-3 text-xs font-semibold rounded-[4px] transition-colors ${
+                          currentPath === subItem.href ? 'text-blue-600 bg-blue-50 font-bold' : 'text-slate-700 hover:text-blue-600 hover:bg-blue-50'
+                        }`}>
+                          {subItem.name}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : (
+              <a href={item.href} class={`block py-2.5 px-2 text-sm font-bold transition-colors ${
+                active ? 'text-blue-600 bg-blue-50/50 rounded-[4px]' : 'text-slate-800 hover:text-blue-600'
+              }`}>
+                {item.name}
+              </a>
+            )}
+          </div>
+        );
+      })}
     </div>
 
     <div class="p-4 bg-slate-50 border-t border-slate-200">
@@ -228,12 +273,14 @@ const navigation: NavItem[] = [
         href="https://discord.gg/HC43M83js"
         target="_blank"
         rel="noopener noreferrer"
-        class="flex items-center justify-center gap-2 w-full px-5 py-3 text-sm font-bold text-white bg-[#5865F2] hover:bg-[#4752C4] rounded-xl shadow-xs transition-colors"
+        class="flex items-center justify-center gap-2 w-full px-5 py-3 text-sm font-black bg-white hover:bg-slate-50 rounded-[4px] shadow-xs transition-colors border border-slate-200/90"
       >
-        <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="w-5 h-5 fill-current text-sky-500 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
         </svg>
-        <span>Join Now</span>
+        <span class="bg-gradient-to-r from-[#c084fc] via-[#38bdf8] via-[#4ade80] via-[#fca5a5] to-[#fbbf24] bg-clip-text text-transparent font-black tracking-wide">
+          Join Now
+        </span>
       </a>
     </div>
   </div>

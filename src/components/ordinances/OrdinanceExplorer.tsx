@@ -58,13 +58,17 @@ function formatDateStr(dateStr?: string | null): string | null {
   }
 }
 
-export const OrdinanceExplorer: React.FC = () => {
+interface Props {
+  initialCategory?: string;
+}
+
+export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) => {
   const [ordinances, setOrdinances] = useState<Ordinance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters & State
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [selectedYear, setSelectedYear] = useState<string>('all');
   const [sidebarMode, setSidebarMode] = useState<'categories' | 'years'>('categories');
   const [sortBy, setSortBy] = useState<'number-desc' | 'number-asc' | 'year-desc' | 'year-asc'>('number-desc');
@@ -84,7 +88,7 @@ export const OrdinanceExplorer: React.FC = () => {
     loadData();
   }, []);
 
-  // Compute Categories list with counts
+  // Compute Categories list with counts (excluding redundant regulatory category)
   const categoryCounts = useMemo(() => {
     const map = new Map<string, number>();
     ordinances.forEach((ord) => {
@@ -93,11 +97,16 @@ export const OrdinanceExplorer: React.FC = () => {
         map.set(cat, count + 1);
       });
     });
-    return Array.from(map.entries()).map(([name, count]) => ({
-      id: toSlug(name),
-      name,
-      count,
-    }));
+    return Array.from(map.entries())
+      .filter(([name]) => {
+        const slug = toSlug(name);
+        return slug !== 'regulatory' && slug !== 'regulatory-ordinances' && slug !== 'regulatory-ordinance';
+      })
+      .map(([name, count]) => ({
+        id: toSlug(name),
+        name,
+        count,
+      }));
   }, [ordinances]);
 
   // Extract unique available years from dataset
@@ -138,9 +147,22 @@ export const OrdinanceExplorer: React.FC = () => {
   // Filter ordinances
   const filteredOrdinances = useMemo(() => {
     return ordinances.filter((ord) => {
-      if (selectedCategory !== 'all') {
-        const matchesCat = (ord.categories || []).some((cat) => toSlug(cat) === selectedCategory);
-        if (!matchesCat) return false;
+      if (selectedCategory !== 'all' && selectedCategory !== 'regulatory') {
+        if (selectedCategory === 'revenue') {
+          const isRevenue = (ord.categories || []).some(cat => cat.toLowerCase().includes('tax') || cat.toLowerCase().includes('revenue'))
+            || ord.official_title?.toLowerCase().includes('tax') || ord.official_title?.toLowerCase().includes('revenue') || ord.official_title?.toLowerCase().includes('fee');
+          if (!isRevenue) return false;
+        } else if (selectedCategory === 'appropriation') {
+          const isAppropriation = (ord.categories || []).some(cat => cat.toLowerCase().includes('appropriat') || cat.toLowerCase().includes('budget'))
+            || ord.official_title?.toLowerCase().includes('appropriat') || ord.official_title?.toLowerCase().includes('budget') || ord.official_title?.toLowerCase().includes('fund');
+          if (!isAppropriation) return false;
+        } else {
+          const selectedSlug = toSlug(selectedCategory);
+          const matchesCat = (ord.categories || []).some(
+            (cat) => toSlug(cat) === selectedSlug || cat.toLowerCase() === selectedCategory.toLowerCase()
+          );
+          if (!matchesCat) return false;
+        }
       }
 
       if (selectedYear !== 'all') {
@@ -240,7 +262,7 @@ export const OrdinanceExplorer: React.FC = () => {
                 else handleYearSelect('all');
               }}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 ${
-                (sidebarMode === 'categories' && selectedCategory === 'all') ||
+                (sidebarMode === 'categories' && (selectedCategory === 'all' || selectedCategory === 'regulatory')) ||
                 (sidebarMode === 'years' && selectedYear === 'all')
                   ? 'bg-[#0032A0] text-white'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -414,6 +436,7 @@ export const OrdinanceExplorer: React.FC = () => {
           {/* TABLE */}
           <OrdinanceTable
             ordinances={paginatedOrdinances}
+            isLoading={isLoading}
             sortBy={sortBy}
             setSortBy={setSortBy}
             cleanOrdinanceNum={cleanOrdinanceNum}

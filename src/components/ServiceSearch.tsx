@@ -74,10 +74,10 @@ export const ServiceSearch: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl shadow-blue-900/10 border border-slate-100 max-w-lg w-full font-sans">
+    <div suppressHydrationWarning className="bg-white p-6 sm:p-8 shadow-2xl shadow-blue-900/10 border border-slate-200 max-w-lg w-full font-sans rounded-[4px]">
       {/* Search Box Title Header */}
       <div className="flex items-center gap-2.5 mb-5 text-slate-800 font-bold text-lg sm:text-xl">
-        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+        <div className="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 rounded-[4px]">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -95,7 +95,7 @@ export const ServiceSearch: React.FC = () => {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder="e.g., birth certificate, business permit..."
-            className="w-full pl-4 pr-12 py-3.5 sm:py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all shadow-inner"
+            className="w-full pl-4 pr-12 py-3.5 sm:py-4 bg-slate-50 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all rounded-[4px]"
             aria-label="Search for city services"
           />
           
@@ -103,7 +103,7 @@ export const ServiceSearch: React.FC = () => {
             <button
               type="button"
               onClick={() => setSearchTerm('')}
-              className="absolute right-14 text-slate-400 hover:text-slate-600 p-1"
+              className="absolute right-14 text-slate-400 hover:text-slate-600 p-1 rounded-[2px]"
               aria-label="Clear search"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,7 +114,7 @@ export const ServiceSearch: React.FC = () => {
 
           <button
             type="submit"
-            className="absolute right-2 p-2.5 sm:p-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="absolute right-2 p-2.5 sm:p-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 rounded-[4px]"
             aria-label="Submit search"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,7 +125,7 @@ export const ServiceSearch: React.FC = () => {
 
         {/* Dynamic Instant Search Suggestions Overlay */}
         {isFocused && filteredServices.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-200 shadow-xl z-50 overflow-hidden divide-y divide-slate-100">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 shadow-xl z-50 overflow-hidden divide-y divide-slate-100 rounded-[4px]">
             <div className="px-4 py-2 bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
               Matching Services ({filteredServices.length})
             </div>
@@ -154,10 +154,10 @@ export const ServiceSearch: React.FC = () => {
               key={item.label}
               type="button"
               onClick={() => handleSelectPopular(item.query)}
-              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border transition-all rounded-[2px] ${
                 searchTerm.toLowerCase() === item.query.toLowerCase()
-                  ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-xs'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 hover:text-blue-600'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
               }`}
             >
               {renderIcon(item.type)}

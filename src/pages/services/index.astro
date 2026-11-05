@@ -1,0 +1,15 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ServicesDirectory from '../../components/services/ServicesDirectory';
+---
+
+<Layout
+  title="Municipal Services Directory | Better Zamboanga City"
+  description="Explore official municipal services in Zamboanga City including vital records, business permits, social welfare assistance, health programs, property taxation, and emergency response."
+  mainClass="grow bg-slate-50 font-sans pb-16"
+>
+  <main class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
+    {/* Main Services Directory Interactive Component */}
+    <ServicesDirectory client:load />
+  </main>
+</Layout>

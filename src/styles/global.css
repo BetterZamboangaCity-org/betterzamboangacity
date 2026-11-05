@@ -43,6 +43,14 @@
     color: var(--foreground);
     font-family: var(--font-kapwa-sans);
   }
+
+  /* Sleek Modern Corner Radius Defaults */
+  .badge-tag {
+    border-radius: 2px;
+  }
+  .card-container, .btn-action, .input-field {
+    border-radius: 4px;
+  }
 }
 
 /* Base keyframe animations */

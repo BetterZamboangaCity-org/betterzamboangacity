@@ -89,23 +89,11 @@ import ServiceSearch from '../ServiceSearch';
   <!-- ========================================================================= -->
   <!-- HERO CONTENT CONTAINER -->
   <!-- ========================================================================= -->
-  <div class="container relative z-10 mx-auto px-4">
+  <div class="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
       
       <!-- Left Column Text Content -->
       <div class="lg:col-span-7 flex flex-col items-start text-left">
-        
-        <!-- Status Pill Badge -->
-        <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-xs font-bold text-white mb-6 shadow-xl">
-          <span class="flex h-3.5 w-3.5 relative items-center justify-center">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-300"></span>
-          </span>
-          <span class="tracking-wide drop-shadow">Bienvenidos! · Portal Active</span>
-          <span class="hidden sm:inline text-blue-200">|</span>
-          <span class="hidden sm:inline text-amber-200 font-semibold drop-shadow">Asia's Latin City</span>
-        </div>
-
         <!-- Main Headline (Direct white text with strong drop shadow) -->
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]">
           Bienvenidos! <br class="hidden sm:inline" />
@@ -114,12 +102,12 @@ import ServiceSearch from '../ServiceSearch';
 
         <!-- Soft Pastel Vinta Sail Ribbon Accent Bar -->
         <div class="flex items-center gap-1 mb-6">
-          <div class="h-2.5 w-10 rounded-l-full bg-[#c084fc] shadow-sm"></div>
-          <div class="h-2.5 w-10 bg-[#f8fafc] shadow-sm"></div>
-          <div class="h-2.5 w-10 bg-[#4ade80] shadow-sm"></div>
-          <div class="h-2.5 w-10 bg-[#475569] shadow-sm"></div>
-          <div class="h-2.5 w-10 bg-[#fca5a5] shadow-sm"></div>
-          <div class="h-2.5 w-10 rounded-r-full bg-[#fef3c7] shadow-sm"></div>
+          <div class="h-2.5 w-10 bg-[#c084fc] shadow-sm rounded-[2px]"></div>
+          <div class="h-2.5 w-10 bg-[#f8fafc] shadow-sm rounded-[2px]"></div>
+          <div class="h-2.5 w-10 bg-[#4ade80] shadow-sm rounded-[2px]"></div>
+          <div class="h-2.5 w-10 bg-[#475569] shadow-sm rounded-[2px]"></div>
+          <div class="h-2.5 w-10 bg-[#fca5a5] shadow-sm rounded-[2px]"></div>
+          <div class="h-2.5 w-10 bg-[#fef3c7] shadow-sm rounded-[2px]"></div>
           <span class="ml-2.5 text-[11px] font-extrabold text-amber-200 uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">Orgullo De Mindanao</span>
         </div>
 
@@ -132,7 +120,7 @@ import ServiceSearch from '../ServiceSearch';
         <div class="flex flex-wrap items-center gap-4">
           <a
             href="/services"
-            class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-amber-300 hover:bg-amber-200 text-slate-950 font-bold transition-all shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-slate-950"
+            class="inline-flex items-center gap-2.5 px-6 py-3.5 bg-amber-300 hover:bg-amber-200 text-slate-950 font-bold transition-all rounded-[4px] shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-slate-950"
           >
             <span>Browse Services</span>
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -142,138 +130,16 @@ import ServiceSearch from '../ServiceSearch';
 
           <a
             href="/about"
-            class="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-slate-950/75 hover:bg-slate-900 text-white text-sm font-bold border border-white/20 transition-all backdrop-blur-md shadow-xl"
+            class="inline-flex items-center gap-2 px-5 py-3.5 bg-slate-950/75 hover:bg-slate-900 text-white text-sm font-bold border border-white/20 transition-all rounded-[4px] backdrop-blur-md shadow-xl"
           >
             <span>Explore City Profile</span>
           </a>
         </div>
-        
-        <!-- Micro highlights -->
-        <div class="flex items-center gap-6 mt-10 pt-6 border-t border-white/10 text-xs text-slate-400 font-medium">
-          <div class="flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-            </svg>
-            <span>Verified Hotlines</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            </svg>
-            <span>98 Barangays</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-            <span>Open &amp; Free</span>
-          </div>
-        </div>
       </div>
-
-      <!-- Right Column Search Component -->
       <div class="lg:col-span-5 flex justify-center lg:justify-end relative z-10">
         <ServiceSearch client:load />
       </div>
 
     </div>
   </div>
-
-  <!-- ============================================================= -->
-  <!-- MOBILE HERO (visible only below lg)                           -->
-  <!-- Clean light layout, mini vinta badge, full-width content      -->
-  <!-- ============================================================= -->
-  <div class="lg:hidden relative bg-white border-b border-slate-200">
-
-    <!-- Vinta color top accent stripe -->
-    <div class="flex h-1.5 w-full">
-      <div class="flex-1 bg-[#7c3aed]"></div>
-      <div class="flex-1 bg-[#0ea5e9]"></div>
-      <div class="flex-1 bg-[#10b981]"></div>
-      <div class="flex-1 bg-[#64748b]"></div>
-      <div class="flex-1 bg-[#f87171]"></div>
-      <div class="flex-1 bg-[#fbbf24]"></div>
-    </div>
-
-    <div class="px-4 pt-8 pb-6">
-
-      <!-- ── Mini Vinta icon badge (mobile identity mark) ── -->
-      <div class="flex items-center gap-3 mb-6">
-        <!-- Tiny vinta SVG icon badge -->
-        <div class="relative w-12 h-12 shrink-0">
-          <!-- Ripple ring -->
-          <span class="ripple-ring absolute inset-0 rounded-full bg-blue-500/20 border border-blue-500/30"></span>
-          <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg">
-            <!-- Mini Vinta icon SVG -->
-            <svg viewBox="0 0 32 28" class="w-7 h-7" fill="none" aria-hidden="true">
-              <!-- mini mast -->
-              <rect x="16" y="1" width="2.5" height="18" rx="1.2" fill="#d4a76a"/>
-              <!-- mini sail bands (lateen) -->
-              <polygon points="17,2 6,18 8.5,18 17.5,4" fill="#7c3aed"/>
-              <polygon points="17.5,4 8.5,18 11,18 18,6" fill="#0ea5e9"/>
-              <polygon points="18,6 11,18 13.5,18 18.5,8" fill="#10b981"/>
-              <polygon points="18.5,8 13.5,18 16,18 18.5,11" fill="#f87171"/>
-              <polygon points="18.5,11 16,18 18.5,18" fill="#fbbf24"/>
-              <!-- mini hull -->
-              <path d="M8 19 Q15 22 24 20 Q27 19.5 28 21 Q24 24 15 24 Q9 24 7 22 Z" fill="#d97706"/>
-              <!-- mini outrigger -->
-              <line x1="10" y1="21" x2="4" y2="24" stroke="#b45309" stroke-width="1.5" stroke-linecap="round"/>
-              <ellipse cx="3" cy="24.5" rx="3" ry="1.5" fill="#92400e"/>
-              <line x1="22" y1="20.5" x2="29" y2="23.5" stroke="#b45309" stroke-width="1.5" stroke-linecap="round"/>
-              <ellipse cx="30" cy="24" rx="3" ry="1.5" fill="#92400e"/>
-            </svg>
-          </div>
-        </div>
-        <div>
-          <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Zamboanga City</div>
-          <div class="text-xs font-bold text-slate-700">Civic Transparency Portal</div>
-        </div>
-      </div>
-
-      <!-- Headline -->
-      <p class="text-base font-semibold text-amber-500 mb-1">Bienvenidos!</p>
-      <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-tight mb-4">
-        Better<span class="text-blue-600">Zamboanga</span><span class="text-amber-500">City</span>
-      </h1>
-
-      <!-- Subtitle -->
-      <p class="text-sm text-slate-600 leading-relaxed mb-6 max-w-sm">
-        A free, community-driven civic portal for transparent access to city services, emergency hotlines, and public data for all Zamboangueños.
-      </p>
-
-      <!-- CTA Buttons (full-width on mobile) -->
-      <div class="flex flex-col gap-2.5">
-        <a href="/services"
-           class="flex items-center justify-between px-4 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
-          <span>Browse City Services</span>
-          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        </a>
-      </div>
-
-      <!-- Mobile stat chips -->
-      <div class="flex items-center flex-wrap gap-2 mt-6 pt-5 border-t border-slate-100">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-[11px] font-semibold">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-          </svg>
-          Verified Hotlines
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-[11px] font-semibold">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-          </svg>
-          98 Barangays
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/60 text-amber-700 text-[11px] font-semibold">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-          </svg>
-          Free &amp; Open Source
-        </span>
-      </div>
-    </div>
-  </div>
-
 </section>

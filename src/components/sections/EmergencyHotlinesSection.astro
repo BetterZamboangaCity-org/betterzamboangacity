@@ -37,12 +37,11 @@ const hotlines = [
 ---
 
 <section class="py-16 md:py-24 bg-white border-t border-slate-100 font-sans">
-  <div class="container mx-auto px-4">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full">
     
     <!-- Section Header -->
     <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-bold uppercase tracking-wider mb-3 border border-red-200/80">
-        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-red-50 text-red-700 text-xs font-bold uppercase tracking-wider mb-3 border border-red-200 rounded-[2px]">
         <span>Official Zamboanga City Emergency Hotlines</span>
       </div>
 
@@ -69,8 +68,8 @@ const hotlines = [
     <!-- Action Button -->
     <div class="text-center">
       <a
-        href="/disaster"
-        class="inline-flex items-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-2xl shadow-sm hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 group"
+        href="/contact/disaster"
+        class="inline-flex items-center gap-2.5 px-6 py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-xs hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 group rounded-[4px]"
       >
         <span>View Complete Station & Hotline Directory</span>
         <svg class="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,7 +117,7 @@ const hotlines = [
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'phone-toast';
-      toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-2xl shadow-xl border border-slate-700/60 transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2.5 pointer-events-none';
+      toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 shadow-xl border border-slate-700 transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2.5 pointer-events-none rounded-[4px]';
       toast.innerHTML = `
         <svg class="w-4.5 h-4.5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />

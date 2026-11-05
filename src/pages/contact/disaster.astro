@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DisasterHeader from '../../components/disaster/DisasterHeader.astro';
+import DisasterHeroCards from '../../components/disaster/DisasterHeroCards.astro';
+import DisasterMapSection from '../../components/disaster/DisasterMapSection.astro';
+import EmergencyHotlinesGrid from '../../components/disaster/EmergencyHotlinesGrid.astro';
+import PoliceDirectoryAccordion from '../../components/disaster/PoliceDirectoryAccordion.astro';
+import FireDirectoryAccordion from '../../components/disaster/FireDirectoryAccordion.astro';
+import DisasterReferences from '../../components/disaster/DisasterReferences.astro';
+
+import { policeStations, fireStations } from '../../data/disaster-data';
+---
+
+<Layout title="Disaster Preparedness & Emergency Directory | Better Zamboanga City" mainClass="grow bg-slate-50 font-sans pb-16">
+  <!-- Leaflet CSS for OpenStreetMap -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+    
+  <DisasterHeader />
+
+  <div class="container mx-auto px-4 max-w-6xl space-y-8">
+    <DisasterHeroCards />
+    <DisasterMapSection />
+    <EmergencyHotlinesGrid />
+
+    <div>
+      <PoliceDirectoryAccordion policeStations={policeStations} />
+      <FireDirectoryAccordion fireStations={fireStations} />
+    </div>
+
+    <DisasterReferences />
+  </div>
+</Layout>
+
+<script src="../../scripts/disaster-interactive.ts"></script>

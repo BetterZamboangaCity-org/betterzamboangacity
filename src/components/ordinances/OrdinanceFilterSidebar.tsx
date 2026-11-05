@@ -66,7 +66,7 @@ export const OrdinanceFilterSidebar: React.FC<Props> = ({
             else handleYearSelect('all');
           }}
           className={`w-full text-left px-3.5 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-between ${
-            (sidebarMode === 'categories' && selectedCategory === 'all') ||
+            (sidebarMode === 'categories' && (selectedCategory === 'all' || selectedCategory === 'regulatory')) ||
             (sidebarMode === 'years' && selectedYear === 'all')
               ? 'bg-[#0032A0] text-white shadow-xs font-bold'
               : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/60'

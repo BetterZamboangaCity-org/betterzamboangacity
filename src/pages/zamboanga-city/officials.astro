@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { fetchCityOfficials } from '../../lib/supabase';
+import { CityOfficialsDirectory } from '../../components/officials/CityOfficialsDirectory';
+
+const { data: officials } = await fetchCityOfficials();
+
+const title = "Zamboanga City Elected Officials Directory (2001–2025) | Better Zamboanga City";
+const description = "Explore the complete historical registry of elected Mayors, Vice Mayors, and Councilors of Zamboanga City from National and Local Elections (2001 to 2025). Data powered by OpenHalalan.";
+---
+
+<Layout title={title} description={description} mainClass="grow bg-slate-50 font-sans pb-16">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-6xl w-full space-y-8">
+    <!-- Page Header -->
+    <div class="text-center max-w-3xl mx-auto space-y-3">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+        <span class="text-[#0032A0]">Zamboanga</span> <span class="text-amber-500">City</span> <span class="text-emerald-600">Elected</span> <span class="text-purple-600">Officials</span>
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 font-medium leading-relaxed">
+        Explore the directory of Mayors, Vice Mayors, and City Councilors serving Zamboanga City across Philippine National and Local Elections (2001–2025).
+      </p>
+    </div>
+
+    <!-- Directory Component -->
+    <CityOfficialsDirectory client:load initialOfficials={officials} />
+  </main>
+</Layout>

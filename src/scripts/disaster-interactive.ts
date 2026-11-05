@@ -1,4 +1,13 @@
-import { emergencyFacilities } from '../data/disaster-data';
+import { fetchEmergencyFacilities, type EmergencyFacility } from '../lib/supabase';
+
+let emergencyFacilities: EmergencyFacility[] = [];
+
+async function loadDynamicFacilities() {
+  const res = await fetchEmergencyFacilities();
+  if (res.data && res.data.length > 0) {
+    emergencyFacilities = res.data;
+  }
+}
 
 let map: any = null;
 let mapMarkers: Record<string, any> = {};
@@ -479,7 +488,8 @@ export function initDisasterInteractive() {
     }
   });
 
-  loadLeafletScript(() => {
+  loadLeafletScript(async () => {
+    await loadDynamicFacilities();
     initLeafletMap();
     setupMapInteractivity();
   });

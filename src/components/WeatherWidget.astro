@@ -6,20 +6,34 @@ interface Props {
   wind?: string;
   feelsLike?: string;
   city?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
-const props = Astro.props;
+const {
+  city = "Zamboanga City, Philippines",
+  latitude = 6.9214,
+  longitude = 122.0790,
+} = Astro.props;
 
-// Live Zamboanga City Weather Server Fetch
-let serverTemp = props.temp;
-let serverCondition = props.condition;
-let serverHumidity = props.humidity;
-let serverWind = props.wind;
-let serverFeelsLike = props.feelsLike;
-const city = props.city || "Zamboanga City, PH";
+// SSR initial fetch from Open-Meteo for immediate render
+let serverTemp = Astro.props.temp || "29°C";
+let serverCondition = Astro.props.condition || "Partly Cloudy";
+let serverHumidity = Astro.props.humidity || "78%";
+let serverWind = Astro.props.wind || "12 km/h";
+let serverFeelsLike = Astro.props.feelsLike || "33°C";
+let serverHourly: Array<{ time: string; temp: string; code: number }> = [
+  { time: "4 AM", temp: "27°", code: 2 },
+  { time: "5 AM", temp: "27°", code: 2 },
+  { time: "6 AM", temp: "28°", code: 1 },
+  { time: "7 AM", temp: "29°", code: 0 },
+  { time: "8 AM", temp: "30°", code: 1 },
+  { time: "9 AM", temp: "31°", code: 2 },
+];
 
 try {
-  const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=6.9214&longitude=122.0790&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m');
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&timezone=Asia%2FManila`;
+  const res = await fetch(url, { headers: { 'User-Agent': 'BetterZamboangaCity/1.0' } });
   if (res.ok) {
     const data = await res.json();
     if (data && data.current) {
@@ -27,89 +41,286 @@ try {
       serverFeelsLike = `${Math.round(data.current.apparent_temperature)}°C`;
       serverHumidity = `${data.current.relative_humidity_2m}%`;
       serverWind = `${Math.round(data.current.wind_speed_10m)} km/h`;
+      
       const code = data.current.weather_code ?? 0;
       if (code === 0 || code === 1) serverCondition = 'Clear / Sunny';
-      else if (code === 2 || code === 3) serverCondition = 'Partly Cloudy';
-      else if (code >= 51 && code <= 82) serverCondition = 'Rain Showers';
+      else if (code === 2) serverCondition = 'Partly cloudy';
+      else if (code === 3) serverCondition = 'Overcast';
+      else if (code >= 51 && code <= 65) serverCondition = 'Light Rain';
+      else if (code >= 80 && code <= 82) serverCondition = 'Rain Showers';
       else if (code >= 95) serverCondition = 'Thunderstorm';
       else serverCondition = 'Fair';
     }
-  }
-} catch (e) {}
 
-const temp = serverTemp || "28°C";
-const condition = serverCondition || "Clear / Tropical Breeze";
-const humidity = serverHumidity || "77%";
-const wind = serverWind || "6 km/h";
-const feelsLike = serverFeelsLike || "31°C";
+    if (data && data.hourly && data.hourly.time && data.hourly.temperature_2m) {
+      const nowHour = new Date().getHours();
+      const hourlyList: Array<{ time: string; temp: string; code: number }> = [];
+      for (let i = 0; i < data.hourly.time.length; i++) {
+        const itemDate = new Date(data.hourly.time[i]);
+        if (itemDate.getHours() >= nowHour && hourlyList.length < 6) {
+          const hourNum = itemDate.getHours();
+          const ampm = hourNum >= 12 ? 'PM' : 'AM';
+          const displayHour = (hourNum % 12 === 0 ? 12 : hourNum % 12) + ' ' + ampm;
+          hourlyList.push({
+            time: displayHour,
+            temp: `${Math.round(data.hourly.temperature_2m[i])}°`,
+            code: data.hourly.weather_code[i] ?? 0,
+          });
+        }
+      }
+      if (hourlyList.length > 0) {
+        serverHourly = hourlyList;
+      }
+    }
+  }
+} catch (e) {
+  // Graceful fallback to server values
+}
 ---
 
-<div class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-blue-600/10 flex flex-col justify-between h-full relative overflow-hidden group">
-  <!-- Subtle SVG Background Wave Decor -->
-  <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
-    <svg class="w-64 h-64 fill-white" viewBox="0 0 24 24">
-      <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
+<div class="bg-white border border-slate-200/90 shadow-lg shadow-slate-100/60 overflow-hidden flex flex-col justify-between h-full group hover:shadow-xl transition-all duration-300 font-sans relative rounded-[4px]">
+  
+  <!-- Vinta Flag Top Ribbon Stripe -->
+  <div class="flex h-1.5 w-full">
+    <div class="flex-1 bg-[#c084fc]"></div>
+    <div class="flex-1 bg-[#38bdf8]"></div>
+    <div class="flex-1 bg-[#4ade80]"></div>
+    <div class="flex-1 bg-[#475569]"></div>
+    <div class="flex-1 bg-[#fca5a5]"></div>
+    <div class="flex-1 bg-[#fbbf24]"></div>
   </div>
 
-  <div>
-    <!-- City Header Badge -->
-    <div class="flex items-center justify-between mb-6">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold tracking-wide border border-white/20">
-        <svg class="w-3.5 h-3.5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        </svg>
-        {city}
-      </span>
-      <span class="text-[11px] text-blue-100 font-mono">LIVE WEATHER</span>
-    </div>
-
-    <!-- Main Temperature & Condition Display -->
-    <div class="flex items-center justify-between gap-4 mb-8">
-      <div>
-        <div id="widget-temp" class="text-5xl sm:text-6xl font-black tracking-tight drop-shadow-sm font-sans">
-          {temp}
+  <div class="p-6 sm:p-7">
+    
+    <!-- Top Row: Main Weather Display (Icon + Temp + Condition + Location) -->
+    <div class="flex items-start justify-between gap-4 mb-6">
+      
+      <!-- Left side: Icon & Temp -->
+      <div class="flex items-center gap-4">
+        <!-- Main Weather Icon Circle -->
+        <div id="weather-main-icon" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-50 to-indigo-100/70 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm rounded-[4px]">
+          <!-- Sun / Cloud Icon -->
+          <svg class="w-10 h-10 sm:w-12 sm:h-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
+          </svg>
         </div>
-        <div id="widget-condition" class="text-sm font-medium text-blue-100 mt-1">
-          {condition}
+
+        <div>
+          <!-- Big Temperature -->
+          <div class="flex items-baseline gap-1">
+            <span id="widget-temp" class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
+              {serverTemp}
+            </span>
+          </div>
+
+          <!-- Condition -->
+          <div class="flex items-center gap-2 mt-1">
+            <span id="widget-condition" class="text-sm font-semibold text-slate-700">
+              {serverCondition}
+            </span>
+          </div>
+
+          <!-- Location Name with Pin -->
+          <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium mt-1">
+            <svg class="w-3.5 h-3.5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span id="widget-location-name" class="truncate font-semibold text-slate-600">{city}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="h-px w-full bg-slate-100 my-5"></div>
+
+    <!-- Secondary Indicators (Humidity & Wind) -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      
+      <!-- Humidity Metric Card -->
+      <div class="flex items-center gap-3 p-3.5 bg-slate-50/80 border border-slate-100 rounded-[4px]">
+        <div class="w-9 h-9 bg-blue-100/70 text-blue-600 flex items-center justify-center shrink-0 rounded-[4px]">
+          <!-- Water Drop Icon -->
+          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-slate-800" id="widget-humidity">{serverHumidity}</span>
+          <p class="text-[11px] font-medium text-slate-400">Humidity</p>
         </div>
       </div>
 
-      <!-- Animated Weather Icon -->
-      <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-amber-300 shrink-0">
-        <svg class="w-10 h-10 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
+      <!-- Wind Speed Metric Card -->
+      <div class="flex items-center gap-3 p-3.5 bg-slate-50/80 border border-slate-100 rounded-[4px]">
+        <div class="w-9 h-9 bg-teal-100/70 text-teal-600 flex items-center justify-center shrink-0 rounded-[4px]">
+          <!-- Wind Icon -->
+          <svg class="w-5 h-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-slate-800" id="widget-wind">{serverWind}</span>
+          <p class="text-[11px] font-medium text-slate-400">Wind speed</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Hourly Forecast Timeline Cards (Matching reference image) -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Hourly Forecast</span>
+        <span class="text-[11px] font-semibold text-slate-400">Next 6 Hours</span>
+      </div>
+
+      <div id="widget-hourly-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+        {serverHourly.map((item) => (
+          <div class="flex flex-col items-center justify-center p-2.5 bg-slate-50 border border-slate-150/80 hover:border-blue-300 hover:bg-blue-50/40 transition-colors text-center rounded-[4px]">
+            <span class="text-[11px] font-semibold text-slate-500 mb-1">{item.time}</span>
+            <div class="my-1 text-blue-500">
+              {item.code === 0 || item.code === 1 ? (
+                <svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : item.code >= 51 ? (
+                <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              ) : (
+                <svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
+                </svg>
+              )}
+            </div>
+            <span class="text-sm font-bold text-slate-800">{item.temp}</span>
+          </div>
+        ))}
       </div>
     </div>
 
-    <!-- Secondary Metrics Row -->
-    <div class="grid grid-cols-3 gap-2 py-3 px-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center mb-6">
-      <div>
-        <div class="text-[10px] uppercase font-bold text-blue-200 tracking-wider">Humidity</div>
-        <div id="widget-humidity" class="text-sm sm:text-base font-bold text-white mt-0.5">{humidity}</div>
-      </div>
-      <div class="border-x border-white/15">
-        <div class="text-[10px] uppercase font-bold text-blue-200 tracking-wider">Wind</div>
-        <div id="widget-wind" class="text-sm sm:text-base font-bold text-white mt-0.5">{wind}</div>
-      </div>
-      <div>
-        <div class="text-[10px] uppercase font-bold text-blue-200 tracking-wider">Feels Like</div>
-        <div id="widget-feelslike" class="text-sm sm:text-base font-bold text-white mt-0.5">{feelsLike}</div>
-      </div>
-    </div>
   </div>
 
-  <!-- Detailed Forecast Footer Link -->
-  <div class="pt-4 border-t border-white/15 text-center">
-    <a
-      href="/disaster"
-      class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-100 hover:text-white transition-colors group/link"
-    >
-      <span>Click to view detailed forecast</span>
-      <svg class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+  <!-- Footer Data Citation & Disaster Link -->
+  <div class="px-6 py-3.5 bg-slate-50/70 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+    <div class="flex items-center gap-1 text-[11px]">
+      <span>Data source:</span>
+      <a
+        href="https://open-meteo.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-semibold text-slate-700 hover:text-blue-600 underline transition-colors"
+      >
+        Open-Meteo Weather API
+      </a>
+      <span class="text-slate-400 font-mono">(WMO forecast models)</span>
+    </div>
+    <a href="/contact/disaster" class="font-bold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 transition-colors">
+      <span>Disaster Hotline</span>
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
     </a>
   </div>
 </div>
+
+<script>
+  function initWeatherWidget() {
+    let currentLat = 6.9214;
+    let currentLon = 122.0790;
+    let currentLocationName = "Zamboanga City, Philippines";
+
+    async function fetchLiveWeather(lat: number, lon: number, locationName?: string) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&timezone=Asia%2FManila`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (data && data.current) {
+          const tempEl = document.getElementById('widget-temp');
+          const condEl = document.getElementById('widget-condition');
+          const humEl = document.getElementById('widget-humidity');
+          const windEl = document.getElementById('widget-wind');
+          const locEl = document.getElementById('widget-location-name');
+
+          if (tempEl) tempEl.textContent = `${Math.round(data.current.temperature_2m)}°C`;
+          if (humEl) humEl.textContent = `${data.current.relative_humidity_2m}%`;
+          if (windEl) windEl.textContent = `${Math.round(data.current.wind_speed_10m)} km/h`;
+          if (locEl && locationName) locEl.textContent = locationName;
+
+          const code = data.current.weather_code ?? 0;
+          let condText = 'Fair';
+          if (code === 0 || code === 1) condText = 'Sunny / Clear';
+          else if (code === 2) condText = 'Partly cloudy';
+          else if (code === 3) condText = 'Overcast';
+          else if (code >= 51 && code <= 65) condText = 'Light Rain';
+          else if (code >= 80 && code <= 82) condText = 'Rain Showers';
+          else if (code >= 95) condText = 'Thunderstorm';
+
+          if (condEl) condEl.textContent = condText;
+        }
+
+        if (data && data.hourly && data.hourly.time && data.hourly.temperature_2m) {
+          const container = document.getElementById('widget-hourly-container');
+          if (!container) return;
+
+          const nowHour = new Date().getHours();
+          const items: string[] = [];
+
+          for (let i = 0; i < data.hourly.time.length; i++) {
+            const itemDate = new Date(data.hourly.time[i]);
+            if (itemDate.getHours() >= nowHour && items.length < 6) {
+              const hourNum = itemDate.getHours();
+              const ampm = hourNum >= 12 ? 'PM' : 'AM';
+              const displayHour = (hourNum % 12 === 0 ? 12 : hourNum % 12) + ' ' + ampm;
+              const temp = `${Math.round(data.hourly.temperature_2m[i])}°`;
+              const code = data.hourly.weather_code[i] ?? 0;
+
+              let iconSvg = `<svg class="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`;
+              if (code >= 51) {
+                iconSvg = `<svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`;
+              } else if (code === 2 || code === 3) {
+                iconSvg = `<svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" /></svg>`;
+              }
+
+              items.push(`
+                <div class="flex flex-col items-center justify-center p-2.5 bg-slate-50 border border-slate-150/80 hover:border-blue-300 hover:bg-blue-50/40 transition-colors text-center rounded-[4px]">
+                  <span class="text-[11px] font-semibold text-slate-500 mb-1">${displayHour}</span>
+                  <div class="my-1">${iconSvg}</div>
+                  <span class="text-sm font-bold text-slate-800">${temp}</span>
+                </div>
+              `);
+            }
+          }
+
+          if (items.length > 0) {
+            container.innerHTML = items.join('');
+          }
+        }
+      } catch (err) {
+        console.warn('WeatherWidget live fetch notice:', err);
+      }
+    }
+
+    // Initial client fetch
+    fetchLiveWeather(currentLat, currentLon, currentLocationName);
+
+    // Listen to custom location change event from section header dropdown/tabs
+    window.addEventListener('zambo-location-change', (e: any) => {
+      if (e.detail) {
+        const { lat, lon, name } = e.detail;
+        currentLat = lat;
+        currentLon = lon;
+        currentLocationName = name;
+        fetchLiveWeather(lat, lon, name);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initWeatherWidget);
+  if (document.readyState !== 'loading') {
+    initWeatherWidget();
+  }
+</script>

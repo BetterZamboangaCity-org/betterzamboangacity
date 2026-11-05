@@ -23,3 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+supabase/
+
+scratch/
+
+scripts/

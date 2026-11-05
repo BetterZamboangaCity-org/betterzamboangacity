@@ -24,7 +24,7 @@ const columns: FooterColumn[] = [
     title: 'Services',
     links: [
       { label: 'All Services', href: '/services' },
-      { label: 'Disaster Preparedness', href: '/disaster' },
+      { label: 'Disaster Preparedness', href: '/contact/disaster' },
       { label: 'Business and Trade', href: '/services?category=Business%2C+Trade+and+Investment' },
       { label: 'Certificates and Vital Records', href: '/services?category=Certificates+and+Vital+Records' },
       { label: 'Health', href: '/services?category=Health+and+Wellness' },
@@ -62,7 +62,7 @@ const columns: FooterColumn[] = [
     <div class="flex-1 bg-[#fde047]" title="Golden Sand"></div>
   </div>
 
-  <div class="container mx-auto px-4 py-12 md:py-16">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full py-12 md:py-16">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 md:gap-10">
       
       <!-- Brand & Zamboanga Emblem Column (Spans 2 columns) -->
@@ -84,8 +84,8 @@ const columns: FooterColumn[] = [
         </p>
 
         <!-- Chavacano Badge / Zamboanga Pride Banner -->
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-slate-300 font-medium mb-6">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 text-[11px] text-slate-300 font-medium mb-6">
+          <span class="w-2 h-2 bg-emerald-500"></span>
           <span>Bienvenidos! · Orgullo de Zamboanga</span>
         </div>
         
@@ -93,7 +93,7 @@ const columns: FooterColumn[] = [
         <div class="flex items-center gap-3">
           <a
             href="https://www.facebook.com/BetterZamboangaCity"
-            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-9 h-9 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Visit Better Zamboanga Facebook Page"
@@ -104,7 +104,7 @@ const columns: FooterColumn[] = [
           </a>
           <a
             href="https://github.com/BetterZamboanga"
-            class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 hover:border-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-9 h-9 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 hover:border-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Visit Better Zamboanga GitHub Repository"

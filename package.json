@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "filter-officials": "node scripts/filter-city-officials.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.8",
@@ -21,6 +22,12 @@
     "@types/react-dom": "^19.2.4",
     "@vercel/analytics": "^2.0.1",
     "astro": "^7.2.4",
+    "playwright": "^1.63.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer": "^25.11.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "puppeteer-real-browser": "^1.4.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3"

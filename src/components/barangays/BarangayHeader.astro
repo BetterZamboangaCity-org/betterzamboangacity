@@ -56,65 +56,118 @@
       <p class="text-slate-700 text-sm leading-relaxed font-medium">
         Zamboanga City is politically divided into <strong class="text-slate-900 font-bold">98 Barangays</strong> across two Legislative Congressional Districts. District 1 encompasses 38 barangays in the West Coast and Poblacion, while District 2 covers 60 barangays along the East Coast and offshore islands.
       </p>
-
-      <!-- SIDE-BY-SIDE DISTRICT CARDS -->
+      <!-- SIDE-BY-SIDE DISTRICT CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
         
         <!-- District 1 Side Card (West Coast & Poblacion) -->
-        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between p-6">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center font-black text-sm shrink-0 border border-amber-200">
-                D1
-              </div>
-              <span class="px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-900 text-xs font-extrabold tracking-wider uppercase border border-amber-200">
+        <div class="group bg-gradient-to-br from-amber-50/60 via-white to-slate-50/50 border border-amber-200/90 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-amber-300 transition-all duration-300 flex flex-col justify-between">
+          <!-- Top Colored Ribbon -->
+          <div class="h-1.5 w-full bg-gradient-to-r from-amber-500 to-yellow-400"></div>
+
+          <div class="p-6 space-y-4">
+            <!-- Header Row -->
+            <div class="flex items-center justify-between gap-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/90 text-amber-900 text-xs font-black uppercase tracking-wider border border-amber-300/80 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                1st Legislative District
+              </span>
+
+              <span class="text-xs font-extrabold text-amber-900 bg-amber-200/60 px-3 py-1 rounded-lg border border-amber-300/60">
                 38 Barangays
               </span>
             </div>
 
-            <div class="space-y-1">
-              <h3 class="text-xl font-black text-slate-900 tracking-tight">
-                District 1 (West Coast &amp; Poblacion)
+            <!-- Title & Overview -->
+            <div class="space-y-1.5">
+              <h3 class="text-xl font-black text-slate-900 tracking-tight group-hover:text-amber-900 transition-colors">
+                West Coast &amp; Poblacion
               </h3>
-              <p class="text-xs text-amber-800 font-extrabold uppercase tracking-wider">
-                West Coast &amp; Central Urban Core
+              <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                Encompasses central commercial Poblacion zones (Zones I–IV) alongside western coastal and agricultural communities extending from Ayala to Labuan and Limpapa.
               </p>
             </div>
 
-            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-              Covers central commercial Poblacion zones (Zone I-IV) as well as western coastal and mountain barangays stretching from Ayala to Labuan and Limpapa.
-            </p>
+            <!-- Key Barangays & Zones Chips -->
+            <div class="pt-1 space-y-2">
+              <span class="block text-[10px] font-black uppercase tracking-widest text-slate-400">Key Subdivisions &amp; Hubs</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 bg-white border border-amber-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Poblacion (Zones I–IV)
+                </span>
+                <span class="px-2.5 py-1 bg-white border border-amber-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Ayala &amp; San Rocco
+                </span>
+                <span class="px-2.5 py-1 bg-white border border-amber-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Labuan &amp; Limpapa
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Bottom Stats Bar -->
+          <div class="px-6 py-3 bg-amber-50/80 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-amber-900">
+            <span class="text-slate-500 font-semibold">Jurisdiction Share</span>
+            <span class="text-amber-800 font-black">38.8% (38 of 98 Barangays)</span>
           </div>
         </div>
 
         <!-- District 2 Side Card (East Coast & Islands) -->
-        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between p-6">
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="w-10 h-10 rounded-xl bg-blue-100 text-[#0032A0] flex items-center justify-center font-black text-sm shrink-0 border border-blue-200">
-                D2
-              </div>
-              <span class="px-3.5 py-1.5 rounded-full bg-blue-50 text-[#0032A0] text-xs font-extrabold tracking-wider uppercase border border-blue-200">
+        <div class="group bg-gradient-to-br from-blue-50/60 via-white to-slate-50/50 border border-blue-200/90 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-blue-300 transition-all duration-300 flex flex-col justify-between">
+          <!-- Top Colored Ribbon -->
+          <div class="h-1.5 w-full bg-gradient-to-r from-[#0032A0] to-blue-500"></div>
+
+          <div class="p-6 space-y-4">
+            <!-- Header Row -->
+            <div class="flex items-center justify-between gap-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/90 text-[#0032A0] text-xs font-black uppercase tracking-wider border border-blue-300/80 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-[#0032A0]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 002 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V11.4" />
+                </svg>
+                2nd Legislative District
+              </span>
+
+              <span class="text-xs font-extrabold text-[#0032A0] bg-blue-200/60 px-3 py-1 rounded-lg border border-blue-300/60">
                 60 Barangays
               </span>
             </div>
 
-            <div class="space-y-1">
-              <h3 class="text-xl font-black text-slate-900 tracking-tight">
-                District 2 (East Coast &amp; Islands)
+            <!-- Title & Overview -->
+            <div class="space-y-1.5">
+              <h3 class="text-xl font-black text-slate-900 tracking-tight group-hover:text-[#0032A0] transition-colors">
+                East Coast &amp; Islands
               </h3>
-              <p class="text-xs text-[#0032A0] font-extrabold uppercase tracking-wider">
-                East Coast, Rural Highway &amp; Islands
+              <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                Covers eastern commercial hubs, rural highway corridors stretching to Curuan and Vitali, plus offshore island barangays including Sacol, Sta. Cruz, and Manalipa.
               </p>
             </div>
 
-            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-              Covers eastern urban hubs, major highway barangays extending to Curuan and Vitali, plus offshore islands including Sacol, Sta. Cruz, and Manalipa.
-            </p>
+            <!-- Key Barangays & Zones Chips -->
+            <div class="pt-1 space-y-2">
+              <span class="block text-[10px] font-black uppercase tracking-widest text-slate-400">Key Subdivisions &amp; Hubs</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 bg-white border border-blue-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Tetuan &amp; Talon-Talon
+                </span>
+                <span class="px-2.5 py-1 bg-white border border-blue-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Curuan &amp; Vitali Highway
+                </span>
+                <span class="px-2.5 py-1 bg-white border border-blue-200 rounded-lg text-[11px] font-bold text-slate-700 shadow-2xs">
+                  Sacol &amp; Manalipa Islands
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Bottom Stats Bar -->
+          <div class="px-6 py-3 bg-blue-50/80 border-t border-blue-100 flex items-center justify-between text-xs font-bold text-[#0032A0]">
+            <span class="text-slate-500 font-semibold">Jurisdiction Share</span>
+            <span class="text-[#0032A0] font-black">61.2% (60 of 98 Barangays)</span>
           </div>
         </div>
 
-      </div>
+      </div>iv>
     </div>
   </div>
 </div>

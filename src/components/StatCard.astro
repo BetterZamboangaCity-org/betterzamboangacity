@@ -1,10 +1,13 @@
 ---
 interface Props {
   label: string;
-  value: string;
+  value: string | number;
   subtext: string;
-  icon?: 'population' | 'land' | 'wonders' | 'barangays' | string;
+  icon?: 'population' | 'land' | 'wonders' | 'barangays' | 'ordinances' | 'flood' | string;
+  href?: string;
   externalLink?: boolean;
+  badge?: string;
+  color?: 'blue' | 'emerald' | 'amber' | 'purple' | 'red' | string;
 }
 
 const {
@@ -12,15 +15,71 @@ const {
   value,
   subtext,
   icon = "population",
+  href,
   externalLink = false,
+  badge,
+  color = "blue",
 } = Astro.props;
+
+const Element = href ? 'a' : 'div';
+
+// Color themes mapping matching index.astro section cards (ServiceCard & HotlineCard)
+const themeClasses: Record<string, { bg: string; badge: string; hover: string; textHover: string }> = {
+  blue: {
+    bg: 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600',
+    badge: 'bg-blue-50 text-blue-800 border-blue-200/80',
+    hover: 'hover:border-blue-300 hover:shadow-md',
+    textHover: 'group-hover:text-blue-600',
+  },
+  emerald: {
+    bg: 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600',
+    badge: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+    hover: 'hover:border-emerald-300 hover:shadow-md',
+    textHover: 'group-hover:text-emerald-600',
+  },
+  amber: {
+    bg: 'bg-amber-50 text-amber-600 border-amber-100 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600',
+    badge: 'bg-amber-50 text-amber-900 border-amber-200/80',
+    hover: 'hover:border-amber-300 hover:shadow-md',
+    textHover: 'group-hover:text-amber-600',
+  },
+  purple: {
+    bg: 'bg-purple-50 text-purple-600 border-purple-100 group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600',
+    badge: 'bg-purple-50 text-purple-800 border-purple-200/80',
+    hover: 'hover:border-purple-300 hover:shadow-md',
+    textHover: 'group-hover:text-purple-600',
+  },
+  red: {
+    bg: 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600',
+    badge: 'bg-red-50 text-red-800 border-red-200/80',
+    hover: 'hover:border-red-300 hover:shadow-md',
+    textHover: 'group-hover:text-red-600',
+  },
+};
+
+const iconToColorMap: Record<string, string> = {
+  population: 'blue',
+  land: 'emerald',
+  barangays: 'amber',
+  ordinances: 'purple',
+  flood: 'red',
+  wonders: 'amber',
+};
+
+const selectedColor = color || iconToColorMap[icon] || 'blue';
+const currentTheme = themeClasses[selectedColor] || themeClasses.blue;
 ---
 
-<div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between group h-full relative">
+<Element
+  href={href}
+  target={externalLink ? "_blank" : undefined}
+  rel={externalLink ? "noopener noreferrer" : undefined}
+  class={`bg-white p-5 sm:p-6 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group h-full relative text-left rounded-[4px] ${currentTheme.hover}`}
+>
   <div>
-    <!-- Top Row: Icon Badge & Optional External Arrow -->
-    <div class="flex items-center justify-between mb-4">
-      <div class="w-11 h-11 rounded-2xl bg-blue-50/80 text-blue-600 border border-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+    <!-- Top Row: Icon Badge & Badge / External Link -->
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <div class={`w-10 h-10 flex items-center justify-center border transition-colors shrink-0 rounded-[4px] ${currentTheme.bg}`}>
         {icon === 'population' && (
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -33,41 +92,78 @@ const {
           </svg>
         )}
 
+        {icon === 'barangays' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        )}
+
+        {icon === 'ordinances' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        )}
+
+        {icon === 'flood' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+        )}
+
         {icon === 'wonders' && (
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
           </svg>
         )}
 
-        {icon === 'barangays' && (
+        {!['population', 'land', 'barangays', 'ordinances', 'flood', 'wonders'].includes(icon) && (
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         )}
       </div>
 
-      {externalLink && (
-        <span class="text-slate-300 group-hover:text-blue-600 transition-colors">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </span>
-      )}
+      <div class="flex items-center gap-1.5">
+        {badge && (
+          <span class={`px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider border rounded-[2px] ${currentTheme.badge}`}>
+            {badge}
+          </span>
+        )}
+
+        {externalLink && (
+          <span class={`text-slate-400 ${currentTheme.textHover} transition-colors shrink-0`} title="Opens external source page">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </span>
+        )}
+      </div>
     </div>
 
-    <!-- Label -->
-    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+    <!-- Category Label -->
+    <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
       {label}
     </div>
 
-    <!-- Value -->
-    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2 group-hover:text-blue-600 transition-colors">
+    <!-- Main Value -->
+    <div class={`text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2 ${currentTheme.textHover} transition-colors`}>
       {value}
     </div>
   </div>
 
-  <!-- Subtext -->
-  <div class="text-xs text-slate-500 font-medium pt-2 border-t border-slate-50">
-    {subtext}
+  <!-- Subtext Footer -->
+  <div class="text-xs text-slate-500 font-medium pt-3 border-t border-slate-100 flex items-center justify-between">
+    <span>{subtext}</span>
+    {href && (
+      <svg class={`w-3.5 h-3.5 text-slate-400 ${currentTheme.textHover} group-hover:translate-x-0.5 transition-all shrink-0 ml-1`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        {externalLink ? (
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        ) : (
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        )}
+      </svg>
+    )}
   </div>
-</div>
+</Element>
+
+

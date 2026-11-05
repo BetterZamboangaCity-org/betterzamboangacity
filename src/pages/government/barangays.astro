@@ -5,12 +5,13 @@ import Layout from '../../layouts/Layout.astro';
 import BarangayHeader from '../../components/barangays/BarangayHeader.astro';
 import BarangayExplorer from '../../components/barangays/BarangayExplorer';
 import BarangayDetails from '../../components/barangays/barangay-details.astro';
-import { allBarangays, getBarangayBySlug } from '../../data/barangay-data';
+import { fetchBarangays } from '../../lib/supabase';
 
+const { data: allBarangays } = await fetchBarangays();
 
 // Check if viewing a specific barangay detail
 const slug = Astro.url.searchParams.get('slug');
-const barangay = slug ? (getBarangayBySlug(slug) || allBarangays[0]) : null;
+const barangay = slug ? (allBarangays.find((b) => b.slug === slug) || allBarangays[0] || null) : null;
 
 const title = barangay
   ? `Barangay ${barangay.name} Official Portal - Zamboanga City`
@@ -18,16 +19,16 @@ const title = barangay
 ---
 
 <Layout title={title} mainClass="grow bg-slate-50 font-sans pb-16">
-  <main class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
     {barangay ? (
       <BarangayDetails barangay={barangay} />
     ) : (
       <Fragment>
         <BarangayHeader />
-        <BarangayExplorer client:load />
+        <BarangayExplorer initialBarangays={allBarangays} client:load />
         
         <!-- Data Sources Credits -->
-        <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-medium text-slate-500 bg-white/50 p-6 rounded-2xl shadow-xs">
+        <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-medium text-slate-500 bg-white/50 p-6 border border-slate-200 shadow-xs">
           <div class="space-y-2">
             <div class="flex items-center gap-2 text-slate-700">
               <svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,7 +43,7 @@ const title = barangay
               <span><strong>Demographic Data:</strong> Sourced from the Philippine Statistics Authority (PSA) 2024 POPCEN.</span>
             </div>
           </div>
-          <div class="shrink-0 text-slate-500 font-bold bg-slate-100 px-4 py-2 rounded-xl border border-slate-200 flex items-center gap-2">
+          <div class="shrink-0 text-slate-500 font-bold bg-slate-100 px-4 py-2 border border-slate-200 flex items-center gap-2">
             <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>

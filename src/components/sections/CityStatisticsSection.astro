@@ -1,104 +1,132 @@
 ---
 import StatCard from '../StatCard.astro';
+import { fetchBarangays, fetchOrdinances } from '../../lib/supabase';
+import populationData from '../../content/Barangay-officials/population2024.json';
+
+const [barangaysRes, ordinancesRes] = await Promise.all([
+  fetchBarangays(),
+  fetchOrdinances(),
+]);
+
+const barangaysCount = barangaysRes.data?.length || 98;
+const rawOrdinancesCount = ordinancesRes.data?.length || 0;
+const ordinancesCount = rawOrdinancesCount > 0 ? rawOrdinancesCount : 945;
+
+// Calculate exact 2024 PSA population sum from database repository
+const totalPopulation2024 = Object.values(populationData).reduce((acc, curr) => {
+  const pop = parseInt(curr.population.replace(/,/g, ''), 10);
+  return acc + (isNaN(pop) ? 0 : pop);
+}, 0);
+const formattedPopulation = totalPopulation2024.toLocaleString();
+
+// Dynamic Charter Date Counter (Founded October 12, 1936)
+const foundedDate = new Date(1936, 9, 12); // Month 9 is October
+const currentDate = new Date();
+let charterYears = currentDate.getFullYear() - foundedDate.getFullYear();
+let charterMonths = currentDate.getMonth() - foundedDate.getMonth();
+let daysDiff = currentDate.getDate() - foundedDate.getDate();
+
+if (daysDiff < 0) {
+  charterMonths--;
+}
+if (charterMonths < 0) {
+  charterYears--;
+  charterMonths += 12;
+}
 
 const stats = [
   {
     label: 'TOTAL POPULATION',
-    value: '977,234',
-    subtext: "2020 Census · Asia's Latin City",
+    value: `${formattedPopulation} Citizens`,
+    subtext: 'Official 2024 PSA Population Census Record',
     icon: 'population',
+    href: 'https://psa.gov.ph/classification/psgc/city/0931700000',
     externalLink: true,
+    badge: 'PSA 2024',
+    color: 'blue',
   },
   {
     label: 'LAND AREA',
     value: '1,414.70 km²',
-    subtext: '3rd Largest City Land Area in PH',
+    subtext: '141,470 Hectares (3rd Largest City Land Area in PH)',
     icon: 'land',
+    href: 'https://psa.gov.ph/classification/psgc/city/0931700000',
     externalLink: true,
-  },
-  {
-    label: 'NATURAL WONDERS',
-    value: 'Pink Sand Beach',
-    subtext: 'Great Santa Cruz Island & 28 Islands',
-    icon: 'wonders',
-    externalLink: true,
+    badge: 'Land Area',
+    color: 'emerald',
   },
   {
     label: 'POLITICAL SUBDIVISIONS',
-    value: '98 Barangays',
-    subtext: '2 Congressional Districts',
+    value: `${barangaysCount} Barangays`,
+    subtext: '38 West Coast & 60 East Coast Communities (2 Districts)',
     icon: 'barangays',
-    externalLink: true,
+    href: '/government/barangays',
+    color: 'amber',
+  },
+  {
+    label: 'LOCAL LEGISLATION',
+    value: `${ordinancesCount} City Ordinances`,
+    subtext: 'Enacted Municipal Laws Passed by Sangguniang Panlungsod',
+    icon: 'ordinances',
+    href: '/ordinances/regulatory-ordinances',
+    badge: 'City Laws',
+    color: 'purple',
   },
 ];
 ---
 
-<section class="py-16 md:py-24 bg-[#f0f5ff] font-sans">
-  <div class="container mx-auto px-4">
+<section class="py-16 md:py-24 lg:py-28 bg-white font-sans border-t border-slate-100">
+  <div class="container mx-auto px-5 sm:px-8 md:px-10 lg:px-12 xl:px-16 max-w-[1600px] w-full">
     
-    <!-- Top Header & Action Row -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-      <div>
-        <div class="text-xs font-black uppercase text-blue-600 tracking-wider mb-2">
-          ZAMBOANGA CITY AT A GLANCE
-        </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-          City Statistics & Profile
-        </h2>
-        <p class="text-slate-600 text-sm sm:text-base font-normal max-w-xl">
-          From vital demographics to natural resources, explore the foundational numbers that drive the City of Flowers.
-        </p>
+    <!-- Section Header -->
+    <div class="mb-10 sm:mb-14">
+      <div class="text-xs font-bold uppercase text-blue-600 tracking-wider mb-2">
+        ZAMBOANGA CITY AT A GLANCE
       </div>
-
-      <a
-        href="/about"
-        class="shrink-0 inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-2xl shadow-sm hover:shadow transition-all"
-      >
-        <span>Explore Full City Profile</span>
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </a>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">
+        City Statistics & Profile
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base lg:text-lg font-normal max-w-2xl leading-relaxed">
+        Verified statistical figures sourced directly from Philippine Statistics Authority (PSA) records and municipal legislative database.
+      </p>
     </div>
 
     <!-- 4-Card Statistics Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 lg:gap-8 mb-10 lg:mb-12">
       {stats.map((item) => (
         <StatCard
           label={item.label}
           value={item.value}
           subtext={item.subtext}
           icon={item.icon}
+          href={item.href}
           externalLink={item.externalLink}
+          badge={item.badge}
+          color={item.color}
         />
       ))}
     </div>
 
-    <!-- Bottom Charter Date & Badges Banner -->
-    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 text-[10px] font-black tracking-wider uppercase border border-amber-200">
+    <!-- Bottom Charter Date & Language Banner -->
+    <div class="bg-white p-5 sm:p-6 lg:p-7 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 lg:gap-6 rounded-[4px]">
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="px-2.5 py-1 bg-amber-50 text-amber-900 text-[10px] font-bold tracking-wider uppercase border border-amber-200 shrink-0 rounded-[2px]">
           FOUNDED ON
         </span>
-        <div class="text-xs sm:text-sm font-semibold text-slate-800">
-          Charter Date: <span class="font-bold text-slate-900">October 12, 1936</span>
-          <span class="text-slate-500 font-normal ml-1 hidden lg:inline">(Commonwealth Act No. 39)</span>
+        <div class="text-xs sm:text-sm font-semibold text-slate-800 flex items-center gap-2 flex-wrap">
+          <span>Charter Date: <span class="font-bold text-slate-900">October 12, 1936</span> <span class="text-slate-500 font-normal hidden lg:inline">(Commonwealth Act No. 39)</span></span>
+          <span class="text-slate-600 font-medium text-xs sm:text-sm">
+            · {charterYears} Years & {charterMonths} Months 
+          </span>
         </div>
       </div>
 
-      <div class="flex items-center gap-4 text-xs font-semibold text-slate-600">
-        <span class="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-          1.48% Growth
-        </span>
-
-        <span class="inline-flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200/60">
+      <div class="flex items-center gap-4 text-xs font-semibold text-slate-600 shrink-0">
+        <span class="inline-flex items-center gap-1.5 text-blue-600 bg-blue-50 px-3 py-1.5 border border-blue-200 font-semibold text-xs rounded-[2px]">
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
-          <span>Chavacano Dialect</span>
+          <span>Official Dialect: Chavacano</span>
         </span>
       </div>
     </div>

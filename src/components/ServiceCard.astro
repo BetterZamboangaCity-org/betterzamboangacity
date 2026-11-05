@@ -5,89 +5,120 @@ interface Props {
   href?: string;
   icon?: 'animal' | 'business' | 'records' | 'disaster' | string;
   color?: 'emerald' | 'blue' | 'amber' | 'red' | string;
+  features?: string[];
+  badge?: string;
 }
 
 const {
   title,
   description,
-  href = "/services",
+  href = "#",
   icon = "business",
-  color = "blue"
+  color = "blue",
+  features = [],
+  badge,
 } = Astro.props;
 
 // Color themes mapping
 const themeClasses = {
   emerald: {
-    bg: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-    hover: 'group-hover:border-emerald-200 hover:shadow-emerald-500/5',
+    bg: 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600',
+    badge: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+    hover: 'hover:border-emerald-300 hover:shadow-emerald-500/5',
+    link: 'text-emerald-600 hover:text-emerald-700',
   },
   blue: {
-    bg: 'bg-blue-50 text-blue-600 border-blue-100',
-    hover: 'group-hover:border-blue-200 hover:shadow-blue-500/5',
+    bg: 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600',
+    badge: 'bg-blue-50 text-blue-800 border-blue-200/80',
+    hover: 'hover:border-blue-300 hover:shadow-blue-500/5',
+    link: 'text-blue-600 hover:text-blue-700',
   },
   amber: {
-    bg: 'bg-amber-50 text-amber-600 border-amber-100',
-    hover: 'group-hover:border-amber-200 hover:shadow-amber-500/5',
+    bg: 'bg-amber-50 text-amber-600 border-amber-100 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600',
+    badge: 'bg-amber-50 text-amber-900 border-amber-200/80',
+    hover: 'hover:border-amber-300 hover:shadow-amber-500/5',
+    link: 'text-amber-600 hover:text-amber-700',
   },
   red: {
-    bg: 'bg-red-50 text-red-600 border-red-100',
-    hover: 'group-hover:border-red-200 hover:shadow-red-500/5',
+    bg: 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600',
+    badge: 'bg-red-50 text-red-800 border-red-200/80',
+    hover: 'hover:border-red-300 hover:shadow-red-500/5',
+    link: 'text-red-600 hover:text-red-700',
   },
 };
 
 const currentTheme = themeClasses[color as keyof typeof themeClasses] || themeClasses.blue;
 ---
 
-<div class={`bg-white border border-slate-100 shadow-xs hover:shadow-md transition-all duration-300 rounded-3xl p-6 sm:p-7 flex flex-col justify-between group h-full relative ${currentTheme.hover}`}>
+<a
+  href={href}
+  class={`bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-200 p-5 sm:p-6 flex flex-col justify-between group h-full relative rounded-[4px] ${currentTheme.hover}`}
+>
   <div>
-    <!-- Icon Container -->
-    <div class={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 border ${currentTheme.bg} group-hover:scale-110 transition-transform duration-300`}>
-      {icon === 'animal' && (
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )}
+    <!-- Top Row: Icon Container & Optional Office Badge -->
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <div class={`w-10 h-10 flex items-center justify-center border transition-colors duration-200 shrink-0 rounded-[4px] ${currentTheme.bg}`}>
+        {icon === 'animal' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        )}
 
-      {icon === 'business' && (
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-4V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM10 4h4v3h-4V4z" />
-        </svg>
-      )}
+        {icon === 'business' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-4V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM10 4h4v3h-4V4z" />
+          </svg>
+        )}
 
-      {icon === 'records' && (
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      )}
+        {icon === 'records' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        )}
 
-      {icon === 'disaster' && (
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
+        {icon === 'disaster' && (
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        )}
+      </div>
+
+      {badge && (
+        <span class={`px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider border rounded-[2px] ${currentTheme.badge}`}>
+          {badge}
+        </span>
       )}
     </div>
 
     <!-- Title -->
-    <h3 class="text-lg font-bold text-slate-900 mb-2.5 group-hover:text-blue-600 transition-colors leading-snug">
+    <h3 class="text-base sm:text-lg font-black text-slate-900 mb-2 group-hover:text-blue-600 transition-colors leading-snug">
       {title}
     </h3>
 
     <!-- Description -->
-    <p class="text-slate-600 text-xs sm:text-sm font-normal leading-relaxed mb-6">
+    <p class="text-slate-600 text-xs sm:text-sm font-medium leading-relaxed mb-4">
       {description}
     </p>
+
+    <!-- Service Highlights List -->
+    {features.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        {features.map((feat) => (
+          <span class="inline-flex items-center text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 border border-slate-200 rounded-[2px]">
+            {feat}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 
-  <!-- Action Link -->
-  <div class="pt-2 border-t border-slate-50">
-    <a
-      href={href}
-      class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors group/link"
-    >
-      <span>View More</span>
-      <svg class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-      </svg>
-    </a>
+  <!-- Action Link Footer -->
+  <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+    <span class={`text-xs font-bold transition-colors ${currentTheme.link}`}>
+      Access Service
+    </span>
+    <svg class={`w-4 h-4 transform group-hover:translate-x-1 transition-transform ${currentTheme.link}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+    </svg>
   </div>
-</div>
+</a>

@@ -1,33 +1,48 @@
 ---
 interface Props {
   cityHallAddress?: string;
-  mapUrl?: string;
+  mapEmbedUrl?: string;
 }
 
 const {
-  cityHallAddress = "Zamboanga City Hall, N.S. Valderrosa St, Zamboanga City",
-  mapUrl = "https://www.openstreetmap.org/export/embed.html?bbox=122.0000%2C6.8800%2C122.1500%2C6.9600&layer=mapnik&marker=6.9214%2C122.0790",
+  cityHallAddress = "Zamboanga City Hall, N.S. Valderrosa St, Zamboanga City 7000",
+  mapEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.887021851776!2d122.07620899999999!3d6.904111800000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32506a076cb5b119%3A0x2a95c5fd6a1a19c1!2sZamboanga%20City%20Hall!5e0!3m2!1sen!2sph!4v1789675665149!5m2!1sen!2sph",
 } = Astro.props;
 ---
 
-<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between h-full group hover:shadow-md transition-all">
-  <!-- Widget Top Header Bar -->
-  <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+<div class="bg-white border border-slate-200 shadow-lg shadow-slate-100/60 overflow-hidden flex flex-col justify-between h-full group hover:shadow-xl transition-all duration-300 font-sans relative rounded-[4px]">
+  
+  <!-- Vinta Flag Top Ribbon Stripe -->
+  <div class="flex h-1.5 w-full">
+    <div class="flex-1 bg-[#c084fc]"></div>
+    <div class="flex-1 bg-[#38bdf8]"></div>
+    <div class="flex-1 bg-[#4ade80]"></div>
+    <div class="flex-1 bg-[#475569]"></div>
+    <div class="flex-1 bg-[#fca5a5]"></div>
+    <div class="flex-1 bg-[#fbbf24]"></div>
+  </div>
+
+  <!-- Map Header Bar -->
+  <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 bg-blue-50 border border-blue-200/60 text-blue-600 flex items-center justify-center shrink-0 rounded-[4px]">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       </div>
-      <span class="font-bold text-slate-800 text-sm sm:text-base">City Map</span>
+      <div>
+        <h3 id="map-header-title" class="font-bold text-slate-800 text-sm sm:text-base leading-snug">Zamboanga City Hall Map</h3>
+        <p class="text-[11px] font-medium text-slate-500">Google Maps Live Location</p>
+      </div>
     </div>
 
     <a
-      href="https://maps.google.com/?q=Zamboanga+City"
+      id="map-external-link"
+      href="https://maps.google.com/?q=Zamboanga+City+Hall"
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200/80 px-3 py-1.5 rounded-xl hover:bg-blue-600 hover:text-white transition-colors"
+      class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 hover:bg-blue-600 hover:text-white transition-all rounded-[4px]"
     >
       <span>Open in Maps</span>
       <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,38 +51,73 @@ const {
     </a>
   </div>
 
-  <!-- Map Container (Iframe with responsive height) -->
-  <div class="relative min-h-[220px] sm:min-h-[260px] grow bg-slate-100 w-full overflow-hidden">
+  <!-- Map Canvas Container (Google Maps High Precision Embed) -->
+  <div class="relative min-h-[300px] sm:min-h-[340px] grow bg-slate-100 w-full overflow-hidden">
     <iframe
-      title="Zamboanga City Map"
+      id="zambo-gmap-iframe"
+      title="Zamboanga City Hall Google Map"
       width="100%"
       height="100%"
-      style="border:0; min-height: 240px;"
+      style="border:0; min-height: 300px;"
       loading="lazy"
-      allowfullscreen
-      src={mapUrl}
-      class="w-full h-full"
+      allowfullscreen=""
+      referrerpolicy="strict-origin-when-cross-origin"
+      src={mapEmbedUrl}
+      class="w-full h-full absolute inset-0 transition-opacity duration-300 pointer-events-auto"
     ></iframe>
   </div>
 
-  <!-- Widget Bottom Location Info -->
-  <div class="p-4 sm:p-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 bg-white">
-    <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-      <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-      <svg class="w-3.5 h-3.5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      <span class="text-slate-900 font-bold">{cityHallAddress}</span>
+  <!-- Widget Bottom Location Address Bar (Matching reference image) -->
+  <div class="p-4 sm:p-4.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-white">
+    <div class="flex items-center gap-2 text-xs text-slate-700 font-medium">
+      <!-- Blue Location Pin Icon -->
+      <div class="w-6 h-6 bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 rounded-[4px]">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.683 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <span id="map-address-text" class="text-slate-900 font-bold leading-tight">
+        {cityHallAddress}
+      </span>
     </div>
 
     <a
+      id="map-directions-link"
       href="https://maps.google.com/?q=Zamboanga+City+Hall"
       target="_blank"
       rel="noopener noreferrer"
-      class="text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors"
+      class="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors inline-flex items-center gap-1"
     >
-      View Larger Map →
+      <span>Directions</span>
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
     </a>
   </div>
 </div>
+
+<script>
+  function initMapWidgetListener() {
+    const addressText = document.getElementById('map-address-text');
+    const directionsLink = document.getElementById('map-directions-link') as HTMLAnchorElement;
+    const gmapIframe = document.getElementById('zambo-gmap-iframe') as HTMLIFrameElement;
+    const headerTitle = document.getElementById('map-header-title');
+
+    window.addEventListener('zambo-location-change', (e: any) => {
+      if (e.detail) {
+        const { address, name, lat, lon } = e.detail;
+        if (addressText) addressText.textContent = address || name;
+        if (headerTitle) headerTitle.textContent = `${name} Map`;
+        if (directionsLink) directionsLink.href = `https://maps.google.com/?q=${encodeURIComponent((name || '') + ' ' + (address || 'Zamboanga City'))}`;
+        if (gmapIframe && lat && lon) {
+          gmapIframe.src = `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+        }
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMapWidgetListener);
+  if (document.readyState !== 'loading') {
+    initMapWidgetListener();
+  }
+</script>

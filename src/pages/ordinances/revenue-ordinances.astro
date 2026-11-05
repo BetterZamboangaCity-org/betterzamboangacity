@@ -4,10 +4,10 @@ import OrdinanceExplorer from '../../components/ordinances/OrdinanceExplorer';
 ---
 
 <Layout title="Revenue Ordinances - Zamboanga City Ordinances" mainClass="grow bg-slate-50 font-sans pb-16">
-  <main class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
     <!-- Page Header -->
     <div class="text-center max-w-3xl mx-auto space-y-4">
-      <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-50 text-amber-900 text-xs font-black uppercase tracking-wider border border-amber-200 shadow-xs">
+      <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-50 text-amber-900 text-xs font-black uppercase tracking-wider border border-amber-200 shadow-xs">
         Local Taxes & Revenue Code
       </span>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
@@ -19,6 +19,6 @@ import OrdinanceExplorer from '../../components/ordinances/OrdinanceExplorer';
     </div>
 
     <!-- Directory Table Component -->
-    <OrdinanceExplorer client:load />
+    <OrdinanceExplorer initialCategory="revenue" client:load />
   </main>
 </Layout>

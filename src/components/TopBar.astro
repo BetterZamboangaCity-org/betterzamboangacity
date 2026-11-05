@@ -86,18 +86,11 @@ try {
     <div class="w-[16.66%] h-full bg-[#fde047]"></div>
   </div>
 
-  <div class="container mx-auto px-4 py-2 sm:py-2.5 flex flex-wrap items-center justify-between gap-y-2 gap-x-5 max-w-[1600px]">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex flex-wrap items-center justify-between gap-y-2 gap-x-5 max-w-[1600px]">
     
     <!-- Left Section: Clean City Branding & Live Time (PHT) -->
     <div class="flex items-center gap-3 shrink-0">
       <div class="flex items-center gap-1.5">
-        <span class="flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-[#c084fc]"></span>
-          <span class="w-2 h-2 rounded-full bg-[#38bdf8]"></span>
-          <span class="w-2 h-2 rounded-full bg-[#4ade80]"></span>
-          <span class="w-2 h-2 rounded-full bg-[#fca5a5]"></span>
-          <span class="w-2 h-2 rounded-full bg-[#fde047]"></span>
-        </span>
         <span class="text-xs uppercase tracking-wider text-slate-900 font-extrabold">Zamboanga City</span>
       </div>
 
@@ -138,10 +131,8 @@ try {
 
       <span class="h-4 w-px bg-slate-300"></span>
 
-      <!-- Live Rotating Exchange Rate (Displays 1 rate at a time, rotates every 5s) -->
-      <!-- Live Rotating Exchange Rate (Read-only, no dropdown) -->
+      <!-- Live Rotating Exchange Rate (Read-only, text-only badge) -->
       <div class="flex items-center gap-2 text-slate-800 cursor-default">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
         <div id="topbar-forex-rotator" class="flex items-center gap-1.5 font-mono text-xs sm:text-[13px] transition-opacity duration-300">
           <span id="rate-display" class="font-bold text-slate-900">{initialRates.USD ? `1 USD = ₱ ${initialRates.USD}` : '1 USD = ₱ --'}</span>
         </div>
