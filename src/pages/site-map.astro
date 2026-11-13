@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+const pages = [
+  ['Home', '/'],
+  ['Services', '/services'],
+  ['Emergency contacts', '/contact/disaster'],
+  ['History and culture', '/zamboanga-city/history'],
+  ['City officials', '/zamboanga-city/officials'],
+  ['House of Representatives', '/zamboanga-city/house-of-representatives'],
+  ['Barangay directory', '/government/barangays'],
+  ['Regulatory ordinances', '/ordinances/regulatory-ordinances'],
+  ['Flood control projects', '/zamboanga-city/flood-control'],
+  ['About', '/about'],
+  ['Data sources', '/open-data'],
+];
+---
+<Layout title="Site map | Better Zamboanga City" description="Browse the directories and information pages on Better Zamboanga City.">
+  <section class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-3xl w-full space-y-6">
+    <h1 class="text-3xl sm:text-4xl font-black text-slate-900">Site map</h1>
+    <ul class="space-y-3">
+      {pages.map(([label, href]) => <li><a href={href} class="text-blue-700 underline">{label}</a></li>)}
+    </ul>
+  </section>
+</Layout>
