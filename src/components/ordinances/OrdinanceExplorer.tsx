@@ -325,6 +325,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
             <div className="relative flex-1">
               <input
                 type="text"
+                aria-label="Search ordinances"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search ordinances..."
@@ -333,6 +334,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
+                  aria-label="Clear ordinance search"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -344,6 +346,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
 
             <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
               <select
+                aria-label="Entries per page"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
@@ -393,6 +396,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
           <div className="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
               <select
+                id="ordinance-page-size"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
@@ -405,15 +409,17 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
                 <option value={25}>25</option>
                 <option value={50}>50</option>
               </select>
-              <span>Entries per page</span>
+              <label htmlFor="ordinance-page-size">Entries per page</label>
             </div>
 
             {/* Search Box */}
             <div className="flex items-center gap-2 text-xs font-bold text-slate-600 w-full sm:w-auto">
-              <span className="shrink-0">Search:</span>
+              <label htmlFor="ordinance-search" className="shrink-0">Search:</label>
               <div className="relative flex-1 sm:w-80">
                 <input
                   type="text"
+                  id="ordinance-search"
+                  aria-label="Search ordinances"
                   value={searchQuery}
                   onChange={handleSearchChange}
                   placeholder="Search title, ordinance number..."
@@ -422,6 +428,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
+                    aria-label="Clear ordinance search"
                     className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

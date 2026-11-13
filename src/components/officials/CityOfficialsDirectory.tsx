@@ -254,10 +254,10 @@ export const CityOfficialsDirectory: React.FC<Props> = ({ initialOfficials }) =>
         
         {/* YEAR SELECTION TABS */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+          <div id="election-year-label" className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
             Select Election Year:
-          </label>
-          <div className="flex flex-wrap items-center gap-1.5">
+          </div>
+          <div role="group" aria-labelledby="election-year-label" className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => setSelectedYear('all')}
               className={`px-3 py-1.5 rounded-[2px] text-xs font-bold transition-all ${
@@ -294,6 +294,7 @@ export const CityOfficialsDirectory: React.FC<Props> = ({ initialOfficials }) =>
             </svg>
             <input
               type="text"
+              aria-label="Search city officials"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search official by name or position..."
@@ -302,6 +303,7 @@ export const CityOfficialsDirectory: React.FC<Props> = ({ initialOfficials }) =>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
+                aria-label="Clear city official search"
                 className="absolute right-2.5 top-2.5 text-xs text-slate-400 hover:text-slate-600 font-bold"
               >
                 ✕

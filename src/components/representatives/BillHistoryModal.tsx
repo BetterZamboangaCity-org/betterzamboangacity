@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useId } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import type { Bill } from './types';
 import { getNormalizedPdfUrl } from './types';
 
@@ -8,30 +9,16 @@ interface BillHistoryModalProps {
 }
 
 export const BillHistoryModal: React.FC<BillHistoryModalProps> = ({ bill, onClose }) => {
+  const dialogRef = useModalDialog(Boolean(bill));
+  const titleId = useId();
   if (!bill) return null;
 
-  // Lock body scroll when history modal is open
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
-
-  // ESC key listener for modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
   return (
-    <div
-      className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fade-in"
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={titleId}
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      className="fixed inset-0 m-0 h-dvh w-full max-h-none max-w-none border-0 bg-transparent p-3 sm:p-4 open:flex items-center justify-center overflow-y-auto backdrop:bg-slate-900/40 backdrop:backdrop-blur-xs animate-fade-in"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -52,14 +39,15 @@ export const BillHistoryModal: React.FC<BillHistoryModalProps> = ({ bill, onClos
             <span className="text-xs font-mono font-bold text-blue-700 block mb-0.5 uppercase tracking-wider">
               HOUSE BILL HISTORY · {bill.billNo}
             </span>
-            <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight line-clamp-2">
+            <h3 id={titleId} className="text-base sm:text-lg font-black text-slate-900 leading-tight line-clamp-2">
               {bill.fullTitle}
             </h3>
           </div>
           <button
             type="button"
+            autoFocus
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 p-1.5 rounded-[2px] focus:outline-none transition-colors shrink-0"
+            className="text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 p-1.5 rounded-[2px] focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors shrink-0"
             aria-label="Close modal"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,6 +152,6 @@ export const BillHistoryModal: React.FC<BillHistoryModalProps> = ({ bill, onClos
           </button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };
