@@ -262,13 +262,16 @@ export async function fetchFloodControlProjects(): Promise<{ data: FloodControlP
 // ----------------------------------------------------------------------------
 // 4. EMERGENCY FACILITIES FETCH
 // ----------------------------------------------------------------------------
-export async function fetchEmergencyFacilities(): Promise<{ data: EmergencyFacility[]; isMock: boolean }> {
+export async function fetchEmergencyFacilities(signal?: AbortSignal): Promise<{ data: EmergencyFacility[]; isMock: boolean }> {
   if (supabase) {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('emergency_facilities')
         .select('*')
         .order('name', { ascending: true });
+      if (signal) query = query.abortSignal(signal);
+      const { data, error } = await query;
+      signal?.throwIfAborted();
 
       if (!error && data && data.length > 0) {
         const mapped: EmergencyFacility[] = data.map((f: any) => ({
@@ -285,10 +288,12 @@ export async function fetchEmergencyFacilities(): Promise<{ data: EmergencyFacil
         return { data: mapped, isMock: false };
       }
     } catch (err) {
+      if (signal?.aborted) throw err;
       console.error("Supabase emergency facilities fetch error:", err);
     }
   }
 
+  signal?.throwIfAborted();
   return { data: emergencyFacilities, isMock: true };
 }
 

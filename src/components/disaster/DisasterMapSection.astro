@@ -87,11 +87,11 @@
       <div class="lg:col-span-4 bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200 p-3.5 flex flex-col justify-between max-h-[460px] overflow-hidden">
         <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between">
           <span>Facility Directory</span>
-          <span id="user-geo-status" class="text-[10px] text-emerald-700 font-mono font-semibold"></span>
+          <span id="user-geo-status" role="status" class="text-[10px] text-emerald-700 font-mono font-semibold"></span>
         </div>
 
         <div id="facility-sidebar-list" class="space-y-2 overflow-y-auto pr-1 grow max-h-[360px]">
-          <!-- Dynamically populated via script -->
+          <p class="p-4 text-xs text-slate-600">Loading facilities…</p>
         </div>
 
         <div class="pt-2.5 border-t border-slate-200 text-[11px] text-slate-500 text-center font-medium">
@@ -102,4 +102,5 @@
     </div>
 
   </div>
+  <p id="directory-status" role="status" class="text-xs text-slate-600"></p>
 </section>
