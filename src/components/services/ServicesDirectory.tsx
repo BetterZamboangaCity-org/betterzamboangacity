@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useId } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 export interface CategoryCardData {
   id: string;
@@ -267,6 +268,8 @@ export const ServicesDirectory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryQuery, setCategoryQuery] = useState('');
   const [selectedCard, setSelectedCard] = useState<CategoryCardData | null>(null);
+  const dialogRef = useModalDialog(Boolean(selectedCard));
+  const dialogTitleId = useId();
 
   useEffect(() => {
     const readLocation = () => {
@@ -612,10 +615,17 @@ export const ServicesDirectory: React.FC = () => {
 
       {/* Interactive Modal when clicking "View Services" */}
       {selectedCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+        <dialog
+          ref={dialogRef}
+          aria-labelledby={dialogTitleId}
+          onCancel={(event) => { event.preventDefault(); setSelectedCard(null); }}
+          onClick={(event) => { if (event.target === event.currentTarget) setSelectedCard(null); }}
+          className="fixed inset-0 m-0 h-dvh w-full max-h-none max-w-none border-0 bg-transparent p-4 open:flex items-center justify-center overflow-y-auto backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs animate-fade-in"
+        >
           <div className="bg-white max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative max-h-[90vh] overflow-y-auto rounded-[4px]">
             <button
               type="button"
+              autoFocus
               onClick={() => setSelectedCard(null)}
               className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors rounded-[2px]"
               aria-label="Close modal"
@@ -629,7 +639,7 @@ export const ServicesDirectory: React.FC = () => {
               <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-[#0032A0] border border-blue-200 inline-block mb-2 rounded-[2px]">
                 {selectedCard.office}
               </span>
-              <h3 className="text-2xl font-black text-slate-900 leading-tight">
+              <h3 id={dialogTitleId} className="text-2xl font-black text-slate-900 leading-tight pr-7">
                 {selectedCard.title}
               </h3>
               <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed font-medium">
@@ -670,7 +680,7 @@ export const ServicesDirectory: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </dialog>
       )}
     </div>
   );

@@ -77,8 +77,9 @@ export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => 
             
             {/* Legislative District Dropdown Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="shrink-0 text-slate-500 font-extrabold">District:</span>
+              <label htmlFor="barangay-district" className="shrink-0 text-slate-500 font-extrabold">District:</label>
               <select
+                id="barangay-district"
                 value={selectedDistrict}
                 onChange={(e) => {
                   setSelectedDistrict(e.target.value as 'all' | '1' | '2');
@@ -94,8 +95,9 @@ export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => 
 
             {/* Settlement Category Dropdown Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="shrink-0 text-slate-500 font-extrabold">Category:</span>
+              <label htmlFor="barangay-category" className="shrink-0 text-slate-500 font-extrabold">Category:</label>
               <select
+                id="barangay-category"
                 value={selectedCategory}
                 onChange={(e) => {
                   setSelectedCategory(e.target.value);
@@ -113,8 +115,9 @@ export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => 
 
             {/* Show Entries Selector */}
             <div className="hidden sm:flex items-center gap-1.5">
-              <span className="shrink-0 text-slate-500 font-extrabold">Show:</span>
+              <label htmlFor="barangay-page-size" className="shrink-0 text-slate-500 font-extrabold">Show:</label>
               <select
+                id="barangay-page-size"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e.target.value));
@@ -133,10 +136,12 @@ export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => 
 
           {/* RIGHT: SEARCH BAR INPUT */}
           <div className="flex items-center gap-2 text-xs font-bold text-slate-700 w-full lg:w-80">
-            <span className="shrink-0 text-slate-500 font-extrabold">Search:</span>
+            <label htmlFor="barangay-search" className="shrink-0 text-slate-500 font-extrabold">Search:</label>
             <div className="relative flex-1">
               <input
                 type="text"
+                id="barangay-search"
+                aria-label="Search barangays"
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 placeholder="Search barangay by name, coast..."
@@ -145,6 +150,7 @@ export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => 
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
+                  aria-label="Clear barangay search"
                   className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useId } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import type { Ordinance } from '../../types/ordinance';
 
 interface Props {
@@ -14,10 +15,18 @@ export const OrdinancePreviewModal: React.FC<Props> = ({
   getExternalLink,
   toFormalTitleCase,
 }) => {
+  const dialogRef = useModalDialog(Boolean(ordinance));
+  const titleId = useId();
   if (!ordinance) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={titleId}
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+      className="fixed inset-0 m-0 h-dvh w-full max-h-none max-w-none border-0 bg-transparent p-3 sm:p-6 open:flex items-center justify-center overflow-y-auto backdrop:bg-slate-900/40 backdrop:backdrop-blur-xs"
+    >
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 text-slate-900 overflow-hidden">
         
         {/* Vinta Top Ribbon Accent */}
@@ -31,6 +40,8 @@ export const OrdinancePreviewModal: React.FC<Props> = ({
         {/* Light Modal Header with Larger Title */}
         <div className="p-5 sm:p-6 bg-slate-50 border-b border-slate-200/90 text-slate-900 relative shrink-0">
           <button
+            type="button"
+            autoFocus
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-xl bg-slate-200/70 hover:bg-slate-200 active:bg-slate-300 text-slate-600 hover:text-slate-900 transition-all"
             aria-label="Close modal"
@@ -57,13 +68,13 @@ export const OrdinancePreviewModal: React.FC<Props> = ({
           </div>
 
           {/* Modal Title */}
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed pr-8">
+          <h2 id={titleId} className="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed pr-8">
             {toFormalTitleCase(ordinance.official_title)}
           </h2>
         </div>
 
-        {/* Modal Body - SCROLLABLE WITH HIDDEN SCROLLBAR */}
-        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1 text-xs sm:text-sm text-slate-800 scrollbar-none [ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Modal Body */}
+        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1 text-xs sm:text-sm text-slate-800">
           
           {/* ELI5 Summary */}
           {ordinance.eli5_summary && (
@@ -141,6 +152,7 @@ export const OrdinancePreviewModal: React.FC<Props> = ({
             Sourced from Ley De Zamboanga (by Chex)
           </span>
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-slate-200 hover:bg-slate-300 active:bg-slate-400 text-slate-800 font-bold rounded-xl text-xs transition-colors shadow-2xs"
           >
@@ -148,6 +160,6 @@ export const OrdinancePreviewModal: React.FC<Props> = ({
           </button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };
