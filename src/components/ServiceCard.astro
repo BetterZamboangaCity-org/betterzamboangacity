@@ -3,7 +3,7 @@ interface Props {
   title: string;
   description: string;
   href?: string;
-  icon?: 'animal' | 'business' | 'records' | 'disaster' | string;
+  icon?: 'health' | 'business' | 'records' | 'disaster' | string;
   color?: 'emerald' | 'blue' | 'amber' | 'red' | string;
   features?: string[];
   badge?: string;
@@ -58,9 +58,9 @@ const currentTheme = themeClasses[color as keyof typeof themeClasses] || themeCl
     <!-- Top Row: Icon Container & Optional Office Badge -->
     <div class="flex items-center justify-between gap-2 mb-4">
       <div class={`w-10 h-10 flex items-center justify-center border transition-colors duration-200 shrink-0 rounded-[4px] ${currentTheme.bg}`}>
-        {icon === 'animal' && (
+        {icon === 'health' && (
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
         )}
 
