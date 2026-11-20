@@ -5,11 +5,11 @@ import OrdinanceExplorer from '../../components/ordinances/OrdinanceExplorer';
 ---
 
 <Layout title="Regulatory Ordinances - Zamboanga City Ordinances" mainClass="grow bg-slate-50 font-sans pb-16">
-  <main class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
+  <div class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
     <!-- Header & What is a Regulatory Ordinance? Educational Banner -->
     <OrdinanceHeader />
 
     <!-- Category Browser Table & Directory Component -->
     <OrdinanceExplorer initialCategory="regulatory" client:load />
-  </main>
+  </div>
 </Layout>
