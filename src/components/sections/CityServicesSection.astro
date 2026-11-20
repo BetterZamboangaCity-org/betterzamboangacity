@@ -3,18 +3,18 @@ import ServiceCard from '../ServiceCard.astro';
 
 const services = [
   {
-    title: 'Animal Welfare & Health',
-    description: 'Veterinary services, pet registration, animal bite treatment centers, free anti-rabies vaccination, and responsible pet ownership.',
-    href: '/contact/disaster',
-    icon: 'animal',
+    title: 'Health & Wellness',
+    description: 'Vaccination programs, health certificates, and medical assistance. Browse the Health & Wellness category in the services directory.',
+    href: '/services?category=health-wellness',
+    icon: 'health',
     color: 'emerald',
-    badge: 'City Vet Office',
-    features: ['Pet Registration', 'Rabies Vaccine', 'Bite Clinic'],
+    badge: 'Health Services',
+    features: ['Vaccination', 'Health Certificate', 'Medical Assistance'],
   },
   {
     title: 'Business Permits & Trade',
     description: 'Business permit licensing (BPLO), mayor’s permit applications, local tax clearances, and investment registration support.',
-    href: '/ordinances/regulatory-ordinances',
+    href: '/services?category=business-trade',
     icon: 'business',
     color: 'blue',
     badge: 'BPLO Office',
@@ -23,7 +23,7 @@ const services = [
   {
     title: 'Certificates & Vital Records',
     description: 'Civil Registry Office services for birth, marriage, and death certificates, legitimation records, and personal status documents.',
-    href: '/government/barangays',
+    href: '/services?category=vital-records',
     icon: 'records',
     color: 'amber',
     badge: 'Civil Registrar',
