@@ -11,16 +11,34 @@ const { data: allBarangays } = await fetchBarangays();
 
 // Check if viewing a specific barangay detail
 const slug = Astro.url.searchParams.get('slug');
-const barangay = slug ? (allBarangays.find((b) => b.slug === slug) || allBarangays[0] || null) : null;
+const barangay = slug ? (allBarangays.find((b) => b.slug === slug) || null) : null;
+const missingBarangay = slug !== null && !barangay;
+if (missingBarangay) Astro.response.status = 404;
 
-const title = barangay
-  ? `Barangay ${barangay.name} Official Portal - Zamboanga City`
-  : '98 Barangays Directory by District - Zamboanga City Barangays';
+const title = missingBarangay
+  ? 'Barangay not found | Better Zamboanga City'
+  : barangay
+    ? `Barangay ${barangay.name} | Better Zamboanga City`
+    : 'Barangay Directory | Better Zamboanga City';
+const description = missingBarangay
+  ? 'The requested barangay record is unavailable. Browse the Zamboanga City barangay directory to find a listed record.'
+  : barangay
+    ? `View the barangay profile and listed officials for ${barangay.name}, Zamboanga City.`
+    : 'Browse the Zamboanga City barangay directory by name and district, with links to barangay profiles and listed officials.';
+const canonicalURL = barangay
+  ? `/government/barangays?${new URLSearchParams({ slug: barangay.slug })}`
+  : '/government/barangays';
 ---
 
-<Layout title={title} mainClass="grow bg-slate-50 font-sans pb-16">
+<Layout title={title} description={description} canonicalURL={canonicalURL} noindex={missingBarangay} mainClass="grow bg-slate-50 font-sans pb-16">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-[1600px] w-full space-y-10">
-    {barangay ? (
+    {missingBarangay ? (
+      <section class="max-w-2xl mx-auto space-y-4 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Barangay not found</h1>
+        <p class="text-slate-600">The requested barangay record is unavailable.</p>
+        <a class="inline-block text-blue-700 underline focus:outline-none focus:ring-2 focus:ring-blue-600" href="/government/barangays">Browse the barangay directory</a>
+      </section>
+    ) : barangay ? (
       <BarangayDetails barangay={barangay} />
     ) : (
       <Fragment>
