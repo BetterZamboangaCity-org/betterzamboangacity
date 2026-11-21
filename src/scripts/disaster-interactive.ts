@@ -1,41 +1,67 @@
 import { fetchEmergencyFacilities, type EmergencyFacility } from '../lib/supabase';
 
-let emergencyFacilities: EmergencyFacility[] = [];
+let leafletLoading: Promise<any> | null = null;
 
-async function loadDynamicFacilities() {
-  const res = await fetchEmergencyFacilities();
-  if (res.data && res.data.length > 0) {
-    emergencyFacilities = res.data;
-  }
+function loadLeaflet(): Promise<any> {
+  if ((window as any).L) return Promise.resolve((window as any).L);
+  if (leafletLoading) return leafletLoading;
+  leafletLoading = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    const timeout = window.setTimeout(() => finish(new Error('Map loading timed out.')), 15000);
+    function finish(error?: Error) {
+      window.clearTimeout(timeout);
+      script.onload = null;
+      script.onerror = null;
+      if (error || !(window as any).L) {
+        script.remove();
+        reject(error || new Error('Map library is unavailable.'));
+      } else resolve((window as any).L);
+    }
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+    script.crossOrigin = '';
+    script.onload = () => finish();
+    script.onerror = () => finish(new Error('Map library could not load.'));
+    document.head.append(script);
+  }).catch(error => {
+    leafletLoading = null;
+    throw error;
+  });
+  return leafletLoading;
 }
 
-let map: any = null;
-let mapMarkers: Record<string, any> = {};
-let userMarker: any = null;
-let activeMapCategory = 'all';
-let mapSearchQuery = '';
-let userPos: { lat: number; lng: number } | null = null;
-
-function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return Math.round(R * c * 10) / 10;
+function element(tag: string, className = '', text?: string): HTMLElement {
+  const node = document.createElement(tag);
+  node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
 }
 
-function getCategoryPinColor(cat: string): string {
-  switch(cat) {
-    case 'hospital': return '#e11d48'; // rose-600
-    case 'police': return '#2563eb'; // blue-600
-    case 'fire': return '#dc2626'; // red-600
-    case 'rescue': return '#059669'; // emerald-600
-    default: return '#475569';
-  }
+function hasCoordinates(f: { lat: number; lng: number }): boolean {
+  return Number.isFinite(f.lat) && Number.isFinite(f.lng) && Math.abs(f.lat) <= 90 &&
+    Math.abs(f.lng) <= 180 && (f.lat !== 0 || f.lng !== 0);
+}
+
+function directionsUrl(f: { lat: number; lng: number }, origin: { lat: number; lng: number } | null): string | null {
+  if (!hasCoordinates(f)) return null;
+  const url = new URL('https://www.google.com/maps/dir/');
+  url.searchParams.set('api', '1');
+  url.searchParams.set('destination', `${f.lat},${f.lng}`);
+  if (origin && hasCoordinates(origin)) url.searchParams.set('origin', `${origin.lat},${origin.lng}`);
+  return url.href;
+}
+
+function phoneUrl(phone: string): string | null {
+  if (!/^[+\d\s().-]+$/.test(phone)) return null;
+  const number = phone.replace(/[^+\d]/g, '');
+  return /^\+?\d+$/.test(number) ? `tel:${number}` : null;
+}
+
+function distanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+  const radians = Math.PI / 180;
+  const value = Math.sin((b.lat - a.lat) * radians / 2) ** 2 +
+    Math.cos(a.lat * radians) * Math.cos(b.lat * radians) * Math.sin((b.lng - a.lng) * radians / 2) ** 2;
+  return Math.round(6371 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value)) * 10) / 10;
 }
 
 function getCategoryPinSvg(cat: string): string {
@@ -53,452 +79,252 @@ function getCategoryPinSvg(cat: string): string {
   }
 }
 
-function getBadgeColor(cat: string): string {
-  switch(cat) {
-    case 'hospital': return 'bg-rose-50 text-rose-700 border-rose-200';
-    case 'police': return 'bg-blue-50 text-blue-700 border-blue-200';
-    case 'fire': return 'bg-red-50 text-red-700 border-red-200';
-    case 'rescue': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    default: return 'bg-slate-100 text-slate-700 border-slate-200';
-  }
-}
+const categoryColors: Record<string, string> = {
+  hospital: '#e11d48', police: '#2563eb', fire: '#dc2626', rescue: '#059669',
+};
 
-function renderSidebarList() {
-  const listContainer = document.getElementById('facility-sidebar-list');
-  const counterText = document.getElementById('map-counter-text');
-  if (!listContainer) return;
+function createDirectory(root: HTMLElement): () => void {
+  const controller = new AbortController();
+  const { signal } = controller;
+  const current = () => !signal.aborted && root.isConnected;
+  const status = root.querySelector<HTMLElement>('#directory-status')!;
+  const list = root.querySelector<HTMLElement>('#facility-sidebar-list')!;
+  const counter = root.querySelector<HTMLElement>('#map-counter-text')!;
+  const geoStatus = root.querySelector<HTMLElement>('#user-geo-status')!;
+  const geoButton = root.querySelector<HTMLButtonElement>('#geo-locate-btn')!;
+  const timers = new Set<number>();
+  let facilities: EmergencyFacility[] = [];
+  let map: any = null;
+  let library: any = null;
+  let userMarker: any = null;
+  const markers = new Map<string, any>();
+  let category = 'all';
+  let query = '';
+  let policeSector = 'all';
+  let fireSector = 'all';
+  let userPosition: { lat: number; lng: number } | null = null;
+  let locationRequest = 0;
 
-  let items = emergencyFacilities.filter(f => {
-    const matchesCat = activeMapCategory === 'all' || f.category === activeMapCategory;
-    const matchesQuery = !mapSearchQuery || 
-      f.name.toLowerCase().includes(mapSearchQuery) || 
-      f.address.toLowerCase().includes(mapSearchQuery) ||
-      f.phone.toLowerCase().includes(mapSearchQuery);
-    return matchesCat && matchesQuery;
-  });
-
-  if (userPos) {
-    items = items.map(f => ({
-      ...f,
-      distance: calculateDistanceKm(userPos!.lat, userPos!.lng, f.lat, f.lng)
-    })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
-  }
-
-  if (counterText) {
-    counterText.textContent = `Showing ${items.length} of ${emergencyFacilities.length} emergency facilities`;
+  function matches(f: EmergencyFacility): boolean {
+    return (category === 'all' || f.category === category) &&
+      (!query || [f.name, f.address, f.phone].some(value => String(value || '').toLowerCase().includes(query)));
   }
 
-  if (items.length === 0) {
-    listContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-500">No matching facilities found.</div>`;
-    return;
+  function facilityContent(f: EmergencyFacility, popup = false): HTMLElement {
+    const card = element('div', popup ? 'space-y-2 p-1 font-sans' :
+      'facility-card p-3 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2');
+    card.dataset.facId = String(f.id);
+    const title = element(popup || !map || !hasCoordinates(f) ? 'div' : 'button',
+      'text-left text-xs font-bold text-slate-900 break-words', String(f.name || 'Unnamed facility'));
+    if (title instanceof HTMLButtonElement) {
+      title.type = 'button';
+      title.dataset.facility = String(f.id);
+      title.classList.add('hover:text-blue-600', 'cursor-pointer');
+      title.setAttribute('aria-label', `Show ${f.name} on map`);
+    }
+    card.append(title);
+    card.append(element('div', 'text-[10px] uppercase font-semibold text-slate-500', String(f.catLabel || f.category || 'Facility')));
+    card.append(element('div', 'text-[11px] text-slate-600 break-words', String(f.address || 'Address unavailable')));
+    if (userPosition && hasCoordinates(f)) {
+      card.append(element('div', 'text-[10px] text-emerald-800 font-mono', `${distanceKm(userPosition, f)} km away`));
+    }
+    const actions = element('div', 'flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2');
+    const phone = String(f.phone || '');
+    const call = phoneUrl(phone);
+    const contact = element(call ? 'a' : 'span', 'text-[11px] font-mono text-slate-700 break-all', phone || 'Phone unavailable');
+    if (contact instanceof HTMLAnchorElement && call) contact.href = call;
+    actions.append(contact);
+    const url = directionsUrl(f, userPosition);
+    if (url) {
+      const link = element('a', 'px-2.5 py-1 rounded bg-slate-900 text-white text-[11px] font-semibold', 'Directions') as HTMLAnchorElement;
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      actions.append(link);
+    } else actions.append(element('span', 'text-[11px] text-slate-500', 'Location unavailable'));
+    card.append(actions);
+    return card;
   }
 
-  listContainer.innerHTML = items.map(f => {
-    const badgeClass = getBadgeColor(f.category);
-    const distBadge = (f as any).distance !== undefined ? 
-      `<span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">${(f as any).distance} km away</span>` : '';
-
-    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}${userPos ? `&origin=${userPos.lat},${userPos.lng}` : ''}`;
-
-    return `
-      <div 
-        class="facility-card p-3 rounded-xl bg-white hover:bg-slate-100/80 border border-slate-200 transition-all cursor-pointer shadow-2xs group"
-        data-fac-id="${f.id}"
-        data-lat="${f.lat}"
-        data-lng="${f.lng}"
-      >
-        <div class="flex items-start justify-between gap-2 mb-1">
-          <span class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-            ${f.name}
-          </span>
-          ${distBadge}
-        </div>
-        
-        <div class="flex items-center gap-2 text-[11px] text-slate-500 mb-2">
-          <span class="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-medium border ${badgeClass}">
-            ${f.catLabel}
-          </span>
-          <span class="truncate">${f.address}</span>
-        </div>
-
-        <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
-          <div class="text-[11px] font-mono text-slate-700 flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-            </svg>
-            <span>${f.phone}</span>
-          </div>
-
-          <a
-            href="${directionsUrl}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-semibold transition-colors flex items-center gap-1 shrink-0"
-            onclick="event.stopPropagation();"
-          >
-            <svg class="w-3 h-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-            </svg>
-            <span>Directions</span>
-          </a>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function updateMapMarkers() {
-  if (!map || !(window as any).L) return;
-
-  emergencyFacilities.forEach(f => {
-    const matchesCat = activeMapCategory === 'all' || f.category === activeMapCategory;
-    const matchesQuery = !mapSearchQuery || 
-      f.name.toLowerCase().includes(mapSearchQuery) || 
-      f.address.toLowerCase().includes(mapSearchQuery);
-
-    const marker = mapMarkers[f.id];
-    if (marker) {
-      if (matchesCat && matchesQuery) {
+  function render() {
+    if (!current()) return;
+    const visible = facilities.filter(matches);
+    if (userPosition) visible.sort((a, b) =>
+      (hasCoordinates(a) ? distanceKm(userPosition!, a) : Infinity) -
+      (hasCoordinates(b) ? distanceKm(userPosition!, b) : Infinity));
+    list.replaceChildren(...visible.map(f => facilityContent(f)));
+    if (!visible.length) list.append(element('p', 'p-4 text-center text-xs text-slate-500', 'No matching facilities found.'));
+    counter.textContent = `Showing ${visible.length} of ${facilities.length} emergency facilities`;
+    for (const f of facilities) {
+      const marker = markers.get(String(f.id));
+      if (!marker) continue;
+      if (matches(f)) {
         if (!map.hasLayer(marker)) marker.addTo(map);
-      } else {
-        if (map.hasLayer(marker)) map.removeLayer(marker);
-      }
+        marker.setPopupContent(facilityContent(f, true));
+      } else if (map.hasLayer(marker)) map.removeLayer(marker);
     }
-  });
-
-  renderSidebarList();
-}
-
-function initLeafletMap() {
-  const L = (window as any).L;
-  if (!L || map) return;
-
-  const mapContainer = document.getElementById('leaflet-emergency-map');
-  if (!mapContainer) return;
-
-  const zamboangaBounds = L.latLngBounds(
-    [6.75, 121.80],
-    [7.45, 122.35]
-  );
-
-  map = L.map('leaflet-emergency-map', {
-    zoomControl: false,
-    maxBounds: zamboangaBounds,
-    maxBoundsViscosity: 1.0,
-    minZoom: 10,
-    maxZoom: 18
-  }).setView([6.9214, 122.0790], 12);
-
-  L.control.zoom({ position: 'topright' }).addTo(map);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    minZoom: 10,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-
-  emergencyFacilities.forEach((f) => {
-    const pinColor = getCategoryPinColor(f.category);
-    const iconSvg = getCategoryPinSvg(f.category);
-
-    const customIcon = L.divIcon({
-      className: 'custom-leaflet-marker',
-      html: `
-        <div style="
-          background-color: ${pinColor};
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          border: 2px solid white;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        ">
-          ${iconSvg}
-        </div>
-      `,
-      iconSize: [26, 26],
-      iconAnchor: [13, 13],
-      popupAnchor: [0, -13]
-    });
-
-    const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${f.lat},${f.lng}`;
-
-    const popupContent = `
-      <div style="font-family: system-ui, sans-serif; padding: 4px; max-width: 220px;">
-        <div style="font-weight: 700; font-size: 13px; color: #0f172a; margin-bottom: 2px;">
-          ${f.name}
-        </div>
-        <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">
-          ${f.address}
-        </div>
-        <div style="font-size: 11px; font-weight: 600; color: #334155; font-family: monospace; margin-bottom: 8px;">
-          Contact: ${f.phone}
-        </div>
-        <a
-          href="${directionsUrl}"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 100%;
-            text-align: center;
-            padding: 6px 10px;
-            background-color: #0f172a;
-            color: white;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-decoration: none;
-          "
-        >
-          <svg style="width:12px;height:12px;fill:none;stroke:white;stroke-width:2;" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-          </svg>
-          <span>Get Directions</span>
-        </a>
-      </div>
-    `;
-
-    const marker = L.marker([f.lat, f.lng], { icon: customIcon })
-      .addTo(map)
-      .bindPopup(popupContent);
-
-    mapMarkers[f.id] = marker;
-  });
-
-  renderSidebarList();
-}
-
-function loadLeafletScript(callback: () => void) {
-  if ((window as any).L) {
-    callback();
-    return;
   }
-  const script = document.createElement('script');
-  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-  script.crossOrigin = '';
-  script.onload = callback;
-  document.head.appendChild(script);
-}
 
-function setupMapInteractivity() {
-  document.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('.map-filter-btn') as HTMLElement | null;
-    if (!btn) return;
-
-    const filterBtns = document.querySelectorAll('.map-filter-btn');
-    filterBtns.forEach(b => {
-      b.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
-      b.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
-    });
-    btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
-    btn.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
-
-    activeMapCategory = btn.getAttribute('data-map-filter') || 'all';
-    updateMapMarkers();
-  });
-
-  document.addEventListener('input', (e) => {
-    const target = e.target as HTMLElement;
-    if (target && target.id === 'map-search-input') {
-      mapSearchQuery = (target as HTMLInputElement).value.toLowerCase().trim();
-      updateMapMarkers();
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    const card = (e.target as HTMLElement).closest('.facility-card') as HTMLElement | null;
-    if (!card) return;
-
-    const facId = card.getAttribute('data-fac-id');
-    const lat = parseFloat(card.getAttribute('data-lat') || '0');
-    const lng = parseFloat(card.getAttribute('data-lng') || '0');
-
-    if (map && lat && lng) {
-      map.flyTo([lat, lng], 15, { duration: 1.2 });
-      if (facId && mapMarkers[facId]) {
-        mapMarkers[facId].openPopup();
-      }
-    }
-  });
-
-  const geoBtn = document.getElementById('geo-locate-btn');
-  const geoStatus = document.getElementById('user-geo-status');
-
-  if (geoBtn) {
-    geoBtn.addEventListener('click', () => {
-      if (!navigator.geolocation) {
-        alert('Geolocation is not supported by your browser.');
-        return;
-      }
-
-      if (geoStatus) geoStatus.textContent = 'Locating...';
-
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        userPos = { lat, lng };
-
-        if (geoStatus) geoStatus.textContent = 'Location Active';
-
-        const L = (window as any).L;
-        if (map && L) {
-          if (userMarker) map.removeLayer(userMarker);
-
-          const userIcon = L.divIcon({
-            className: 'user-location-marker',
-            html: `
-              <div style="
-                background-color: #0284c7;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                border: 3px solid white;
-                box-shadow: 0 0 10px rgba(2, 132, 199, 0.6);
-              "></div>
-            `,
-            iconSize: [20, 20],
-            iconAnchor: [10, 10]
-          });
-
-          userMarker = L.marker([lat, lng], { icon: userIcon })
-            .addTo(map)
-            .bindPopup('<div style="font-weight:700; font-size:12px; color:#0f172a;">Your Current Location</div>')
-            .openPopup();
-
-          map.flyTo([lat, lng], 14, { duration: 1.5 });
-        }
-
-        renderSidebarList();
-      }, (err) => {
-        console.warn('Geolocation error:', err.message);
-        if (geoStatus) geoStatus.textContent = 'Location access denied';
+  function initMap() {
+    if (!current() || !library || map) return;
+    map = library.map(root.querySelector('#leaflet-emergency-map'), {
+      zoomControl: false, maxBounds: [[6.75, 121.80], [7.45, 122.35]],
+      maxBoundsViscosity: 1, minZoom: 10, maxZoom: 18,
+    }).setView([6.9214, 122.0790], 12);
+    library.control.zoom({ position: 'topright' }).addTo(map);
+    library.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+    for (const f of facilities) {
+      if (!hasCoordinates(f)) continue;
+      const color = Object.hasOwn(categoryColors, f.category) ? categoryColors[f.category] : '#475569';
+      const icon = library.divIcon({
+        className: 'custom-leaflet-marker',
+        html: `<div style="background:${color};width:26px;height:26px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px #0004;display:flex;align-items:center;justify-content:center">${getCategoryPinSvg(f.category)}</div>`,
+        iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -13],
       });
+      markers.set(String(f.id), library.marker([f.lat, f.lng], { icon }).addTo(map).bindPopup(facilityContent(f, true)));
+    }
+    showUserLocation();
+    render();
+  }
+
+  function showUserLocation() {
+    if (!map || !userPosition) return;
+    if (userMarker) map.removeLayer(userMarker);
+    userMarker = library.marker([userPosition.lat, userPosition.lng]).addTo(map).bindPopup(element('div', '', 'Your current location'));
+    map.flyTo([userPosition.lat, userPosition.lng], 14);
+  }
+
+  function filterStations(kind: 'police' | 'fire') {
+    const search = root.querySelector<HTMLInputElement>(`#${kind}-search`)!.value.toLowerCase().trim();
+    const sector = kind === 'police' ? policeSector : fireSector;
+    root.querySelectorAll<HTMLElement>(`.${kind}-card`).forEach(card => {
+      card.hidden = !((!search || card.textContent?.toLowerCase().includes(search)) &&
+        (sector === 'all' || card.dataset.sector === sector));
     });
   }
-}
 
-let activePoliceSector = 'all';
-let activeFireSector = 'all';
+  function selectButton(button: HTMLElement, selector: string, activeClasses: string[], inactiveClasses: string[]) {
+    root.querySelectorAll<HTMLElement>(selector).forEach(item => {
+      const selected = item === button;
+      item.classList.remove(...activeClasses, ...inactiveClasses);
+      item.classList.add(...(selected ? activeClasses : inactiveClasses));
+      item.setAttribute('aria-pressed', String(selected));
+    });
+  }
 
-function filterPolice() {
-  const policeSearch = document.getElementById('police-search') as HTMLInputElement | null;
-  const policeCards = document.querySelectorAll('.police-card');
-  const query = policeSearch ? policeSearch.value.toLowerCase().trim() : '';
+  root.addEventListener('input', event => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    if (input.id === 'map-search-input') { query = input.value.toLowerCase().trim(); render(); }
+    if (input.id === 'police-search') filterStations('police');
+    if (input.id === 'fire-search') filterStations('fire');
+  }, { signal });
 
-  policeCards.forEach(card => {
-    const text = card.textContent?.toLowerCase() || '';
-    const sector = card.getAttribute('data-sector') || '';
-
-    const matchesQuery = !query || text.includes(query);
-    const matchesSector = activePoliceSector === 'all' || sector === activePoliceSector;
-
-    if (matchesQuery && matchesSector) {
-      (card as HTMLElement).style.display = '';
-    } else {
-      (card as HTMLElement).style.display = 'none';
+  root.addEventListener('click', async event => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLElement>('button');
+    if (!button) return;
+    if (button.matches('.map-filter-btn')) {
+      category = button.dataset.mapFilter || 'all';
+      selectButton(button, '.map-filter-btn', ['bg-slate-900', 'text-white', 'border-slate-900'], ['bg-white', 'text-slate-700', 'border-slate-200']);
+      render();
     }
-  });
-}
-
-function filterFire() {
-  const fireSearch = document.getElementById('fire-search') as HTMLInputElement | null;
-  const fireCards = document.querySelectorAll('.fire-card');
-  const query = fireSearch ? fireSearch.value.toLowerCase().trim() : '';
-
-  fireCards.forEach(card => {
-    const text = card.textContent?.toLowerCase() || '';
-    const sector = card.getAttribute('data-sector') || '';
-
-    const matchesQuery = !query || text.includes(query);
-    const matchesSector = activeFireSector === 'all' || sector === activeFireSector;
-
-    if (matchesQuery && matchesSector) {
-      (card as HTMLElement).style.display = '';
-    } else {
-      (card as HTMLElement).style.display = 'none';
+    if (button.matches('.police-filter-btn, .fire-filter-btn')) {
+      const kind = button.matches('.police-filter-btn') ? 'police' : 'fire';
+      if (kind === 'police') policeSector = button.dataset.filter || 'all';
+      else fireSector = button.dataset.filter || 'all';
+      const color = kind === 'police' ? 'blue' : 'red';
+      selectButton(button, `.${kind}-filter-btn`, [`bg-${color}-600`, 'text-white', `border-${color}-600`], ['bg-white', 'text-slate-600', 'border-slate-200']);
+      filterStations(kind);
     }
-  });
-}
-
-export function initDisasterInteractive() {
-  document.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('[data-copy-phone]');
-    if (!btn) return;
-    
-    const phone = btn.getAttribute('data-copy-phone');
-    if (!phone) return;
-
-    navigator.clipboard.writeText(phone).then(() => {
-      const copyIcon = btn.querySelector('.copy-icon');
-      const checkIcon = btn.querySelector('.check-icon');
-
-      if (copyIcon && checkIcon) {
-        copyIcon.classList.add('hidden');
-        checkIcon.classList.remove('hidden');
-        setTimeout(() => {
-          copyIcon.classList.remove('hidden');
-          checkIcon.classList.add('hidden');
+    if (button.dataset.facility && map) {
+      const f = facilities.find(item => String(item.id) === button.dataset.facility);
+      if (f && hasCoordinates(f)) { map.flyTo([f.lat, f.lng], 15); markers.get(String(f.id))?.openPopup(); }
+    }
+    if (button.hasAttribute('data-copy-phone')) {
+      const phone = button.dataset.copyPhone;
+      if (!phone) return;
+      try {
+        await navigator.clipboard.writeText(phone);
+        if (!current()) return;
+        status.textContent = 'Phone number copied.';
+        button.querySelector('.copy-icon')?.classList.add('hidden');
+        button.querySelector('.check-icon')?.classList.remove('hidden');
+        const timer = window.setTimeout(() => {
+          timers.delete(timer);
+          if (!current()) return;
+          button.querySelector('.copy-icon')?.classList.remove('hidden');
+          button.querySelector('.check-icon')?.classList.add('hidden');
         }, 2000);
+        timers.add(timer);
+      } catch {
+        if (current()) status.textContent = 'Could not copy. Select and copy the phone number.';
       }
-    }).catch(err => {
-      console.error('Failed to copy phone number:', err);
-    });
-  });
-
-  document.addEventListener('input', (e) => {
-    const target = e.target as HTMLElement;
-    if (target && target.id === 'police-search') {
-      filterPolice();
-    } else if (target && target.id === 'fire-search') {
-      filterFire();
     }
+  }, { signal });
+
+  geoButton.addEventListener('click', () => {
+    if (!navigator.geolocation) { geoStatus.textContent = 'Location is not supported by this browser.'; return; }
+    const request = ++locationRequest;
+    geoButton.disabled = true;
+    geoStatus.textContent = 'Locating…';
+    navigator.geolocation.getCurrentPosition(position => {
+      if (!current() || request !== locationRequest) return;
+      geoButton.disabled = false;
+      const location = { lat: position.coords.latitude, lng: position.coords.longitude };
+      if (!hasCoordinates(location)) { geoStatus.textContent = 'Your location is unavailable.'; return; }
+      userPosition = location;
+      geoStatus.textContent = 'Nearest facilities listed first.';
+      showUserLocation();
+      render();
+    }, error => {
+      if (!current() || request !== locationRequest) return;
+      geoButton.disabled = false;
+      geoStatus.textContent = error.code === 1 ? 'Location access denied. Use search instead.' :
+        error.code === 3 ? 'Location request timed out. Try again.' : 'Your location is unavailable. Use search instead.';
+    }, { timeout: 10000, maximumAge: 60000 });
+  }, { signal });
+
+  // Static contacts and search remain usable while either dependency loads.
+  const facilitiesReady = fetchEmergencyFacilities(signal).then(result => {
+    if (!current()) return;
+    facilities = result.data;
+    render();
+  });
+  const mapReady = loadLeaflet().then(result => { if (current()) library = result; });
+  Promise.all([facilitiesReady, mapReady]).then(() => initMap()).catch(() => {
+    if (current()) status.textContent = 'Map unavailable. Use the facility list and emergency phone numbers below.';
   });
 
-  document.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest('.police-filter-btn, .fire-filter-btn') as HTMLElement | null;
-    if (!btn) return;
-
-    if (btn.classList.contains('police-filter-btn')) {
-      const policeFilterBtns = document.querySelectorAll('.police-filter-btn');
-      policeFilterBtns.forEach(b => {
-        b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-        b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-      });
-      btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
-      btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-      activePoliceSector = btn.getAttribute('data-filter') || 'all';
-      filterPolice();
-    } else if (btn.classList.contains('fire-filter-btn')) {
-      const fireFilterBtns = document.querySelectorAll('.fire-filter-btn');
-      fireFilterBtns.forEach(b => {
-        b.classList.remove('bg-red-600', 'text-white', 'border-red-600');
-        b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-      });
-      btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
-      btn.classList.add('bg-red-600', 'text-white', 'border-red-600');
-      activeFireSector = btn.getAttribute('data-filter') || 'all';
-      filterFire();
-    }
-  });
-
-  loadLeafletScript(async () => {
-    await loadDynamicFacilities();
-    initLeafletMap();
-    setupMapInteractivity();
-  });
+  return () => {
+    controller.abort();
+    locationRequest++;
+    timers.forEach(timer => window.clearTimeout(timer));
+    timers.clear();
+    map?.remove();
+    map = null;
+    markers.clear();
+  };
 }
 
-if (typeof window !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDisasterInteractive);
-  } else {
-    initDisasterInteractive();
-  }
+let directoryRoot: HTMLElement | null = null;
+let dispose: (() => void) | null = null;
+function cleanup() {
+  dispose?.();
+  dispose = null;
+  directoryRoot = null;
 }
+export function initDisasterInteractive() {
+  const root = document.getElementById('disaster-directory');
+  if (root && root === directoryRoot) return;
+  cleanup();
+  if (!root) return;
+  directoryRoot = root;
+  dispose = createDirectory(root);
+}
+document.addEventListener('astro:before-swap', cleanup);
+document.addEventListener('astro:page-load', initDisasterInteractive);
+if (document.readyState !== 'loading') initDisasterInteractive();
