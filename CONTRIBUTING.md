@@ -28,4 +28,4 @@ If you are planning to contribute code, design, or dataset research, **please co
 
 ## 💻 Local Development Workflow
 
-Follow [Development and verification](docs/development.md) for the supported Node version, clean installation, background server commands, available checks, and UI evidence. Read [project context](CONTEXT.md) before changing civic records. Agents must follow [AGENTS.md](AGENTS.md).
+Follow [Development and verification](README.md#development-and-verification) for the supported Node version, clean installation, background server commands, available checks, and UI evidence. Read [project context](CONTEXT.md) before changing civic records. Agents must follow [AGENTS.md](AGENTS.md).

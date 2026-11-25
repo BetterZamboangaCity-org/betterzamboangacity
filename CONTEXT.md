@@ -26,7 +26,7 @@ Better Zamboanga City is an independent, volunteer-maintained civic-information 
 
 ## Current data access
 
-[src/lib/supabase.ts](src/lib/supabase.ts) creates the main and ordinance Supabase clients from public environment variables. Read [the development guide](docs/development.md) for local configuration. Reads can occur at build time, per request, and in browser islands. Trace the consumer before changing a loader.
+[src/lib/supabase.ts](src/lib/supabase.ts) creates the main and ordinance Supabase clients from public environment variables. Read [the development guide](README.md#development-and-verification) for local configuration. Reads can occur at build time, per request, and in browser islands. Trace the consumer before changing a loader.
 
 | Feature | Active path and local data |
 | --- | --- |
