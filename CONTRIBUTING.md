@@ -19,7 +19,7 @@ If you are planning to contribute code, design, or dataset research, **please co
 
 ## 🔍 Before You Start
 
-- Check the active [Issues](https://github.com/RALPH22222/better-zamboanga-city/issues) and [Pull Requests](https://github.com/RALPH22222/better-zamboanga-city/pulls) before starting work to avoid duplicate efforts.
+- Check the active [Issues](https://github.com/BetterZamboangaCity-org/betterzamboangacity/issues) and [Pull Requests](https://github.com/BetterZamboangaCity-org/betterzamboangacity/pulls) before starting work to avoid duplicate efforts.
 - Keep each pull request small and focused on a single feature, bug fix, or content record.
 - Discuss substantial UI overhauls, database redesigns, or architecture shifts in an Issue or in the contributor chat first.
 - Never commit credentials, `.env` files with private keys, or machine-specific artifacts.
@@ -28,15 +28,4 @@ If you are planning to contribute code, design, or dataset research, **please co
 
 ## 💻 Local Development Workflow
 
-The project uses [Astro](https://astro.build/) for content handling.
-
-```bash
-# 1. Clone your fork
-git clone [https://github.com/YOUR_USERNAME/better-zamboanga-city.git](https://github.com/YOUR_USERNAME/better-zamboanga-city.git)
-cd better-zamboanga-city
-
-# 2. Install packages
-npm install
-
-# 3. Start local development
-npm run dev
+Follow [Development and verification](README.md#development-and-verification) for the supported Node version, clean installation, background server commands, available checks, and UI evidence. Read [project context](CONTEXT.md) before changing civic records. Agents must follow [AGENTS.md](AGENTS.md).

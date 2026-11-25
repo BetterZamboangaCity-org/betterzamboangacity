@@ -29,3 +29,6 @@ supabase/
 scratch/
 
 scripts/
+
+# local agent task records (shared agent guidance stays tracked)
+/.agents/handoffs/
