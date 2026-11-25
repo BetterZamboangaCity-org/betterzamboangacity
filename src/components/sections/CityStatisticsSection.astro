@@ -1,6 +1,7 @@
 ---
 import StatCard from '../StatCard.astro';
-import { fetchBarangays, fetchOrdinances } from '../../lib/supabase';
+import { fetchBarangays, fetchOrdinances } from '../../lib/civic-data';
+import { capturedFrom } from '../../content/snapshots/ordinances.manifest.json';
 import populationData from '../../content/Barangay-officials/population2024.json';
 
 const [barangaysRes, ordinancesRes] = await Promise.all([
@@ -8,9 +9,8 @@ const [barangaysRes, ordinancesRes] = await Promise.all([
   fetchOrdinances(),
 ]);
 
-const barangaysCount = barangaysRes.data?.length || 98;
-const rawOrdinancesCount = ordinancesRes.data?.length || 0;
-const ordinancesCount = rawOrdinancesCount > 0 ? rawOrdinancesCount : 945;
+const barangaysCount = barangaysRes.data.length;
+const ordinancesCount = ordinancesRes.data.length;
 
 // Calculate exact 2024 PSA population sum from database repository
 const totalPopulation2024 = Object.values(populationData).reduce((acc, curr) => {
@@ -66,7 +66,7 @@ const stats = [
   {
     label: 'LOCAL LEGISLATION',
     value: `${ordinancesCount} City Ordinances`,
-    subtext: 'Enacted Municipal Laws Passed by Sangguniang Panlungsod',
+    subtext: `Indexed records from the ${capturedFrom.slice(0, 10)} snapshot`,
     icon: 'ordinances',
     href: '/ordinances/regulatory-ordinances',
     badge: 'City Laws',
@@ -87,7 +87,7 @@ const stats = [
         City Statistics & Profile
       </h2>
       <p class="text-slate-600 text-sm sm:text-base lg:text-lg font-normal max-w-2xl leading-relaxed">
-        Verified statistical figures sourced directly from Philippine Statistics Authority (PSA) records and municipal legislative database.
+        Population figures cite PSA records. Ordinance totals reflect the snapshot captured on {capturedFrom.slice(0, 10)}.
       </p>
     </div>
 

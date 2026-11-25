@@ -6,9 +6,6 @@ import { attributes, checkMetadata } from './metadata.mjs';
 const canonical = 'https://www.betterzamboangacity.org/government/barangays';
 let close = async () => {};
 let render;
-// Use repository fallback records. This test must not depend on a live database.
-for (const key of ['PUBLIC_SUPABASE_URL', 'PUBLIC_SUPABASE_ANON_KEY', 'PUBLIC_ORDINANCES_SUPABASE_URL', 'PUBLIC_ORDINANCES_SUPABASE_ANON_KEY']) process.env[key] = '';
-
 try {
   if (process.argv.includes('--source')) {
     const { createServer } = await import('vite');

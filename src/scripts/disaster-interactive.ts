@@ -1,4 +1,5 @@
-import { fetchEmergencyFacilities, type EmergencyFacility } from '../lib/supabase';
+import { fetchEmergencyFacilities } from '../lib/civic-data-client';
+import type { EmergencyFacility } from '../types/civic-data';
 
 let leafletLoading: Promise<any> | null = null;
 
@@ -94,6 +95,7 @@ function createDirectory(root: HTMLElement): () => void {
   const geoButton = root.querySelector<HTMLButtonElement>('#geo-locate-btn')!;
   const timers = new Set<number>();
   let facilities: EmergencyFacility[] = [];
+  let dataState: 'loading' | 'available' | 'unavailable' = 'loading';
   let map: any = null;
   let library: any = null;
   let userMarker: any = null;
@@ -153,8 +155,14 @@ function createDirectory(root: HTMLElement): () => void {
       (hasCoordinates(a) ? distanceKm(userPosition!, a) : Infinity) -
       (hasCoordinates(b) ? distanceKm(userPosition!, b) : Infinity));
     list.replaceChildren(...visible.map(f => facilityContent(f)));
-    if (!visible.length) list.append(element('p', 'p-4 text-center text-xs text-slate-500', 'No matching facilities found.'));
-    counter.textContent = `Showing ${visible.length} of ${facilities.length} emergency facilities`;
+    if (!visible.length) {
+      const message = dataState === 'unavailable' ? 'Emergency facility data is unavailable. Use the static contacts below.' :
+        dataState === 'loading' ? 'Loading emergency facilities...' : facilities.length === 0 ?
+          'No emergency facilities are included in this snapshot.' : 'No matching facilities found.';
+      list.append(element('p', 'p-4 text-center text-xs text-slate-500', message));
+    }
+    counter.textContent = dataState === 'available' ? `Showing ${visible.length} of ${facilities.length} emergency facilities` :
+      dataState === 'unavailable' ? 'Emergency facility data unavailable' : 'Loading emergency facilities...';
     for (const f of facilities) {
       const marker = markers.get(String(f.id));
       if (!marker) continue;
@@ -292,11 +300,18 @@ function createDirectory(root: HTMLElement): () => void {
   const facilitiesReady = fetchEmergencyFacilities(signal).then(result => {
     if (!current()) return;
     facilities = result.data;
+    dataState = 'available';
     render();
+  }).catch(error => {
+    if (!current()) return;
+    dataState = 'unavailable';
+    render();
+    status.textContent = 'Facility data unavailable. Static contacts remain usable.';
+    throw error;
   });
   const mapReady = loadLeaflet().then(result => { if (current()) library = result; });
   Promise.all([facilitiesReady, mapReady]).then(() => initMap()).catch(() => {
-    if (current()) status.textContent = 'Map unavailable. Use the facility list and emergency phone numbers below.';
+    if (current() && dataState !== 'unavailable') status.textContent = 'Map unavailable. Use the facility list and emergency phone numbers below.';
   });
 
   return () => {

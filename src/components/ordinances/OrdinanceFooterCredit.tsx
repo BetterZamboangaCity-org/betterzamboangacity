@@ -1,4 +1,5 @@
 import React from 'react';
+import { capturedFrom } from '../../content/snapshots/ordinances.manifest.json';
 
 const LEY_DE_ZAMBOANGA_URL = 'https://zamboangacity-ordinance.vercel.app/';
 
@@ -6,7 +7,7 @@ export const OrdinanceFooterCredit: React.FC = () => {
   return (
     <div className="text-center py-4 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div className="inline-flex items-center gap-1">
-        <span>Data synchronized with</span>
+        <span>Snapshot captured {capturedFrom.slice(0, 10)} from</span>
         <a 
           href={LEY_DE_ZAMBOANGA_URL} 
           target="_blank" 

@@ -1,0 +1,697 @@
+{
+  "base": "41390803a621b7d12a6081038634a3c204eac4db",
+  "capturedAt": "2026-11-25T12:06:07.719Z",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "method": "Real existing app; main.innerText whitespace normalized to single spaces; SHA256 UTF-8. Legacy current data/pending behavior, not agency verification.",
+  "profiles": [
+    {
+      "id": "d1-1",
+      "slug": "ayala",
+      "name": "Ayala",
+      "matchingRoster": 10,
+      "textSha256": "d6e9228b9d00e5f91dbb952670eabd34528ba5b35ce7d07805d746b96f553bcb"
+    },
+    {
+      "id": "d1-2",
+      "slug": "baliwasan",
+      "name": "Baliwasan",
+      "matchingRoster": 2,
+      "textSha256": "e6c9130ea7b193b928e559cb60ea6625d746b6a1c0d0eab15615b179b0501696"
+    },
+    {
+      "id": "d1-3",
+      "slug": "baluno",
+      "name": "Baluno",
+      "matchingRoster": 10,
+      "textSha256": "0b3d5c19fe9d9ea036ed71b2f4d03ace2e2fe8d086f5d6ef9494adfdf89bcda6"
+    },
+    {
+      "id": "d1-4",
+      "slug": "cabatangan",
+      "name": "Cabatangan",
+      "matchingRoster": 10,
+      "textSha256": "a09871bac160183aec5a98c90ded62bfe9478e8e319c951b9054ce614f5f6281"
+    },
+    {
+      "id": "d1-5",
+      "slug": "calarian",
+      "name": "Calarian",
+      "matchingRoster": 1,
+      "textSha256": "6a506b18bdc279d4a82951dcefd59241fbd5950db810a662e820d7e24661faf4"
+    },
+    {
+      "id": "d1-6",
+      "slug": "camino-nuevo",
+      "name": "Camino Nuevo",
+      "matchingRoster": 0,
+      "textSha256": "1e5f7d33fb584234ac7b2418966374c6ea87f9c64b140c1f22dea9d7992aee87"
+    },
+    {
+      "id": "d1-7",
+      "slug": "campo-islam",
+      "name": "Campo Islam",
+      "matchingRoster": 10,
+      "textSha256": "6f4c9be56e17100050abbf8aff293d6280df194caebccc2dacd473f0af12c089"
+    },
+    {
+      "id": "d1-8",
+      "slug": "canelar",
+      "name": "Canelar",
+      "matchingRoster": 10,
+      "textSha256": "85453e9b7a9990e790cd1ad3916e2b6764c3c1392ae560fd4c7f03bc6b34bf44"
+    },
+    {
+      "id": "d1-9",
+      "slug": "capisan",
+      "name": "Capisan",
+      "matchingRoster": 9,
+      "textSha256": "5b2dd42a374bf6e24f16eb06334b3900eb935a09aa1a53282d9d5a6b27445626"
+    },
+    {
+      "id": "d1-10",
+      "slug": "cawit",
+      "name": "Cawit",
+      "matchingRoster": 10,
+      "textSha256": "51ed89416f6ab0757e35b5c818218929cabe89bc5ab93176bd89e52087d57466"
+    },
+    {
+      "id": "d1-11",
+      "slug": "dulian-pasonanca",
+      "name": "Dulian (Pasonanca)",
+      "matchingRoster": 0,
+      "textSha256": "d18146f065cb9c9093ba9efe6849d78b3118ced1819c9a0f4b3720f50d0869bc"
+    },
+    {
+      "id": "d1-12",
+      "slug": "kasanyangan",
+      "name": "Kasanyangan",
+      "matchingRoster": 0,
+      "textSha256": "8064a8462e4840cb302e1b617d6f60b9db9703d29125c9cd9534b817ff003cb3"
+    },
+    {
+      "id": "d1-13",
+      "slug": "la-paz",
+      "name": "La Paz",
+      "matchingRoster": 1,
+      "textSha256": "b24f85aa5cedff7aa14319c05e0ff7ad2fd20c156447a8ab39873957f394fe24"
+    },
+    {
+      "id": "d1-14",
+      "slug": "labuan",
+      "name": "Labuan",
+      "matchingRoster": 9,
+      "textSha256": "2a7e807f4cc19c66030f10fb0fde0fcb2e6f2e5079b7507733e5b0159b65be8e"
+    },
+    {
+      "id": "d1-15",
+      "slug": "limpapa",
+      "name": "Limpapa",
+      "matchingRoster": 9,
+      "textSha256": "0433698aa8ebd78754d60047bd88c68e4e196b2a8f828826edee387a012d1a5b"
+    },
+    {
+      "id": "d1-16",
+      "slug": "maasin",
+      "name": "Maasin",
+      "matchingRoster": 10,
+      "textSha256": "60253214a11dd4a1c8667fab8b1cf5e6fae247b2d2758b68ef30c4c5a548a650"
+    },
+    {
+      "id": "d1-17",
+      "slug": "malagutay",
+      "name": "Malagutay",
+      "matchingRoster": 10,
+      "textSha256": "34c9de318d81df56563eb8c32cf9b5adf21af0c10e5c46cf31b0439ec3bb9b45"
+    },
+    {
+      "id": "d1-18",
+      "slug": "mariki",
+      "name": "Mariki",
+      "matchingRoster": 10,
+      "textSha256": "e04d14378ddd371cfea31cc7926076360725d9ee865ef4d8a7cd45e6cba73253"
+    },
+    {
+      "id": "d1-19",
+      "slug": "pamucutan",
+      "name": "Pamucutan",
+      "matchingRoster": 9,
+      "textSha256": "a2e628dfcd96ffafecd0299e3722224b5db9a48d4a6e29d9534e299a6f388913"
+    },
+    {
+      "id": "d1-20",
+      "slug": "pasonanca",
+      "name": "Pasonanca",
+      "matchingRoster": 10,
+      "textSha256": "a7cd3931516067ee20073b6d3f001839f48f1f9194010e0fef74750b9335728c"
+    },
+    {
+      "id": "d1-21",
+      "slug": "patalon",
+      "name": "Patalon",
+      "matchingRoster": 10,
+      "textSha256": "12bc923259cd17e8f2955ddd5eb2658aefac3decf3e39886ad956cab6b2e9054"
+    },
+    {
+      "id": "d1-22",
+      "slug": "recodo",
+      "name": "Recodo",
+      "matchingRoster": 10,
+      "textSha256": "a86302102445c8582d0eb93d4f135b274f889669f67abaf4c1cf43f378f11e7b"
+    },
+    {
+      "id": "d1-23",
+      "slug": "rio-hondo",
+      "name": "Rio Hondo",
+      "matchingRoster": 10,
+      "textSha256": "a7c8b21c196fcefed98457af6a48e9499792cf109bc2acd77415baf8e77a7fe8"
+    },
+    {
+      "id": "d1-24",
+      "slug": "san-jose-cawa-cawa",
+      "name": "San Jose (Cawa-Cawa)",
+      "matchingRoster": 0,
+      "textSha256": "085d9982cf34a05c2a44102c57d048e2b41184ce26fd289e51f089bdfd44510b"
+    },
+    {
+      "id": "d1-25",
+      "slug": "san-jose-gusu",
+      "name": "San Jose (Gusu)",
+      "matchingRoster": 0,
+      "textSha256": "77aa838b154d0f1c4484079121958be09a27b0047f1fb0d88218723951dfa2c8"
+    },
+    {
+      "id": "d1-26",
+      "slug": "san-roque",
+      "name": "San Roque",
+      "matchingRoster": 10,
+      "textSha256": "5fa1f2f8d18822375636029c7f66cf1a15bcf728a333dba16ca0f400e63c1e0a"
+    },
+    {
+      "id": "d1-27",
+      "slug": "santa-barbara",
+      "name": "Santa Barbara",
+      "matchingRoster": 10,
+      "textSha256": "89352e1c4e67093aac4764c37d821f1a1c0327b4c83ac7690ab213356cb1601e"
+    },
+    {
+      "id": "d1-28",
+      "slug": "santa-maria",
+      "name": "Santa Maria",
+      "matchingRoster": 10,
+      "textSha256": "3fdcf81e1cd95247e031ca81169b961d5de7a45184a1360d1a38cdf2ba8bfa50"
+    },
+    {
+      "id": "d1-29",
+      "slug": "santo-nino",
+      "name": "Santo Niño",
+      "matchingRoster": 9,
+      "textSha256": "2b576833fc1ee6c600cbf48645d3ae94b798f1d8859e024fc2f8051e8446268f"
+    },
+    {
+      "id": "d1-30",
+      "slug": "sinubung",
+      "name": "Sinubung",
+      "matchingRoster": 10,
+      "textSha256": "d86e201c624911418c0f4836d054db3c0a95233c637e68ea7a7b2002110c8ece"
+    },
+    {
+      "id": "d1-31",
+      "slug": "sinunuc",
+      "name": "Sinunuc",
+      "matchingRoster": 0,
+      "textSha256": "989ad81d2aa77518925f6ab9d12b2a9f55ba401483a67f8179e157a4572703c7"
+    },
+    {
+      "id": "d1-32",
+      "slug": "talisayan",
+      "name": "Talisayan",
+      "matchingRoster": 10,
+      "textSha256": "5c9f492e51f09f86f1835804a7df6780177b277bf137863288a719c09c07118c"
+    },
+    {
+      "id": "d1-33",
+      "slug": "tulungatung",
+      "name": "Tulungatung",
+      "matchingRoster": 10,
+      "textSha256": "2c8769983ed951ddb3ce2f8fa6ecf8a42be3138b2344950f3e767e8c345aed04"
+    },
+    {
+      "id": "d1-34",
+      "slug": "tumaga",
+      "name": "Tumaga",
+      "matchingRoster": 9,
+      "textSha256": "6e3194a5664d313792a4fc657c843f4455435bb78e2b048ae76a93ec231f367d"
+    },
+    {
+      "id": "d1-35",
+      "slug": "zone-i-poblacion",
+      "name": "Zone I (Poblacion)",
+      "matchingRoster": 0,
+      "textSha256": "766e604e4d457b805fa323b2bcc103f280a573b89341abadb6e0ae09d8cff0fb"
+    },
+    {
+      "id": "d1-36",
+      "slug": "zone-ii-poblacion",
+      "name": "Zone II (Poblacion)",
+      "matchingRoster": 0,
+      "textSha256": "59563be42c63f5ec5a8f3e0769f407a89c71bdcbd7ca6ad84ef2c2aea0ab01aa"
+    },
+    {
+      "id": "d1-37",
+      "slug": "zone-iii-poblacion",
+      "name": "Zone III (Poblacion)",
+      "matchingRoster": 0,
+      "textSha256": "23c72d039ee9e79eaa90d8755014193e5b063726e736b9b84cfa9547a8f7db47"
+    },
+    {
+      "id": "d1-38",
+      "slug": "zone-iv-poblacion",
+      "name": "Zone IV (Poblacion)",
+      "matchingRoster": 0,
+      "textSha256": "4283abaa38310bb277fe2501dc22baffd85c9cb727609f2d7875c5daed04f709"
+    },
+    {
+      "id": "d2-1",
+      "slug": "arena-blanco",
+      "name": "Arena Blanco",
+      "matchingRoster": 10,
+      "textSha256": "28cb85fadc715df7c1a5029aa91d173d4a6a1b35660883444cf08095aecf1af2"
+    },
+    {
+      "id": "d2-2",
+      "slug": "boalan",
+      "name": "Boalan",
+      "matchingRoster": 10,
+      "textSha256": "3ed074dfc75e213809e2b65759a6b7d715f56698c6a1884009f533e10ec08846"
+    },
+    {
+      "id": "d2-3",
+      "slug": "bolong",
+      "name": "Bolong",
+      "matchingRoster": 10,
+      "textSha256": "37cb639940afef237eeba94a575bdd487aa6386a27f819ccbba63a7f30c3ac53"
+    },
+    {
+      "id": "d2-4",
+      "slug": "buenavista",
+      "name": "Buenavista",
+      "matchingRoster": 9,
+      "textSha256": "6f2d16c4418767fb58dc26a9665af2564c3c4d9b421da3cc5fb0a53d249f4aed"
+    },
+    {
+      "id": "d2-5",
+      "slug": "bunguiao",
+      "name": "Bunguiao",
+      "matchingRoster": 10,
+      "textSha256": "d291de74cc915d18718f91cdd1b3b50ebbbd4aa12693ab682e630f75a90dacdd"
+    },
+    {
+      "id": "d2-6",
+      "slug": "busay",
+      "name": "Busay",
+      "matchingRoster": 8,
+      "textSha256": "39b64676e795759a6b035e3e81e9e463dcd41d6e75249827de61afc3ce234bdd"
+    },
+    {
+      "id": "d2-7",
+      "slug": "cabaluay",
+      "name": "Cabaluay",
+      "matchingRoster": 8,
+      "textSha256": "63fa15444b7f1863128b98ce9021dc0fd700b7400a3437e8c72bc066278723bb"
+    },
+    {
+      "id": "d2-8",
+      "slug": "cacao",
+      "name": "Cacao",
+      "matchingRoster": 10,
+      "textSha256": "c8131b3495bfcb26ede3b57bac8e7fe751b0aeac814a83da7fb094c5d5666e2f"
+    },
+    {
+      "id": "d2-9",
+      "slug": "calabasa",
+      "name": "Calabasa",
+      "matchingRoster": 9,
+      "textSha256": "5ed376d9ccf964226be1569e189a587950a14cb10712be53813ebcc3b88b48f1"
+    },
+    {
+      "id": "d2-10",
+      "slug": "culianan",
+      "name": "Culianan",
+      "matchingRoster": 10,
+      "textSha256": "d9ca45d6635a7da0752236505ca5bcd4b9517f1955ba8e5222d64ae9dc5e684b"
+    },
+    {
+      "id": "d2-11",
+      "slug": "curuan",
+      "name": "Curuan",
+      "matchingRoster": 9,
+      "textSha256": "3db9322b84d5b28f909a3ba29a5cc08e4af329a622145d14f743f0f18b66d74f"
+    },
+    {
+      "id": "d2-12",
+      "slug": "dita",
+      "name": "Dita",
+      "matchingRoster": 10,
+      "textSha256": "14a329940f6e2f838df00ae4e8fc83246f350623c614eb409ec8e601775a8b16"
+    },
+    {
+      "id": "d2-13",
+      "slug": "divisoria",
+      "name": "Divisoria",
+      "matchingRoster": 10,
+      "textSha256": "8c0e5645b6e5d2d10d129c6a1fe36959c88bf27315fb04c5e4f493e3ca5c619f"
+    },
+    {
+      "id": "d2-14",
+      "slug": "dulian-bunguiao",
+      "name": "Dulian (Bunguiao)",
+      "matchingRoster": 0,
+      "textSha256": "e129881c4306d987d06a2bb5dd2b2d13f2ff49ce92e5c2a978dd7eef1f637377"
+    },
+    {
+      "id": "d2-15",
+      "slug": "guisao",
+      "name": "Guisao",
+      "matchingRoster": 10,
+      "textSha256": "51b64019a5e297ed0516814e9a4eebabfe4fb25b67075fccd1563d9dc2b92ab3"
+    },
+    {
+      "id": "d2-16",
+      "slug": "guiwan",
+      "name": "Guiwan",
+      "matchingRoster": 9,
+      "textSha256": "ad569a52064d64c45a86e499cb013b78718b717c4240411d925c5177cdd99444"
+    },
+    {
+      "id": "d2-17",
+      "slug": "lamisahan",
+      "name": "Lamisahan",
+      "matchingRoster": 10,
+      "textSha256": "68faa7c4276d326761d8759653e5f0529fcad6039fafefbc851b528b78e46bdc"
+    },
+    {
+      "id": "d2-18",
+      "slug": "landang-gua",
+      "name": "Landang Gua",
+      "matchingRoster": 10,
+      "textSha256": "63ca774c17123c80fae0ba3948d81005db060a9e838e821d6a0e0519914a4571"
+    },
+    {
+      "id": "d2-19",
+      "slug": "landang-laum",
+      "name": "Landang Laum",
+      "matchingRoster": 10,
+      "textSha256": "e6c03d6c0a1208a6ee1f75d3aede8bc2a075bfeaf527dea1ec533fe4abe29fcc"
+    },
+    {
+      "id": "d2-20",
+      "slug": "lanzones",
+      "name": "Lanzones",
+      "matchingRoster": 10,
+      "textSha256": "378c890acae3bfb0a697fe4a4dd4e88ba6c0ab70d15ec28c50cd0beaae238303"
+    },
+    {
+      "id": "d2-21",
+      "slug": "lapakan",
+      "name": "Lapakan",
+      "matchingRoster": 10,
+      "textSha256": "ca40772d7a6d6f2f2297f5e03c7cd1aec03ae19e33aa7275defb582d425aa34c"
+    },
+    {
+      "id": "d2-22",
+      "slug": "latuan",
+      "name": "Latuan",
+      "matchingRoster": 10,
+      "textSha256": "5a7faab0b7f5cc9957af8fbedf3e819eac0871eba1190972f119757044fda679"
+    },
+    {
+      "id": "d2-23",
+      "slug": "licomo",
+      "name": "Licomo",
+      "matchingRoster": 0,
+      "textSha256": "7f3933eaa2892c94fc1ecb082414780de03463c0cfb1903427b44fdd7037ef70"
+    },
+    {
+      "id": "d2-24",
+      "slug": "limaong",
+      "name": "Limaong",
+      "matchingRoster": 3,
+      "textSha256": "d5d80daa876c27e7d90d13530849802258b7af599604f37b7453b700a4c88f8f"
+    },
+    {
+      "id": "d2-25",
+      "slug": "lubigan",
+      "name": "Lubigan",
+      "matchingRoster": 10,
+      "textSha256": "03650ef7e326f787fe0ef21baec4ebabc1048937c95b37606284a2f5d13793dc"
+    },
+    {
+      "id": "d2-26",
+      "slug": "lumayang",
+      "name": "Lumayang",
+      "matchingRoster": 0,
+      "textSha256": "adf35191a14d2481e6b3285261fe40e7fd40c9d31f349a1ee0d35f2dd00c0339"
+    },
+    {
+      "id": "d2-27",
+      "slug": "lumbangan",
+      "name": "Lumbangan",
+      "matchingRoster": 9,
+      "textSha256": "e96b6410a21d3976d205333cb9038aa9ee96a2763785c65d395b3510408494a6"
+    },
+    {
+      "id": "d2-28",
+      "slug": "lunzuran",
+      "name": "Lunzuran",
+      "matchingRoster": 10,
+      "textSha256": "48719fdbb3a609509657e68d18eefbab231e9eaa0e30bee49f943a5380e36b8f"
+    },
+    {
+      "id": "d2-29",
+      "slug": "mampang",
+      "name": "Mampang",
+      "matchingRoster": 9,
+      "textSha256": "f7a9e1eff532f2e266e70f85461324fab084e00fe9631a7d8a51a38f2cb30ebb"
+    },
+    {
+      "id": "d2-30",
+      "slug": "manalipa",
+      "name": "Manalipa",
+      "matchingRoster": 9,
+      "textSha256": "b5018326da0ed5ee6308068933a0a5ecee4b6f78f07084f3032af45d830de99f"
+    },
+    {
+      "id": "d2-31",
+      "slug": "mangusu",
+      "name": "Mangusu",
+      "matchingRoster": 8,
+      "textSha256": "16efdc0450306fa3d005aed487716894cbfb5bdb8a0de875e2739b43a7b70c88"
+    },
+    {
+      "id": "d2-32",
+      "slug": "manicahan",
+      "name": "Manicahan",
+      "matchingRoster": 10,
+      "textSha256": "d85d43d202391ef0023721539264ffe8cc2ae71056cb219ed2c82a5e7cbb2e1a"
+    },
+    {
+      "id": "d2-33",
+      "slug": "mercedes",
+      "name": "Mercedes",
+      "matchingRoster": 10,
+      "textSha256": "2a0a0595c4df4bc543cce19fec269d283028126a5801985993df24e71273e799"
+    },
+    {
+      "id": "d2-34",
+      "slug": "muti",
+      "name": "Muti",
+      "matchingRoster": 10,
+      "textSha256": "a9d1f9e7842b7c4201376f181103d23b0e1e4d819e7093c07221b7a57b82c222"
+    },
+    {
+      "id": "d2-35",
+      "slug": "pangapuyan",
+      "name": "Pangapuyan",
+      "matchingRoster": 9,
+      "textSha256": "2a4acdc65e62c8cb40766ed9d5f3994a49f1c2be3708ec5fd5c1606f5c8ecae6"
+    },
+    {
+      "id": "d2-36",
+      "slug": "panubigan",
+      "name": "Panubigan",
+      "matchingRoster": 8,
+      "textSha256": "2cf041522127d5d14a1d09e37d160886b8315ff0037cdb6c6b6d3d2c26dcf9a5"
+    },
+    {
+      "id": "d2-37",
+      "slug": "pasilmanta",
+      "name": "Pasilmanta",
+      "matchingRoster": 10,
+      "textSha256": "9d984f28ee800ed46df60a4b53c0b2b717a1a11d2b2d52e3774bd83422684733"
+    },
+    {
+      "id": "d2-38",
+      "slug": "pasobolong",
+      "name": "Pasobolong",
+      "matchingRoster": 0,
+      "textSha256": "6427a9dcd6d78f78d1b22ecdbb0183841d18d0671c4e971df0b3abef7b2e7942"
+    },
+    {
+      "id": "d2-39",
+      "slug": "putik",
+      "name": "Putik",
+      "matchingRoster": 9,
+      "textSha256": "15bb217c249a5f8fb3989224f24c2ef2bd7956f88d840862d4cd16f53e1c1c9e"
+    },
+    {
+      "id": "d2-40",
+      "slug": "quiniput",
+      "name": "Quiniput",
+      "matchingRoster": 10,
+      "textSha256": "6f42859fd5ca398fac2729bc0cd970780c77135f8e55d71691cd87b9b672985f"
+    },
+    {
+      "id": "d2-41",
+      "slug": "salaan",
+      "name": "Salaan",
+      "matchingRoster": 10,
+      "textSha256": "a16cf96b6bce823e627adc2901b77a8447962575bcd5ed83cdbcc79d4020e6dd"
+    },
+    {
+      "id": "d2-42",
+      "slug": "sangali",
+      "name": "Sangali",
+      "matchingRoster": 10,
+      "textSha256": "593b93a4adc500ac478553ebe185ce31a4c02ec798349dfcba747d3348766b61"
+    },
+    {
+      "id": "d2-43",
+      "slug": "santa-catalina",
+      "name": "Santa Catalina",
+      "matchingRoster": 8,
+      "textSha256": "9a0657b1c13ebfe940df770481d2cf5dfcc4d11020a113015000e145c0f71b03"
+    },
+    {
+      "id": "d2-44",
+      "slug": "sibulao",
+      "name": "Sibulao",
+      "matchingRoster": 10,
+      "textSha256": "74a2ba5e78048d50679567dcf774b256e3dce1b89e6e0928ebd6de92e3b9eb88"
+    },
+    {
+      "id": "d2-45",
+      "slug": "tagasilay",
+      "name": "Tagasilay",
+      "matchingRoster": 9,
+      "textSha256": "71a8b91745de464c8341614d838cb02ad6ecf1db9d5488f2ac6ebc4964c2b411"
+    },
+    {
+      "id": "d2-46",
+      "slug": "taguiti",
+      "name": "Taguiti",
+      "matchingRoster": 9,
+      "textSha256": "a86afd548441698b316ccd2207590ef139c4a4bba49c2b3750c73b89397e2f6f"
+    },
+    {
+      "id": "d2-47",
+      "slug": "talabaan",
+      "name": "Talabaan",
+      "matchingRoster": 9,
+      "textSha256": "7a1a402745e7563ff450cbcbfeba2c8b7c00c3293e39efb2131d088e74af4650"
+    },
+    {
+      "id": "d2-48",
+      "slug": "talon-talon",
+      "name": "Talon-Talon",
+      "matchingRoster": 10,
+      "textSha256": "840f367a46981f77a0a62c8e322dbedf0d3af14934be612fe092416a98f30eec"
+    },
+    {
+      "id": "d2-49",
+      "slug": "taluksangay",
+      "name": "Taluksangay",
+      "matchingRoster": 8,
+      "textSha256": "e2d07d77d65e1e85502c1e355eefc1db12ddcde75b0f7d3c3acb834a6cd3d97a"
+    },
+    {
+      "id": "d2-50",
+      "slug": "tetuan",
+      "name": "Tetuan",
+      "matchingRoster": 10,
+      "textSha256": "4affaf789740089eeb5ed0a65a08da4dba251ae9a05f63475ceba4bc3894262b"
+    },
+    {
+      "id": "d2-51",
+      "slug": "tictapul",
+      "name": "Tictapul",
+      "matchingRoster": 10,
+      "textSha256": "ec6fc26d6ee40632299f85982dd5ce6a1d06792dc68355747706c257d4a848c6"
+    },
+    {
+      "id": "d2-52",
+      "slug": "tigbalabag",
+      "name": "Tigbalabag",
+      "matchingRoster": 9,
+      "textSha256": "957c61e13d9174ce3ed6a0322178347da4c25ebc446cbfe1143efbfa9f7dc457"
+    },
+    {
+      "id": "d2-53",
+      "slug": "tigtabon",
+      "name": "Tigtabon",
+      "matchingRoster": 10,
+      "textSha256": "6b8abc8ba93664690c9b023040ad093cd8996ca3cc1f6172512e75025776fd0c"
+    },
+    {
+      "id": "d2-54",
+      "slug": "tolosa",
+      "name": "Tolosa",
+      "matchingRoster": 10,
+      "textSha256": "b47e78b5fd865665dd9e8ee45f8435f32572f8107851b1c36142fafc942b68ff"
+    },
+    {
+      "id": "d2-55",
+      "slug": "tugbungan",
+      "name": "Tugbungan",
+      "matchingRoster": 10,
+      "textSha256": "c74c63e4ca6d7d3c0077bc68a8f6eda258588cfa7eaf1daf5ee0429c5f1e6381"
+    },
+    {
+      "id": "d2-56",
+      "slug": "tumalutab",
+      "name": "Tumalutab",
+      "matchingRoster": 9,
+      "textSha256": "805b15cea18b459c54d439e83c449f720eaef04ad51eec3291ab48773cdb25fc"
+    },
+    {
+      "id": "d2-57",
+      "slug": "tumitus",
+      "name": "Tumitus",
+      "matchingRoster": 10,
+      "textSha256": "79d1f616da97281a62656ad736be3fbb9c42a90c78b9e1f1ed700d308a31954e"
+    },
+    {
+      "id": "d2-58",
+      "slug": "victoria",
+      "name": "Victoria",
+      "matchingRoster": 0,
+      "textSha256": "8c06c0830507bba44b8e8762b77c6dd36490a9e790f6115fde7460948d0a9a08"
+    },
+    {
+      "id": "d2-59",
+      "slug": "vitali",
+      "name": "Vitali",
+      "matchingRoster": 10,
+      "textSha256": "f62b44493371d62975d2caac6bd2a111a3d7d853d1f15108af521e3b0bb38de9"
+    },
+    {
+      "id": "d2-60",
+      "slug": "zambowood",
+      "name": "Zambowood",
+      "matchingRoster": 0,
+      "textSha256": "2f162e4facac764597f69afee2bad4758649a31c445a69de7a9189f9a70ba370"
+    }
+  ]
+}

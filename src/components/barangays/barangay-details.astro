@@ -1,5 +1,5 @@
 ---
-import { fetchBarangayOfficials, type Barangay } from '../../lib/supabase';
+import type { Barangay } from '../../types/civic-data';
 import officialsData from '../../content/Barangay-officials/barangay-officials.json';
 import popDataRaw from '../../content/Barangay-officials/population2024.json';
 
@@ -11,29 +11,19 @@ interface Props {
 
 const { barangay } = Astro.props;
 
-// Fetch officials from Supabase database
-const { data: dbOfficials } = await fetchBarangayOfficials(barangay.id);
-
-let bgyOfficials = dbOfficials.map(o => ({
-  POSITION: o.position,
-  fullName: o.fullName
-}));
-
-if (bgyOfficials.length === 0) {
-  const jsonOfficials = officialsData.filter(
-    (o) => o.barangay_m.toLowerCase() === barangay.name.toLowerCase()
-  );
-  bgyOfficials = jsonOfficials.map(o => {
-    const fn = o.FIRSTNAME || '';
-    const mn = o.MIDDLENAME ? o.MIDDLENAME + ' ' : '';
-    const ln = o.LASTNAME || '';
-    const suf = o.SUFFIX ? ' ' + o.SUFFIX : '';
-    return {
-      POSITION: o.POSITION,
-      fullName: `${fn} ${mn}${ln}${suf}`.replace(/\s+/g, ' ').trim()
-    };
-  });
-}
+const jsonOfficials = officialsData.filter(
+  (o) => o.barangay_m.toLowerCase() === barangay.name.toLowerCase()
+);
+const bgyOfficials = jsonOfficials.map(o => {
+  const fn = o.FIRSTNAME || '';
+  const mn = o.MIDDLENAME ? o.MIDDLENAME + ' ' : '';
+  const ln = o.LASTNAME || '';
+  const suf = o.SUFFIX ? ' ' + o.SUFFIX : '';
+  return {
+    POSITION: o.POSITION,
+    fullName: `${fn} ${mn}${ln}${suf}`.replace(/\s+/g, ' ').trim()
+  };
+});
 
 const punongBarangayObj = bgyOfficials.find((o) => o.POSITION === 'Punong Barangay');
 const kagawadsObj = bgyOfficials.filter((o) => o.POSITION === 'Sangguniang Barangay Member');

@@ -5,7 +5,7 @@ import Layout from '../../layouts/Layout.astro';
 import BarangayHeader from '../../components/barangays/BarangayHeader.astro';
 import BarangayExplorer from '../../components/barangays/BarangayExplorer';
 import BarangayDetails from '../../components/barangays/barangay-details.astro';
-import { fetchBarangays } from '../../lib/supabase';
+import { fetchBarangays } from '../../lib/civic-data';
 
 const { data: allBarangays } = await fetchBarangays();
 

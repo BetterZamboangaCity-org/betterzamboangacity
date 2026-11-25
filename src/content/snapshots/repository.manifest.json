@@ -1,0 +1,22 @@
+{
+  "baseCommit": "41390803a621b7d12a6081038634a3c204eac4db",
+  "capturedAt": "2026-11-25T11:54:35.933Z",
+  "captureKind": "Preserved repository values, not a remote database export",
+  "verification": "Value/order parity checked; source accuracy and known conflicts remain for issue #16",
+  "datasets": [
+    {
+      "dataset": "barangays",
+      "rows": 98,
+      "sourceAtBase": "src/data/barangay-data.ts",
+      "file": "barangays.json",
+      "sha256": "f1e2d19b6832952abcf2c022d882eaae5073d4eb6439c4509aaed6a3c1194353"
+    },
+    {
+      "dataset": "emergency-facilities",
+      "rows": 22,
+      "sourceAtBase": "src/data/disaster-data.ts",
+      "file": "emergency-facilities.json",
+      "sha256": "d1de0f2563d6b210f45e27a615f15d47e5d309d58ae3d18cea67691f59bd0047"
+    }
+  ]
+}
