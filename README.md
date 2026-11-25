@@ -27,21 +27,12 @@ The application architecture and static content pipeline are actively being cons
 The project is built on **Astro** for structured content delivery and React for interactive components.
 
 * **Framework:** [Astro](https://astro.build/) (Static Site Generation / Islands Architecture)
-* **Content:** Astro Content Collections
+* **Content:** Imported JSON/CSV snapshots and current Supabase reads; see [project context](CONTEXT.md).
 * **Styling:** Tailwind CSS
 * **Deployment:** Vercel
 
 ### Local Setup
 
-Make sure you have [Node.js](https://nodejs.org/) (v18.17.0+ or v20+) and Git installed.
+Use Node **>=22.12.0** and npm. Follow [Development and verification](docs/development.md) for clean installation, background server commands, fixture setup, and available checks.
 
-```bash
-# Clone repository
-git clone [https://github.com/RALPH22222/better-zamboanga-city.git](https://github.com/RALPH22222/better-zamboanga-city.git)
-cd better-zamboanga-city
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+Agents must start with [AGENTS.md](AGENTS.md). Contributors should also read [CONTRIBUTING.md](CONTRIBUTING.md).
