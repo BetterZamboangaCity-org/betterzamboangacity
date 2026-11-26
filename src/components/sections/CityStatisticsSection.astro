@@ -1,7 +1,7 @@
 ---
 import StatCard from '../StatCard.astro';
 import { fetchBarangays, fetchOrdinances } from '../../lib/civic-data';
-import { capturedFrom } from '../../content/snapshots/ordinances.manifest.json';
+import { capturedFrom } from '../../data/ordinances.manifest.json';
 import populationData from '../../content/Barangay-officials/population2024.json';
 
 const [barangaysRes, ordinancesRes] = await Promise.all([

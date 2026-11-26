@@ -43,38 +43,38 @@ try {
   await page.evaluate(() => new Promise(resolve => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
   await page.screenshot({ path: `${evidence}/ordinances-mobile.png`, fullPage: true });
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.route('**/data/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify([
+  await page.route('**/api/v1/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify([
     { id: 'fixture-only', name: 'Fixture-only Hospital', category: 'hospital', catLabel: 'HOSPITAL', lat: 6.92, lng: 122.07, phone: '911', address: 'Fixture Road' },
   ]) }));
   await page.goto(`${base}/contact/disaster`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Fixture-only Hospital', { exact: true }).waitFor({ timeout: 8000 });
   assert.equal(await page.locator('.facility-card').count(), 1);
-  await page.route('**/data/ordinances.json', route => route.fulfill({ status: 503, contentType: 'application/json', body: '[]' }));
+  await page.route('**/api/v1/ordinances.json', route => route.fulfill({ status: 503, contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor({ timeout: 8000 });
-  const [ordinanceRecord] = await (await page.request.get(`${base}/data/ordinances.json`)).json();
+  const [ordinanceRecord] = await (await page.request.get(`${base}/api/v1/ordinances.json`)).json();
   for (const field of ['active_status', 'date_enacted', 'date_approved']) {
-    await page.route('**/data/ordinances.json', route => route.fulfill({
+    await page.route('**/api/v1/ordinances.json', route => route.fulfill({
       contentType: 'application/json', body: JSON.stringify([{ ...ordinanceRecord, [field]: { unexpected: true } }]),
     }));
     await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
     await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor();
     assert.deepEqual(errors, [], `Malformed ${field} must not reach React`);
   }
-  await page.route('**/data/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[]' }));
+  await page.route('**/api/v1/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('No ordinance records are included in this snapshot.', { exact: true }).waitFor({ timeout: 8000 });
-  await page.route('**/data/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[{"official_title":null}]' }));
+  await page.route('**/api/v1/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[{"official_title":null}]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor({ timeout: 8000 });
-  await page.route('**/data/emergency-facilities.json', route => route.fulfill({ status: 503, contentType: 'application/json', body: '[]' }));
+  await page.route('**/api/v1/emergency-facilities.json', route => route.fulfill({ status: 503, contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/contact/disaster`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Emergency facility data is unavailable. Use the static contacts below.', { exact: true }).waitFor({ timeout: 8000 });
   assert.equal(await page.locator('#map-counter-text').textContent(), 'Emergency facility data unavailable');
-  await page.route('**/data/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: '[]' }));
+  await page.route('**/api/v1/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/contact/disaster`, { waitUntil: 'domcontentloaded' });
   await page.getByText('No emergency facilities are included in this snapshot.', { exact: true }).waitFor();
-  await page.route('**/data/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: '[{"id":"bad","lat":null}]' }));
+  await page.route('**/api/v1/emergency-facilities.json', route => route.fulfill({ contentType: 'application/json', body: '[{"id":"bad","lat":null}]' }));
   await page.goto(`${base}/contact/disaster`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Emergency facility data is unavailable. Use the static contacts below.', { exact: true }).waitFor();
   await page.addStyleTag({ content: 'astro-dev-toolbar { display:none !important; }' });

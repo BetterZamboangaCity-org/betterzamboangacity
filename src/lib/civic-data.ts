@@ -1,7 +1,7 @@
-import ordinanceSnapshot from '../content/snapshots/ordinances.json';
-import barangaySnapshot from '../content/snapshots/barangays.json';
+import ordinanceSnapshot from '../data/ordinances.json';
+import barangaySnapshot from '../data/barangays.json';
 import cityOfficials from '../content/city-officials/zamboanga_city_officials.json';
-import emergencySnapshot from '../content/snapshots/emergency-facilities.json';
+import emergencySnapshot from '../data/emergency-facilities.json';
 import type { Ordinance } from '../types/ordinance';
 import type { Barangay, CityOfficial, EmergencyFacility } from '../types/civic-data';
 

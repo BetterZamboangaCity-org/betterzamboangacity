@@ -69,9 +69,9 @@ async function fresh({ leaflet = 'stub' } = {}) {
     if (url.hostname.endsWith('.supabase.co')) databaseRequests.push(url.origin + url.pathname);
   });
   page.on('requestfailed', request => {
-    if (new URL(request.url()).pathname === '/data/emergency-facilities.json' && request.failure()?.errorText === 'net::ERR_ABORTED') abortedRequests++;
+    if (new URL(request.url()).pathname === '/api/v1/emergency-facilities.json' && request.failure()?.errorText === 'net::ERR_ABORTED') abortedRequests++;
   });
-  await page.route('**/data/emergency-facilities.json', async route => {
+  await page.route('**/api/v1/emergency-facilities.json', async route => {
     assert.equal(route.request().method(), 'GET', 'The directory must only read data.');
     dataRequests++;
     if (delayData) { delayed.push(route); return; }
@@ -237,7 +237,7 @@ try {
     await context.addInitScript(() => {
       const fetch = window.fetch;
       window.__uncancellableCompleted = 0;
-      window.fetch = (input, options) => String(input).includes('/data/emergency-facilities.json')
+      window.fetch = (input, options) => String(input).includes('/api/v1/emergency-facilities.json')
         ? fetch(input, { ...options, signal: undefined }).then(response => { window.__uncancellableCompleted++; return response; })
         : fetch(input, options);
     });

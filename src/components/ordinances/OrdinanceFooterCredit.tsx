@@ -1,5 +1,5 @@
 import React from 'react';
-import { capturedFrom } from '../../content/snapshots/ordinances.manifest.json';
+import { capturedFrom } from '../../data/ordinances.manifest.json';
 
 const LEY_DE_ZAMBOANGA_URL = 'https://zamboangacity-ordinance.vercel.app/';
 

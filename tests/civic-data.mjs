@@ -30,7 +30,7 @@ try {
   const directories = await server.ssrLoadModule('/src/data/disaster-data.ts');
   assert.equal(hash(directories.policeStations), expected.datasets['police-stations'].canonicalSha256);
   assert.equal(hash(directories.fireStations), expected.datasets['fire-stations'].canonicalSha256);
-  assert.equal(createHash('sha256').update(await readFile('src/content/snapshots/ordinances.json')).digest('hex'), expected.ordinances.rawSha256, 'Raw capture remains byte-identical');
+  assert.equal(createHash('sha256').update(await readFile('src/data/ordinances.json')).digest('hex'), expected.ordinances.rawSha256, 'Raw capture remains byte-identical');
   for (const [file, sha256] of Object.entries(expected.unchangedSourceFiles)) {
     assert.equal(createHash('sha256').update(await readFile(file)).digest('hex'), sha256, `Unchanged baseline source: ${file}`);
   }

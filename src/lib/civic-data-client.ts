@@ -17,7 +17,7 @@ function ordinance(value: unknown): value is Ordinance {
 }
 
 async function readJSON<T>(name: string, valid: (value: unknown) => value is T, signal?: AbortSignal): Promise<{ data: T[] }> {
-  const response = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { signal });
+  const response = await fetch(`${import.meta.env.BASE_URL}api/v1/${name}.json`, { signal });
   if (!response.ok) throw new Error('Repository data is unavailable.');
   const data: unknown = await response.json();
   if (!Array.isArray(data) || !data.every(valid)) throw new Error('Repository data is malformed.');

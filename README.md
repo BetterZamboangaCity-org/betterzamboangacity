@@ -27,7 +27,7 @@ The application architecture and static content pipeline are actively being cons
 The project is built on **Astro** for structured content delivery and React for interactive components.
 
 * **Framework:** [Astro](https://astro.build/) (Static Site Generation / Islands Architecture)
-* **Content:** Repository JSON/CSV snapshots; see [project context](CONTEXT.md).
+* **Content:** Repository JSON/CSV files; see [project context](CONTEXT.md).
 * **Styling:** Tailwind CSS
 * **Deployment:** Vercel
 
@@ -47,7 +47,7 @@ npm ci
 
 For an existing checkout, inspect its status and use its root directory. Skip the clone steps.
 
-Database credentials are not required. Server and build readers import repository JSON. The ordinance and emergency islands read the generated `/data/ordinances.json` and `/data/emergency-facilities.json` assets. See [project context](CONTEXT.md) for data boundaries.
+Database credentials are not required. Server and build readers import repository JSON. The ordinance and emergency islands read the generated `/api/v1/ordinances.json` and `/api/v1/emergency-facilities.json` assets. See [project context](CONTEXT.md) for data boundaries.
 
 [.env.example](.env.example) lists the optional public Carto setting. Preserve existing local environment files and keep credentials out of Git. Public configuration is browser-visible.
 
@@ -120,15 +120,16 @@ With the background server running, check the two public JSON assets, directory/
 
 ```sh
 node tests/data-assets.mjs
+node tests/api-cors.mjs
 node tests/data-migration.mjs
 node tests/barangay-data.mjs
 ```
 
-These use `BASE_URL` when the server URL differs from `http://127.0.0.1:4321`. Browser checks use installed Google Chrome; `BROWSER_CHANNEL` can select another installed channel. `TEST_EVIDENCE_DIR` controls the migration suite's screenshots. Record parity preserves known source conflicts and pending states; source reconciliation stays in #16.
+These use `BASE_URL` when the local server URL differs from `http://127.0.0.1:4321`. Browser checks use installed Google Chrome; `BROWSER_CHANNEL` can select another installed channel. The CORS test serves a small consumer page on a temporary local port and closes it after checking the real API. Astro blocks cross-site subresources during development; this test uses the same hostname with a different port to test cross-origin reads without disabling that protection. `TEST_EVIDENCE_DIR` controls the migration suite's screenshots. Record parity preserves known source conflicts and pending states; source reconciliation stays in #16.
 
 ### Accessibility fixtures
 
-Run against the same background server. The suite replaces only `/data/ordinances.json` in its browser. Components, keyboard behavior and Astro navigation remain real. External browser requests are blocked.
+Run against the same background server. The suite replaces only `/api/v1/ordinances.json` in its browser. Components, keyboard behavior and Astro navigation remain real. External browser requests are blocked.
 
 ```sh
 TEST_BASE_URL=http://127.0.0.1:4321 TEST_EVIDENCE_DIR=.agents/handoffs/local-check/accessibility node tests/accessibility.mjs
@@ -138,7 +139,7 @@ The test defaults to installed Google Chrome; `PLAYWRIGHT_CHANNEL` selects anoth
 
 ### Emergency directory fixtures
 
-The suite replaces only `/data/emergency-facilities.json` in its browser. It retains hostile values, delayed/aborted reads, uncancellable stale responses, navigation cleanup, geolocation and map-failure cases.
+The suite replaces only `/api/v1/emergency-facilities.json` in its browser. It retains hostile values, delayed/aborted reads, uncancellable stale responses, navigation cleanup, geolocation and map-failure cases.
 
 ```sh
 EMERGENCY_TEST_URL=http://127.0.0.1:4321 EMERGENCY_TEST_OUTPUT=.agents/handoffs/local-check/emergency node tests/emergency-directory.mjs
@@ -146,9 +147,27 @@ EMERGENCY_TEST_URL=http://127.0.0.1:4321 EMERGENCY_TEST_OUTPUT=.agents/handoffs/
 
 It uses installed Google Chrome. The real-library case needs the Leaflet CDN; other cases use a controlled map stub. Inspect output images and report unavailable network coverage. Fixture results establish interaction behavior only.
 
-### Snapshot provenance and updates
+### Data provenance and versions
 
-`src/content/snapshots/ordinances.json` preserves the captured public records and category relationships. Its adjacent `ordinances.manifest.json` records the upstream source, UTC capture interval, page counts, status counts, checksum and public-read scope. `repository.manifest.json` identifies the pinned repository baselines for barangays and emergency facilities. Existing city/roster/population files retain their paths. A frozen capture is not an administrative backup or agency verification.
+`src/data/ordinances.json` preserves the captured public records and category relationships. Its adjacent `ordinances.manifest.json` records the upstream source, UTC capture interval, page counts, status counts, checksum and public-read scope. `repository.manifest.json` identifies the pinned repository baselines for barangays and emergency facilities. Existing city/roster/population files retain their paths. A frozen capture is not an administrative backup or agency verification.
+
+The public, read-only API is generated at build time:
+
+| URL | Response |
+| --- | --- |
+| `/api/v1/ordinances.json` | All 862 normalized ordinance records, as an array. |
+| `/api/v1/barangays.json` | All 98 existing public barangay records, as an array. |
+| `/api/v1/emergency-facilities.json` | All 22 emergency facilities, as an array. |
+| `/api/v1/metadata.json` | API version, dataset URLs, record counts, capture dates, source details and revisions. |
+
+```sh
+curl http://127.0.0.1:4321/api/v1/metadata.json
+curl http://127.0.0.1:4321/api/v1/ordinances.json
+```
+
+`v1` identifies the API structure. Correcting or adding records keeps `v1`; an incompatible response structure requires a new major API version. Each dataset's `revision` is `sha256:<digest>` of the exact UTF-8 JSON response body. `sourceRevision` identifies the raw source file instead. The two digests can differ because the ordinance response retains the existing normalization and deterministic ordering. Capture dates identify the source capture, not a new agency verification.
+
+Keep canonical source filenames stable in `src/data/`. Git keeps their history; do not add dated copies or edit revision strings by hand. A reviewed data change followed by a new build/deployment generates the current revisions. These stable URLs use browser revalidation (`public, max-age=0, must-revalidate`), not long immutable caching. The responses allow public cross-origin reads without credentials. `vercel.json` applies the same headers when Vercel serves the generated static files. Verify deployed headers separately from local HTTP checks. This API has no writes, authentication, pagination or runtime database.
 
 For a deliberate data update:
 

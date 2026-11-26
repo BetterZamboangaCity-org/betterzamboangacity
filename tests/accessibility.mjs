@@ -24,7 +24,7 @@ page.on('console', message => {
 await page.route('**/*', route => {
   const url = new URL(route.request().url());
   if (url.hostname.endsWith('.supabase.co')) databaseRequests.push(url.origin + url.pathname);
-  if (url.pathname === '/data/ordinances.json') {
+  if (url.pathname === '/api/v1/ordinances.json') {
     assert.equal(route.request().method(), 'GET');
     fixtureReads += 1;
     return route.fulfill({ contentType: 'application/json', body: JSON.stringify(ordinanceFixture) });
