@@ -11,6 +11,7 @@ interface Props {
   description?: string;
   image?: string;
   canonicalURL?: string;
+  noindex?: boolean;
   showTopBar?: boolean;
   showHeader?: boolean;
   showFooter?: boolean;
@@ -19,14 +20,20 @@ interface Props {
 
 const {
   title = 'Better Zamboanga City | Civic Transparency Portal',
-  description = 'A modernized, volunteer-driven portal to access government services, public data, and resources for the people of Zamboanga City.',
+  description = 'An independent, volunteer-maintained portal for civic information, public records, and local resources in Zamboanga City.',
   image = '/images/og-image.png',
-  canonicalURL = Astro.url.href,
+  canonicalURL = Astro.url.pathname,
+  noindex = false,
   showTopBar = true,
   showHeader = true,
   showFooter = true,
   mainClass = 'grow flex flex-col focus:outline-none',
 } = Astro.props;
+
+const canonical = new URL(canonicalURL, Astro.site);
+canonical.pathname = canonical.pathname.replace(/\/+$/, '') || '/';
+canonical.hash = '';
+const socialImage = new URL(image, Astro.site).href;
 ---
 
 <!DOCTYPE html>
@@ -36,7 +43,8 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/images/ZC.svg" />
     <link rel="apple-touch-icon" href="/images/ZC.svg" />
-    <link rel="canonical" href={canonicalURL} />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>
@@ -45,12 +53,17 @@ const {
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:url" content={canonical.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="Better Zamboanga City, an independent civic information portal" />
     <meta property="og:site_name" content="Better Zamboanga City" />
     <meta property="og:locale" content="en_PH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
 
     <!-- Client Router for smooth client-side page transitions -->
     <ClientRouter />

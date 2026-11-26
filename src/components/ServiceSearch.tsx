@@ -13,12 +13,12 @@ const popularSearches: PopularSearch[] = [
   { label: 'Health Certificate', query: 'health certificate', type: 'medical' },
 ];
 
-const mockServices = [
-  { id: '1', title: 'Civil Registry & Birth Certificate', category: 'Certificates & Vital Records', link: '/services?q=birth' },
-  { id: '2', title: 'Business Permit Application & Renewal', category: 'Business & Trade', link: '/services?q=business' },
-  { id: '3', title: 'Marriage License Request', category: 'Certificates & Vital Records', link: '/services?q=marriage' },
-  { id: '4', title: 'Health Clearance & Sanitary Permit', category: 'Health & Wellness', link: '/services?q=health' },
-  { id: '5', title: 'Real Property Tax Online Payment', category: 'Finance & Taxation', link: '/services?q=tax' },
+const suggestedServices = [
+  { id: '1', title: 'Civil Registry & Birth Certificate', category: 'Certificates & Vital Records', link: '/services?search=birth' },
+  { id: '2', title: 'Business Permit Application & Renewal', category: 'Business & Trade', link: '/services?search=business' },
+  { id: '3', title: 'Marriage License Request', category: 'Certificates & Vital Records', link: '/services?search=marriage' },
+  { id: '4', title: 'Health Clearance & Sanitary Permit', category: 'Health & Wellness', link: '/services?search=health' },
+  { id: '5', title: 'Real Property Tax Online Payment', category: 'Finance & Taxation', link: '/services?search=tax' },
 ];
 
 export const ServiceSearch: React.FC = () => {
@@ -26,22 +26,11 @@ export const ServiceSearch: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const filteredServices = searchTerm.trim()
-    ? mockServices.filter(s =>
+    ? suggestedServices.filter(s =>
         s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.category.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];
-
-  const handleSelectPopular = (query: string) => {
-    setSearchTerm(query);
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      window.location.href = `/services?search=${encodeURIComponent(searchTerm)}`;
-    }
-  };
 
   // Clean vector SVG icons for popular search items (No emojis!)
   const renderIcon = (type: PopularSearch['type']) => {
@@ -74,7 +63,7 @@ export const ServiceSearch: React.FC = () => {
   };
 
   return (
-    <div suppressHydrationWarning className="bg-white p-6 sm:p-8 shadow-2xl shadow-blue-900/10 border border-slate-200 max-w-lg w-full font-sans rounded-[4px]">
+    <div className="bg-white p-6 sm:p-8 shadow-2xl shadow-blue-900/10 border border-slate-200 max-w-lg w-full font-sans rounded-[4px]">
       {/* Search Box Title Header */}
       <div className="flex items-center gap-2.5 mb-5 text-slate-800 font-bold text-lg sm:text-xl">
         <div className="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 rounded-[4px]">
@@ -86,14 +75,21 @@ export const ServiceSearch: React.FC = () => {
       </div>
 
       {/* Search Input Form */}
-      <form onSubmit={handleSearchSubmit} className="relative mb-6">
+      <form
+        action="/services"
+        method="get"
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false);
+        }}
+        className="relative mb-6"
+      >
         <div className="relative flex items-center">
           <input
             type="text"
+            name="search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder="e.g., birth certificate, business permit..."
             className="w-full pl-4 pr-12 py-3.5 sm:py-4 bg-slate-50 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all rounded-[4px]"
             aria-label="Search for city services"
@@ -150,10 +146,9 @@ export const ServiceSearch: React.FC = () => {
         </div>
         <div className="flex flex-wrap gap-2">
           {popularSearches.map((item) => (
-            <button
+            <a
               key={item.label}
-              type="button"
-              onClick={() => handleSelectPopular(item.query)}
+              href={`/services?search=${encodeURIComponent(item.query)}`}
               className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border transition-all rounded-[2px] ${
                 searchTerm.toLowerCase() === item.query.toLowerCase()
                   ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
@@ -162,7 +157,7 @@ export const ServiceSearch: React.FC = () => {
             >
               {renderIcon(item.type)}
               <span>{item.label}</span>
-            </button>
+            </a>
           ))}
         </div>
       </div>

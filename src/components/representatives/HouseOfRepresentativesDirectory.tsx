@@ -204,6 +204,7 @@ export const HouseOfRepresentativesDirectory: React.FC<DirectoryProps> = ({
             <div className="relative w-full sm:w-64 lg:w-72">
               <input
                 type="text"
+                aria-label="Search bills"
                 placeholder="Search bill no, title, committee..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -221,6 +222,7 @@ export const HouseOfRepresentativesDirectory: React.FC<DirectoryProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
+                  aria-label="Clear bill search"
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold px-1"
                 >
                   ✕

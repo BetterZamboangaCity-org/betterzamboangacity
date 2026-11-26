@@ -180,7 +180,6 @@ export const RepresentativeProfileCards: React.FC<RepresentativeProfileCardsProp
             return (
               <div
                 key={rep.memberId}
-                onClick={() => onSelectRepresentative(rep.memberId)}
                 className={`group relative bg-white border rounded-[4px] transition-all duration-300 flex flex-col overflow-hidden cursor-pointer ${
                   isSelected
                     ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-md'
@@ -188,6 +187,12 @@ export const RepresentativeProfileCards: React.FC<RepresentativeProfileCardsProp
                 }`}
               >
                 {CardContent}
+                <button
+                  type="button"
+                  onClick={() => onSelectRepresentative(rep.memberId)}
+                  aria-label={`View records for ${rep.name}`}
+                  className="absolute inset-0 rounded-[4px] focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-blue-600"
+                />
               </div>
             );
           }

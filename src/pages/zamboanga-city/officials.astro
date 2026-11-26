@@ -6,11 +6,11 @@ import { CityOfficialsDirectory } from '../../components/officials/CityOfficials
 const { data: officials } = await fetchCityOfficials();
 
 const title = "Zamboanga City Elected Officials Directory (2001–2025) | Better Zamboanga City";
-const description = "Explore the complete historical registry of elected Mayors, Vice Mayors, and Councilors of Zamboanga City from National and Local Elections (2001 to 2025). Data powered by OpenHalalan.";
+const description = "Browse listed Zamboanga City mayors, vice mayors, and councilors from the 2001–2025 elections, with records credited to OpenHalalan.";
 ---
 
 <Layout title={title} description={description} mainClass="grow bg-slate-50 font-sans pb-16">
-  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-6xl w-full space-y-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 min-h-screen max-w-6xl w-full space-y-8">
     <!-- Page Header -->
     <div class="text-center max-w-3xl mx-auto space-y-3">
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
@@ -23,5 +23,5 @@ const description = "Explore the complete historical registry of elected Mayors,
 
     <!-- Directory Component -->
     <CityOfficialsDirectory client:load initialOfficials={officials} />
-  </main>
+  </div>
 </Layout>

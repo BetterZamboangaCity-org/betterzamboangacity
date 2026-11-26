@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useId } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 export interface CategoryCardData {
   id: string;
@@ -265,19 +266,57 @@ const LIFE_EVENTS_DATA: LifeEventData[] = [
 
 export const ServicesDirectory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryQuery, setCategoryQuery] = useState('');
   const [selectedCard, setSelectedCard] = useState<CategoryCardData | null>(null);
+  const dialogRef = useModalDialog(Boolean(selectedCard));
+  const dialogTitleId = useId();
+
+  useEffect(() => {
+    const readLocation = () => {
+      const params = new URLSearchParams(window.location.search);
+      setSearchQuery(params.get('search') ?? params.get('q') ?? '');
+      setCategoryQuery(params.get('category') ?? '');
+    };
+    readLocation();
+    window.addEventListener('popstate', readLocation);
+    document.addEventListener('astro:page-load', readLocation);
+    return () => {
+      window.removeEventListener('popstate', readLocation);
+      document.removeEventListener('astro:page-load', readLocation);
+    };
+  }, []);
+
+  const updateFilters = (search: string, category = categoryQuery) => {
+    setSearchQuery(search);
+    setCategoryQuery(category);
+    const url = new URL(window.location.href);
+    url.searchParams.delete('q');
+    if (search) url.searchParams.set('search', search);
+    else url.searchParams.delete('search');
+    if (category) url.searchParams.set('category', category);
+    else url.searchParams.delete('category');
+    window.history.replaceState(window.history.state, '', url);
+  };
+
+  // Existing links use category titles with "and"; new links use stable IDs.
+  const normalizeCategory = (value: string) => value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
+  const selectedCategory = CATEGORIES_DATA.find((category) =>
+    normalizeCategory(category.id) === normalizeCategory(categoryQuery) ||
+    normalizeCategory(category.title) === normalizeCategory(categoryQuery)
+  );
 
   const filteredCategories = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return CATEGORIES_DATA;
     return CATEGORIES_DATA.filter(
       (cat) =>
-        cat.title.toLowerCase().includes(q) ||
-        cat.description.toLowerCase().includes(q) ||
-        cat.office.toLowerCase().includes(q) ||
-        cat.servicesList.some((s) => s.toLowerCase().includes(q))
+        (!categoryQuery || cat.id === selectedCategory?.id) && (
+          cat.title.toLowerCase().includes(q) ||
+          cat.description.toLowerCase().includes(q) ||
+          cat.office.toLowerCase().includes(q) ||
+          cat.servicesList.some((s) => s.toLowerCase().includes(q))
+        )
     );
-  }, [searchQuery]);
+  }, [searchQuery, categoryQuery, selectedCategory]);
 
   const handleLifeEventClick = (categoryId: string) => {
     const target = CATEGORIES_DATA.find((c) => c.id === categoryId);
@@ -449,14 +488,15 @@ export const ServicesDirectory: React.FC = () => {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => updateFilters(e.target.value)}
+                aria-label="Search city services"
                 placeholder="Search services (e.g., birth certificate, business permit)"
                 className="w-full pl-12 pr-10 py-3.5 sm:py-4 bg-slate-50 border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0032A0] focus:bg-white transition-all rounded-[4px]"
               />
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => updateFilters('')}
                   className="absolute right-4 text-slate-400 hover:text-slate-600 p-1 rounded-[2px]"
                   aria-label="Clear search"
                 >
@@ -469,6 +509,22 @@ export const ServicesDirectory: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {(searchQuery || categoryQuery) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-700">
+          <p role="status">
+            {filteredCategories.length} matching {filteredCategories.length === 1 ? 'category' : 'categories'}
+            {categoryQuery && <> · Category: <strong>{selectedCategory?.title || categoryQuery}</strong></>}
+          </p>
+          <button
+            type="button"
+            onClick={() => updateFilters('', '')}
+            className="font-bold text-blue-700 underline focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
 
       {/* Main 10 Category Cards Grid */}
       {filteredCategories.length > 0 ? (
@@ -510,14 +566,14 @@ export const ServicesDirectory: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white border border-slate-200 p-12 text-center max-w-md mx-auto rounded-[4px]">
-          <h3 className="text-base font-bold text-slate-800 mb-1">No services matching "{searchQuery}"</h3>
-          <p className="text-xs text-slate-500 mb-4">Try searching for keywords like birth, permit, tax, or health.</p>
+          <h3 className="text-base font-bold text-slate-800 mb-1">No indexed services found</h3>
+          <p className="text-xs text-slate-500 mb-4">Try birth, permit, tax, or health, or clear the filters to browse all categories.</p>
           <button
             type="button"
-            onClick={() => setSearchQuery('')}
+            onClick={() => updateFilters('', '')}
             className="px-4 py-2 bg-[#0032A0] text-white font-bold text-xs shadow-xs hover:bg-blue-800 transition-colors rounded-[4px]"
           >
-            Clear Search
+            Browse all services
           </button>
         </div>
       )}
@@ -559,10 +615,17 @@ export const ServicesDirectory: React.FC = () => {
 
       {/* Interactive Modal when clicking "View Services" */}
       {selectedCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+        <dialog
+          ref={dialogRef}
+          aria-labelledby={dialogTitleId}
+          onCancel={(event) => { event.preventDefault(); setSelectedCard(null); }}
+          onClick={(event) => { if (event.target === event.currentTarget) setSelectedCard(null); }}
+          className="fixed inset-0 m-0 h-dvh w-full max-h-none max-w-none border-0 bg-transparent p-4 open:flex items-center justify-center overflow-y-auto backdrop:bg-slate-900/60 backdrop:backdrop-blur-xs animate-fade-in"
+        >
           <div className="bg-white max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative max-h-[90vh] overflow-y-auto rounded-[4px]">
             <button
               type="button"
+              autoFocus
               onClick={() => setSelectedCard(null)}
               className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors rounded-[2px]"
               aria-label="Close modal"
@@ -576,7 +639,7 @@ export const ServicesDirectory: React.FC = () => {
               <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-[#0032A0] border border-blue-200 inline-block mb-2 rounded-[2px]">
                 {selectedCard.office}
               </span>
-              <h3 className="text-2xl font-black text-slate-900 leading-tight">
+              <h3 id={dialogTitleId} className="text-2xl font-black text-slate-900 leading-tight pr-7">
                 {selectedCard.title}
               </h3>
               <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed font-medium">
@@ -617,7 +680,7 @@ export const ServicesDirectory: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </dialog>
       )}
     </div>
   );

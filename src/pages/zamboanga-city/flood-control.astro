@@ -8,7 +8,7 @@ import FloodControlCharts from '../../components/flood-control/FloodControlChart
 import FloodControlModal from '../../components/flood-control/FloodControlModal.astro';
 ---
 
-<Layout title="Flood Control Infrastructure Command Center | Better Zamboanga City" mainClass="grow bg-slate-50 font-sans pb-16">
+<Layout title="Flood Control Infrastructure Command Center | Better Zamboanga City" description="Explore listed flood control projects in Zamboanga City through a map, project table, contractor information, and contract costs." mainClass="grow bg-slate-50 font-sans pb-16">
   <!-- Leaflet CSS & JS for OpenStreetMap -->
   <link
     rel="stylesheet"
@@ -32,7 +32,7 @@ import FloodControlModal from '../../components/flood-control/FloodControlModal.
       </div>
 
       <!-- Right Command Main Area (Desktop 8.5 cols / Mobile full) -->
-      <main class="lg:col-span-8 xl:col-span-9 space-y-6">
+      <div class="lg:col-span-8 xl:col-span-9 space-y-6">
         
         <div id="fc-map-container" class="fc-component-wrapper">
           <FloodControlMap />
@@ -46,7 +46,7 @@ import FloodControlModal from '../../components/flood-control/FloodControlModal.
           <FloodControlCharts />
         </div>
 
-      </main>
+      </div>
     </div>
   </div>
 
