@@ -8,6 +8,8 @@ function record(value: unknown): value is Record<string, unknown> {
 function ordinance(value: unknown): value is Ordinance {
   return record(value) && typeof value.ordinance_number === 'string' && typeof value.official_title === 'string' &&
     (typeof value.ordinance_year === 'number' || typeof value.ordinance_year === 'string') &&
+    /^\d+$/.test(String(value.ordinance_year).trim()) &&
+    Number.isSafeInteger(Number(value.ordinance_year)) && Number(value.ordinance_year) > 0 &&
     (value.active_status === undefined || typeof value.active_status === 'string') &&
     [value.date_enacted, value.date_approved].every(date => date == null || typeof date === 'string') &&
     typeof value.eli5_summary === 'string' && Array.isArray(value.authors) && value.authors.every(item => typeof item === 'string') &&

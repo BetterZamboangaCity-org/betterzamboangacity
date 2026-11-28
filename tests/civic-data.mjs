@@ -8,7 +8,19 @@ const expected = JSON.parse(await readFile('tests/fixtures/data-parity.json', 'u
 const canonical = value => JSON.stringify(value, (_, item) => item && typeof item === 'object' && !Array.isArray(item)
   ? Object.fromEntries(Object.keys(item).sort().map(key => [key, item[key]])) : item);
 const hash = value => createHash('sha256').update(canonical(value)).digest('hex');
-const config = await getViteConfig({ server: { middlewareMode: true, hmr: false }, optimizeDeps: { noDiscovery: true }, logLevel: 'error' })({ mode: 'test', command: 'serve' });
+const datasets = ['ordinances', 'barangays', 'emergency-facilities'];
+const config = await getViteConfig({
+  server: { middlewareMode: true, hmr: false }, optimizeDeps: { noDiscovery: true }, logLevel: 'error',
+  plugins: [{
+    name: 'raw-source-whitespace-fixture', enforce: 'pre',
+    async load(id) {
+      // Change raw file bytes without changing JSON values or capture manifests.
+      if (datasets.some(name => id.endsWith(`/src/data/${name}.json?raw`))) {
+        return `export default ${JSON.stringify(await readFile(id.slice(0, -4), 'utf8') + '\n')}`;
+      }
+    },
+  }],
+})({ mode: 'test', command: 'serve' });
 const server = await createServer({ ...config, configFile: false });
 try {
   const data = await server.ssrLoadModule('/src/lib/civic-data.ts');
@@ -35,6 +47,16 @@ try {
     assert.equal(createHash('sha256').update(await readFile(file)).digest('hex'), sha256, `Unchanged baseline source: ${file}`);
   }
   console.log('PASS: all barangay, official, emergency, police/fire records and untouched source files match the pinned repository baselines');
+  const route = await server.ssrLoadModule('/src/pages/api/v1/metadata.json.ts');
+  const metadata = await (await route.GET()).json();
+  for (const name of datasets) {
+    const original = await readFile(`src/data/${name}.json`, 'utf8');
+    const originalHash = createHash('sha256').update(original).digest('hex');
+    const changedHash = createHash('sha256').update(original + '\n').digest('hex');
+    assert.notEqual(changedHash, originalHash);
+    assert.equal(metadata.datasets[name].sourceRevision, `sha256:${changedHash}`, `${name} source revision follows raw bytes, not the stored capture checksum`);
+  }
+  console.log('PASS: API source revisions follow formatting-only raw file changes without manifest edits');
 } finally {
   await server.close();
 }

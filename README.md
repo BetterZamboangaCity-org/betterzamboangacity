@@ -116,7 +116,7 @@ Without a running server, check every ordinance against the fixed pre-migration 
 node tests/civic-data.mjs
 ```
 
-With the background server running, check the two public JSON assets, directory/filter/error behavior, and all 98 barangay profiles:
+With the background server running, check the four public JSON endpoints, directory/filter/error behavior, and all 98 barangay profiles:
 
 ```sh
 node tests/data-assets.mjs

@@ -9,6 +9,12 @@ const browser = await chromium.launch({ headless: true, channel: process.env.BRO
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   page.setDefaultTimeout(8000);
+  async function assertOrdinanceCredit() {
+    const source = page.getByRole('link', { name: 'Ley De Zamboanga', exact: true });
+    assert.equal(await source.getAttribute('href'), 'https://zamboangacity-ordinance.vercel.app/');
+    await page.getByText(/^Snapshot captured \d{4}-\d{2}-\d{2} from$/).waitFor();
+    await page.getByText('Created & Maintained by Chex', { exact: true }).waitFor();
+  }
   const databaseRequests = [];
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -52,18 +58,65 @@ try {
   await page.route('**/api/v1/ordinances.json', route => route.fulfill({ status: 503, contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor({ timeout: 8000 });
+  await assertOrdinanceCredit();
+  await page.addStyleTag({ content: 'astro-dev-toolbar { display:none !important; }' });
+  await page.evaluate(() => new Promise(resolve => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
+  await page.screenshot({ path: `${evidence}/ordinance-error-desktop.png`, fullPage: true });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await assertOrdinanceCredit();
+  await page.screenshot({ path: `${evidence}/ordinance-error-mobile.png`, fullPage: true });
+  await page.setViewportSize({ width: 1280, height: 900 });
   const [ordinanceRecord] = await (await page.request.get(`${base}/api/v1/ordinances.json`)).json();
-  for (const field of ['active_status', 'date_enacted', 'date_approved']) {
+  for (const [field, value] of [
+    ['ordinance_year', 'not-a-year'],
+    ['ordinance_year', '2026e0'],
+    ['ordinance_year', '0x7EA'],
+    ['ordinance_year', ''],
+    ['ordinance_year', 0],
+    ['ordinance_year', 2026.5],
+    ['active_status', { unexpected: true }],
+    ['date_enacted', { unexpected: true }],
+    ['date_approved', { unexpected: true }],
+  ]) {
     await page.route('**/api/v1/ordinances.json', route => route.fulfill({
-      contentType: 'application/json', body: JSON.stringify([{ ...ordinanceRecord, [field]: { unexpected: true } }]),
+      contentType: 'application/json', body: JSON.stringify([{ ...ordinanceRecord, [field]: value }]),
     }));
     await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
     await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor();
+    await assertOrdinanceCredit();
     assert.deepEqual(errors, [], `Malformed ${field} must not reach React`);
+  }
+  for (const year of [String(ordinanceRecord.ordinance_year), ` ${ordinanceRecord.ordinance_year} `]) {
+    await page.route('**/api/v1/ordinances.json', route => route.fulfill({
+      contentType: 'application/json', body: JSON.stringify([{ ...ordinanceRecord, ordinance_year: year, date_approved: null }]),
+    }));
+    await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('button', { name: 'Quick Preview', exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Years', exact: true }).click();
+    await page.getByRole('button', { name: new RegExp(`^Year ${ordinanceRecord.ordinance_year}\\s+1$`) }).click();
+    assert.equal(await page.getByRole('button', { name: 'Quick Preview', exact: true }).count(), 1, 'Year badge and selected desktop results agree');
+    if (year.startsWith(' ')) {
+      await page.addStyleTag({ content: 'astro-dev-toolbar { display:none !important; }' });
+      await page.evaluate(() => new Promise(resolve => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
+      await page.screenshot({ path: `${evidence}/ordinance-year-desktop.png`, fullPage: true });
+    }
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.getByRole('button', { name: `${ordinanceRecord.ordinance_year} 1`, exact: true }).click();
+    assert.equal(await page.getByRole('button', { name: 'Quick Preview', exact: true }).count(), 1, 'Year badge and selected mobile results agree');
+    if (year.startsWith(' ')) await page.screenshot({ path: `${evidence}/ordinance-year-mobile.png`, fullPage: true });
+    await page.setViewportSize({ width: 1280, height: 900 });
   }
   await page.route('**/api/v1/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('No ordinance records are included in this snapshot.', { exact: true }).waitFor({ timeout: 8000 });
+  await assertOrdinanceCredit();
+  await page.addStyleTag({ content: 'astro-dev-toolbar { display:none !important; }' });
+  await page.evaluate(() => new Promise(resolve => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); requestAnimationFrame(() => requestAnimationFrame(resolve)); }));
+  await page.screenshot({ path: `${evidence}/ordinance-empty-desktop.png`, fullPage: true });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await assertOrdinanceCredit();
+  await page.screenshot({ path: `${evidence}/ordinance-empty-mobile.png`, fullPage: true });
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.route('**/api/v1/ordinances.json', route => route.fulfill({ contentType: 'application/json', body: '[{"official_title":null}]' }));
   await page.goto(`${base}/ordinances/regulatory-ordinances`, { waitUntil: 'domcontentloaded' });
   await page.getByText('Ordinance records are unavailable. Try again later.', { exact: true }).waitFor({ timeout: 8000 });

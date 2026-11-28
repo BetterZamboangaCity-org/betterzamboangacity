@@ -4,16 +4,19 @@ import { fetchBarangays, fetchEmergencyFacilities, fetchOrdinances } from '../..
 import { civicJsonResponse } from '../../../lib/civic-api';
 import ordinanceSource from '../../../data/ordinances.manifest.json';
 import repositorySource from '../../../data/repository.manifest.json';
+import ordinanceRaw from '../../../data/ordinances.json?raw';
+import barangayRaw from '../../../data/barangays.json?raw';
+import facilitiesRaw from '../../../data/emergency-facilities.json?raw';
 
 export const prerender = true;
 
-function metadata(name: string, data: unknown[], capturedAt: string, sourceSha256: string) {
+function metadata(name: string, data: unknown[], capturedAt: string, rawSource: string) {
   return {
     url: `${import.meta.env.BASE_URL}api/v1/${name}.json`,
     recordCount: data.length,
     capturedAt,
     revision: `sha256:${createHash('sha256').update(JSON.stringify(data), 'utf8').digest('hex')}`,
-    sourceRevision: `sha256:${sourceSha256}`,
+    sourceRevision: `sha256:${createHash('sha256').update(rawSource, 'utf8').digest('hex')}`,
   };
 }
 
@@ -25,15 +28,15 @@ export const GET: APIRoute = async () => {
     apiVersion: 'v1',
     datasets: {
       ordinances: {
-        ...metadata('ordinances', ordinances.data, ordinanceSource.capturedFrom, ordinanceSource.sha256),
+        ...metadata('ordinances', ordinances.data, ordinanceSource.capturedFrom, ordinanceRaw),
         source: ordinanceSource.sourcePublisher,
       },
       barangays: {
-        ...metadata('barangays', barangays.data, repositorySource.capturedAt, repositorySource.datasets.find(item => item.dataset === 'barangays')!.sha256),
+        ...metadata('barangays', barangays.data, repositorySource.capturedAt, barangayRaw),
         source: { kind: 'repository', baseCommit: repositorySource.baseCommit },
       },
       'emergency-facilities': {
-        ...metadata('emergency-facilities', facilities.data, repositorySource.capturedAt, repositorySource.datasets.find(item => item.dataset === 'emergency-facilities')!.sha256),
+        ...metadata('emergency-facilities', facilities.data, repositorySource.capturedAt, facilitiesRaw),
         source: { kind: 'repository', baseCommit: repositorySource.baseCommit },
       },
     },

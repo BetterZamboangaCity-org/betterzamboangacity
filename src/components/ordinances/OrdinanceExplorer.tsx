@@ -227,11 +227,15 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
     return cleanNum ? `${LEY_DE_ZAMBOANGA_URL}ordinance/${cleanNum}` : LEY_DE_ZAMBOANGA_URL;
   };
 
-  if (loadError) {
-    return <p role="status" className="p-8 text-center text-slate-600">Ordinance records are unavailable. Try again later.</p>;
-  }
-  if (!isLoading && ordinances.length === 0) {
-    return <p role="status" className="p-8 text-center text-slate-600">No ordinance records are included in this snapshot.</p>;
+  if (loadError || (!isLoading && ordinances.length === 0)) {
+    return (
+      <div className="w-full font-sans space-y-6">
+        <p role="status" className="p-8 text-center text-slate-600">
+          {loadError ? 'Ordinance records are unavailable. Try again later.' : 'No ordinance records are included in this snapshot.'}
+        </p>
+        <OrdinanceFooterCredit />
+      </div>
+    );
   }
 
   return (
@@ -309,7 +313,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
               availableYears.map((yr) => {
                 const isSelected = selectedYear === yr;
                 const yearCount = ordinances.filter(
-                  (o) => String(o.ordinance_year) === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
+                  (o) => String(o.ordinance_year).trim() === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
                 ).length;
                 return (
                   <button
