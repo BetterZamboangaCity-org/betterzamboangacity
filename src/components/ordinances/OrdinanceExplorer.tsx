@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { Ordinance } from '../../types/ordinance';
-import { fetchOrdinances } from '../../lib/supabase';
+import { fetchOrdinances } from '../../lib/civic-data-client';
 import { OrdinanceFilterSidebar } from './OrdinanceFilterSidebar';
 import { OrdinanceTable } from './OrdinanceTable';
 import { OrdinanceMobileCard } from './OrdinanceMobileCard';
@@ -65,6 +65,7 @@ interface Props {
 export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) => {
   const [ordinances, setOrdinances] = useState<Ordinance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   // Filters & State
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,13 +80,15 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
   const [activeModalOrdinance, setActiveModalOrdinance] = useState<Ordinance | null>(null);
 
   useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      const res = await fetchOrdinances();
-      setOrdinances(res.data);
-      setIsLoading(false);
-    }
-    loadData();
+    const controller = new AbortController();
+    fetchOrdinances(controller.signal).then(result => {
+      if (!controller.signal.aborted) setOrdinances(result.data);
+    }).catch(() => {
+      if (!controller.signal.aborted) setLoadError(true);
+    }).finally(() => {
+      if (!controller.signal.aborted) setIsLoading(false);
+    });
+    return () => controller.abort();
   }, []);
 
   // Compute Categories list with counts (excluding redundant regulatory category)
@@ -224,6 +227,17 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
     return cleanNum ? `${LEY_DE_ZAMBOANGA_URL}ordinance/${cleanNum}` : LEY_DE_ZAMBOANGA_URL;
   };
 
+  if (loadError || (!isLoading && ordinances.length === 0)) {
+    return (
+      <div className="w-full font-sans space-y-6">
+        <p role="status" className="p-8 text-center text-slate-600">
+          {loadError ? 'Ordinance records are unavailable. Try again later.' : 'No ordinance records are included in this snapshot.'}
+        </p>
+        <OrdinanceFooterCredit />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full font-sans space-y-6">
 
@@ -299,7 +313,7 @@ export const OrdinanceExplorer: React.FC<Props> = ({ initialCategory = 'all' }) 
               availableYears.map((yr) => {
                 const isSelected = selectedYear === yr;
                 const yearCount = ordinances.filter(
-                  (o) => String(o.ordinance_year) === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
+                  (o) => String(o.ordinance_year).trim() === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
                 ).length;
                 return (
                   <button

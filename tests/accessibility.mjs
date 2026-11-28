@@ -1,12 +1,9 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { createServer } from 'node:http';
 import { chromium } from 'playwright';
 
-// Start Astro with PUBLIC_SUPABASE_URL and PUBLIC_ORDINANCES_SUPABASE_URL set to
-// http://127.0.0.1:4322, and both public anon keys set to test-key.
-// Only the external read response is replaced. All components and event paths are real.
+// Replace only the same-origin JSON response. Components and event paths are real.
 const baseURL = process.env.TEST_BASE_URL || 'http://localhost:4321';
 const evidence = resolve(process.env.TEST_EVIDENCE_DIR || '.agents/handoffs/launch-2026-11-13/accessibility');
 await mkdir(evidence, { recursive: true });
@@ -17,6 +14,7 @@ page.setDefaultNavigationTimeout(30000);
 const errors = [];
 const reactErrors = [];
 let fixtureReads = 0;
+const databaseRequests = [];
 page.on('pageerror', error => errors.push(error.message));
 page.on('console', message => {
   if (message.type() === 'error' && /React|hook|static flag|Rendered (fewer|more)/i.test(message.text())) {
@@ -25,6 +23,12 @@ page.on('console', message => {
 });
 await page.route('**/*', route => {
   const url = new URL(route.request().url());
+  if (url.hostname.endsWith('.supabase.co')) databaseRequests.push(url.origin + url.pathname);
+  if (url.pathname === '/api/v1/ordinances.json') {
+    assert.equal(route.request().method(), 'GET');
+    fixtureReads += 1;
+    return route.fulfill({ contentType: 'application/json', body: JSON.stringify(ordinanceFixture) });
+  }
   return ['localhost', '127.0.0.1'].includes(url.hostname) ? route.continue() : route.abort();
 });
 const ordinanceFixture = [{
@@ -34,18 +38,6 @@ const ordinanceFixture = [{
     eli5_summary: 'Long public record. '.repeat(180),
     fines: [{ offense_level: 'First offense', penalty: 'Written notice' }],
 }];
-const fixtureServer = createServer((request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Access-Control-Allow-Headers', '*');
-  response.setHeader('Content-Type', 'application/json');
-  if (request.method === 'OPTIONS') return response.end();
-  if (request.method !== 'GET') { response.statusCode = 405; return response.end('[]'); }
-  const ordinances = request.url.startsWith('/rest/v1/ordinances?');
-  if (ordinances) fixtureReads += 1;
-  response.end(JSON.stringify(ordinances ? ordinanceFixture : []));
-});
-await new Promise(resolve => fixtureServer.listen(4322, '127.0.0.1', resolve));
-
 async function visit(path) {
   await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !document.querySelector('astro-island[client="load"][ssr]'));
@@ -177,8 +169,8 @@ try {
   assert.ok(fixtureReads >= 2, 'Ordinance assertions used the deterministic external read fixture');
   assert.deepEqual(errors, [], 'No page errors');
   assert.deepEqual(reactErrors, [], 'No React hook errors');
+  assert.deepEqual(databaseRequests, [], 'No database requests');
   console.log(`PASS all accessibility checks; fixture reads=${fixtureReads}; page errors=0; React hook errors=0`);
 } finally {
   await browser.close();
-  await new Promise(resolve => fixtureServer.close(resolve));
 }

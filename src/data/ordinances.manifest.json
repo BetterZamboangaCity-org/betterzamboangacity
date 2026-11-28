@@ -1,0 +1,78 @@
+{
+  "source": "https://fccgltiariqkkuamcjzl.supabase.co/rest/v1/ordinances",
+  "selection": "*,ordinance_category_links(ordinance_categories(name))",
+  "ordering": "id.asc",
+  "capturedFrom": "2026-11-25T11:52:24.384Z",
+  "capturedTo": "2026-11-25T11:52:29.680Z",
+  "rowCount": 862,
+  "pages": [
+    {
+      "offset": 0,
+      "rows": 100,
+      "range": "0-99/862"
+    },
+    {
+      "offset": 100,
+      "rows": 100,
+      "range": "100-199/862"
+    },
+    {
+      "offset": 200,
+      "rows": 100,
+      "range": "200-299/862"
+    },
+    {
+      "offset": 300,
+      "rows": 100,
+      "range": "300-399/862"
+    },
+    {
+      "offset": 400,
+      "rows": 100,
+      "range": "400-499/862"
+    },
+    {
+      "offset": 500,
+      "rows": 100,
+      "range": "500-599/862"
+    },
+    {
+      "offset": 600,
+      "rows": 100,
+      "range": "600-699/862"
+    },
+    {
+      "offset": 700,
+      "rows": 100,
+      "range": "700-799/862"
+    },
+    {
+      "offset": 800,
+      "rows": 62,
+      "range": "800-861/862"
+    }
+  ],
+  "sha256": "8c46894f17c49d99cd41c75f274f3bfdd49556258498c80263880fd7249a527c",
+  "stableAcrossTwoFullReads": true,
+  "coverage": "Public anonymous read-policy view, not a transactional database backup",
+  "verification": "Capture integrity and migration parity are checked. Civic accuracy remains separate under issue #16.",
+  "file": "ordinances.json",
+  "sourcePublisher": {
+    "name": "Ley de Zamboanga",
+    "url": "https://zamboangacity-ordinance.vercel.app/"
+  },
+  "capturedBy": "Better Zamboanga City",
+  "byteLength": 3186318,
+  "statusCounts": {
+    "Active": 745,
+    "Amended": 83,
+    "Repealed": 33,
+    "Reenacted": 1
+  },
+  "redistribution": {
+    "status": "confirmed",
+    "confirmedAt": "2026-11-25T12:49:36.440467Z",
+    "authority": "The user confirmed permission to commit the full ordinance snapshot, including plain-English summaries, to this public repository.",
+    "scope": "This snapshot and its source attribution; no broader upstream license is inferred."
+  }
+}

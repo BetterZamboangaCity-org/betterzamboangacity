@@ -11,7 +11,9 @@ Better Zamboanga City is an independent, volunteer-maintained civic-information 
 | Ordinance | A local legislative record. Categories include Regulatory, Revenue, and Appropriation. Its type is in `src/types/ordinance.ts`. |
 | House bill | A national legislative record in the representative snapshots. It is separate from a city ordinance. |
 | Emergency facility | A mapped hospital, police, fire, or rescue record with coordinates and contact information. |
-| Fallback | A bundled record or empty result used when a remote read is unavailable. `isMock` is the existing loader flag; it does not establish whether a record is verified. |
+| Dataset | Records with a source/capture baseline. Capture integrity and civic accuracy are separate checks. |
+| API version | A major response-structure version, currently `v1`. Data corrections do not change this version. |
+| Data revision | SHA-256 of the exact public JSON body. It changes when those response bytes change. |
 
 ## Architecture and entry points
 
@@ -22,24 +24,26 @@ Better Zamboanga City is an independent, volunteer-maintained civic-information 
 - `src/components/` contains Astro components and React islands. [ServicesDirectory.tsx](src/components/services/ServicesDirectory.tsx) contains the service catalog and filters. [ServiceSearch.tsx](src/components/ServiceSearch.tsx) handles the shared search entry.
 - [global.css](src/styles/global.css) holds shared styles. Tailwind is configured through the Vite plugin; inspect that configuration before relying on the older `tailwind.config.mjs` file.
 - [disaster-interactive.ts](src/scripts/disaster-interactive.ts) owns emergency map interactions and cleanup. `.gitignore` has a broad `scripts/` rule; use `git ls-files src/scripts` to discover this tracked file.
-- `public/` contains assets served by URL. `src/content/` holds imported JSON/CSV snapshots; there is no configured Astro content collection schema yet.
+- `public/` contains assets served by URL. `src/data/` holds the migrated civic JSON and provenance manifests. Other imported JSON/CSV sources retain their existing `src/content/` paths. There is no configured Astro content collection schema yet.
 
 ## Current data access
 
-[src/lib/supabase.ts](src/lib/supabase.ts) creates the main and ordinance Supabase clients from public environment variables. Read [the development guide](README.md#development-and-verification) for local configuration. Reads can occur at build time, per request, and in browser islands. Trace the consumer before changing a loader.
+[src/lib/civic-data.ts](src/lib/civic-data.ts) reads JSON for build/server rendering. [src/lib/civic-data-client.ts](src/lib/civic-data-client.ts) reads only the same-origin ordinance and emergency JSON assets. Its imports are types only. Four routes in `src/pages/api/v1/` explicitly prerender three record arrays and a metadata document. Metadata separates the API structure version from exact-body data revisions. No database or runtime API service is needed. The public barangay API exposes the same records already serialized into the directory island; the full roster stays server-side.
 
-| Feature | Active path and local data |
+| Feature | Active data path |
 | --- | --- |
-| Barangays | Supabase loader with `src/data/barangay-data.ts` fallback. Detail pages also use `src/content/Barangay-officials/` JSON for officials and population. |
-| Ordinances | `OrdinanceExplorer.tsx` reads Supabase. The loader returns an empty result when remote data is unavailable. There is no complete bundled ordinance dataset. |
-| City officials | The page reads the Supabase loader. Its fallback is `src/content/city-officials/zamboanga_city_officials.json`. |
-| Emergency directory | The map reads Supabase with `src/data/disaster-data.ts` fallback. Police/fire lists also import that local module. `src/content/hotlines/` contains separate snapshots; inspect consumers before assuming they drive the page. |
-| Flood control | Components import `src/data/flood-control-data.ts`. Source CSV snapshots are in `src/content/Flood-control/`. A Supabase loader exists but has no active caller. |
+| Barangays | `src/data/barangays.json`, passed to the island by the server and exposed at `/api/v1/barangays.json`. Detail pages keep the existing name-based roster join and population precedence using `src/content/Barangay-officials/`. |
+| Ordinances | `src/data/ordinances.json` preserves all captured public records and category links. The server retains legacy normalization; the island reads `/api/v1/ordinances.json`. |
+| City officials | `src/content/city-officials/zamboanga_city_officials.json`, passed to the island by the page. |
+| Emergency directory | `src/data/emergency-facilities.json` feeds `/api/v1/emergency-facilities.json`. Police/fire lists still use `src/data/disaster-data.ts`. Separate `src/content/hotlines/` snapshots do not replace those active lists. |
+| Flood control | Components import `src/data/flood-control-data.ts`. Source CSV snapshots are in `src/content/Flood-control/`. |
 | House representatives | Components import the bill snapshots in `src/content/congressman/`. |
-| History and ethnic groups | Components contain local content. Supabase helpers exist but have no active callers. |
+| History and ethnic groups | Components contain local content. |
 | Services | The catalog is embedded in `src/components/services/ServicesDirectory.tsx`. |
 
-[Issue #15](https://github.com/BetterZamboangaCity-org/betterzamboangacity/issues/15) plans the move to repository JSON. That migration is future work. Keep current reads and response contracts until their consumers are migrated and verified.
+The ordinance capture contains 862 records: 745 Active, 83 Amended, 33 Repealed and one Reenacted. Its manifest identifies Ley de Zamboanga as the upstream source and records the capture interval and checksum. It covers the public read-policy view. Barangay and emergency data are preserved repository baselines, not exports of an unavailable main database. Existing civic-data conflicts remain for #16.
+
+Ordinance record parity is compared by stable ID, preserving nested values, array order and nulls. Loader output uses year descending and ID ascending for ties. The previous database query had no specified tie order. A data refresh is a reviewed file update; read [README data instructions](README.md#data-provenance-and-versions) before changing a snapshot or its fixed oracle. There are no Supabase clients or database configuration in application paths.
 
 ## Civic-data rules
 

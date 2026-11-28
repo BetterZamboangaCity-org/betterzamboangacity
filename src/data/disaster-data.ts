@@ -12,17 +12,6 @@ export interface FireStation {
   sector: string;
 }
 
-export interface EmergencyFacility {
-  id: string;
-  name: string;
-  category: 'hospital' | 'police' | 'fire' | 'rescue';
-  catLabel: string;
-  lat: number;
-  lng: number;
-  phone: string;
-  address: string;
-}
-
 // ZCPO 12 Police Stations Data
 export const policeStations: PoliceStation[] = [
   { station: 'ZCPS 1', location: 'Vitali', number: '0935-604-4139', sector: 'East Coast' },
@@ -71,33 +60,4 @@ export const fireStations: FireStation[] = [
   { station: 'Tumaga', location: 'Tumaga Substation', numbers: ['0953-867-1364'], sector: 'Central' },
   { station: 'Tugbungan', location: 'Tugbungan Substation', numbers: ['0917-670-1977'], sector: 'Central' },
   { station: 'Vitali', location: 'Vitali Substation', numbers: ['0970-290-5419'], sector: 'East Coast' }
-];
-
-// Official Zamboanga Emergency Facilities Map Dataset
-export const emergencyFacilities: EmergencyFacility[] = [
-  // HOSPITALS (11 Facilities)
-  { id: 'h1', name: 'Zamboanga City Medical Center (ZCMC)', category: 'hospital', catLabel: 'Hospital', lat: 6.9072509, lng: 122.0784067, phone: '(062) 991-2934', address: 'Evangelista St, Sta Catalina' },
-  { id: 'h2', name: 'Ciudad Medical Zamboanga', category: 'hospital', catLabel: 'Hospital', lat: 6.915048, lng: 122.076880, phone: '(062) 992-7330', address: 'Nunez Extension, Zamboanga City' },
-  { id: 'h3', name: 'West Metro Medical Center', category: 'hospital', catLabel: 'Hospital', lat: 6.923431, lng: 122.079396, phone: '(062) 991-2506', address: 'Veterans Ave, Zamboanga City' },
-  { id: 'h4', name: 'Brent Hospital & Colleges', category: 'hospital', catLabel: 'Hospital', lat: 6.907834, lng: 122.068330, phone: '(062) 991-2031', address: 'R.T. Lim Blvd, Zamboanga City' },
-  { id: 'h5', name: "Zamboanga Doctors' Hospital", category: 'hospital', catLabel: 'Hospital', lat: 6.915219, lng: 122.080143, phone: '(062) 991-0381', address: 'Veterans Ave, Zamboanga City' },
-  { id: 'h7', name: 'Labuan Public Hospital', category: 'hospital', catLabel: 'Hospital', lat: 7.097474, lng: 121.904098, phone: '0927-493-5473', address: 'Labuan Coastal Road' },
-  { id: 'h8', name: 'Mindanao Central Sanitarium', category: 'hospital', catLabel: 'Hospital', lat: 6.9659794, lng: 122.130336, phone: '(062) 991-0810', address: 'Pasobolong, Zamboanga City' },
-  { id: 'h9', name: 'Camp Navarro General Hospital (AFP)', category: 'hospital', catLabel: 'Hospital', lat: 6.917730, lng: 122.037793, phone: '(062) 991-2401', address: 'Camp Navarro, Upper Calarian' },
-  { id: 'h10', name: 'Edwin Andrews Air Base Hospital (PAF)', category: 'hospital', catLabel: 'Hospital', lat: 6.923385, lng: 122.068878, phone: '(062) 991-1550', address: 'EAAB, Sta. Maria' },
-  { id: 'h11', name: 'Cristino M. Paragas Memorial Community Hospital', category: 'hospital', catLabel: 'Hospital', lat: 7.183062, lng: 122.219745, phone: '0962-2934-154', address: 'Quiniput, Zamboanga City' },
-  { id: 'h12', name: 'Zamboanga Peninsula Medical Center', category: 'hospital', catLabel: 'Hospital', lat: 6.939881, lng: 122.092020, phone: '(062) 991-5500 / 09177073884', address: 'MCLL Highway, Tetuan' },
-
-  // POLICE PRECINCTS (11 Facilities)
-  { id: 'p1', name: 'Vitali Police Station (ZCPS 1)', category: 'police', catLabel: 'Police Precinct', lat: 7.3767384, lng: 122.2870528, phone: '0935-604-4139', address: 'Vitali, East Coast' },
-  { id: 'p2', name: 'Curuan Police Station (ZCPS 2)', category: 'police', catLabel: 'Police Precinct', lat: 7.204636, lng: 122.227532, phone: '0935-457-2483', address: 'Curuan, East Coast' },
-  { id: 'p3', name: 'Sangali Police Station (ZCPS 3)', category: 'police', catLabel: 'Police Precinct', lat: 7.0714319, lng: 122.204728, phone: '0917-146-2240', address: 'Sangali, East Coast' },
-  { id: 'p4', name: 'Culianan Police Station (ZCPS 4)', category: 'police', catLabel: 'Police Precinct', lat: 6.971524, lng: 122.145802, phone: '0975-333-8826', address: 'Culianan, East Coast' },
-  { id: 'p5', name: 'Divisoria Police Station (ZCPS 5)', category: 'police', catLabel: 'Police Precinct', lat: 6.943890, lng: 122.099352, phone: '0917-677-8907', address: 'Divisoria, Central' },
-  { id: 'p6', name: 'Tetuan Police Station (ZCPS 6)', category: 'police', catLabel: 'Police Precinct', lat: 6.917472, lng: 122.090872, phone: '0997-746-5666', address: 'Tetuan, Central' },
-  { id: 'p7', name: 'Sta. Maria Police Station (ZCPS 7)', category: 'police', catLabel: 'Police Precinct', lat: 6.931057, lng: 122.069317, phone: '0917-307-8098', address: 'Sta. Maria, Central' },
-  { id: 'p8', name: 'Sinunuc Police Station (ZCPS 8)', category: 'police', catLabel: 'Police Precinct', lat: 6.934087, lng: 122.001005, phone: '0906-853-9806', address: 'Sinunuc, West Coast' },
-  { id: 'p9', name: 'Ayala Police Station (ZCPS 9)', category: 'police', catLabel: 'Police Precinct', lat: 6.9634707, lng: 121.9567993, phone: '0917-864-8553', address: 'Ayala, West Coast' },
-  { id: 'p10', name: 'Labuan Police Station (ZCPS 10)', category: 'police', catLabel: 'Police Precinct', lat: 7.097829, lng: 121.903255, phone: '0917-309-3887', address: 'Labuan, West Coast' },
-  { id: 'p11', name: 'Central Police Station (ZCPS 11)', category: 'police', catLabel: 'Police Precinct', lat: 6.903242, lng: 122.075813, phone: '0917-701-6340', address: 'Poblacion, Central' },
 ];

@@ -1,42 +1,30 @@
-// Start Astro with PUBLIC_SUPABASE_URL=http://127.0.0.1:4391 and a dummy anon key.
-// Then run: node tests/emergency-directory.mjs
+// Start Astro normally. Replace only the same-origin repository JSON read.
 import assert from 'node:assert/strict';
-import { createServer } from 'node:http';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
-const base = process.env.EMERGENCY_TEST_URL || 'http://127.0.0.1:4327';
+const base = process.env.EMERGENCY_TEST_URL || 'http://127.0.0.1:4321';
 const output = process.env.EMERGENCY_TEST_OUTPUT || '/tmp/betterzc-emergency-20261113';
 await mkdir(output, { recursive: true });
 const hostile = '<img src=x onerror="window.__executed=true">';
 const records = [
-  { id: 'hospital', name: 'Central Hospital', category: 'hospital', latitude: 6.92, longitude: 122.07, phone_numbers: ['(062) 991-1111'], address: 'Central Road' },
-  { id: 'police', name: 'West Police', category: 'police', latitude: 6.96, longitude: 121.95, phone_numbers: ['0917-111-2222'], address: 'West Road' },
-  { id: `hostile\" ${hostile}`, name: hostile, category: 'hospital', latitude: 6.93, longitude: 122.08, phone_numbers: [`javascript:alert(1) ${hostile}`], address: hostile },
-  { id: 'invalid', name: 'No Coordinates', category: 'hospital', latitude: 'bad', longitude: null, phone_numbers: ['911'], address: 'Unknown location' },
-  { id: 'range', name: 'Out of Range', category: 'hospital', latitude: 95, longitude: 190, phone_numbers: ['911'], address: 'Unknown location' },
+  { id: 'hospital', name: 'Central Hospital', category: 'hospital', catLabel: 'HOSPITAL', lat: 6.92, lng: 122.07, phone: '(062) 991-1111', address: 'Central Road' },
+  { id: 'police', name: 'West Police', category: 'police', catLabel: 'POLICE', lat: 6.96, lng: 121.95, phone: '0917-111-2222', address: 'West Road' },
+  { id: `hostile\" ${hostile}`, name: hostile, category: 'hospital', catLabel: 'HOSPITAL', lat: 6.93, lng: 122.08, phone: `javascript:alert(1) ${hostile}`, address: hostile },
+  { id: 'invalid', name: 'No Coordinates', category: 'hospital', catLabel: 'HOSPITAL', lat: 0, lng: 0, phone: '911', address: 'Unknown location' },
+  { id: 'range', name: 'Out of Range', category: 'hospital', catLabel: 'HOSPITAL', lat: 95, lng: 190, phone: '911', address: 'Unknown location' },
 ];
 let delayData = false;
 let dataRequests = 0;
 let abortedRequests = 0;
 const delayed = [];
-const api = createServer((request, response) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Access-Control-Allow-Headers', '*');
-  response.setHeader('Content-Type', 'application/json');
-  if (request.method === 'OPTIONS') { response.writeHead(204).end(); return; }
-  assert.equal(request.method, 'GET', 'The directory must only read data.');
-  if (request.url.startsWith('/rest/v1/emergency_facilities')) {
-    dataRequests++;
-    if (delayData) {
-      response.on('close', () => { if (!response.writableEnded) abortedRequests++; });
-      delayed.push(response);
-      return;
-    }
-    response.end(JSON.stringify(records));
-  } else response.end('[]');
-});
-await new Promise(resolve => api.listen(4391, '127.0.0.1', resolve));
+const databaseRequests = [];
+
+async function releaseDelayed() {
+  await Promise.all(delayed.splice(0).map(route => route.fulfill({ contentType: 'application/json', body: JSON.stringify([
+    { ...records[0], name: 'STALE FACILITY' },
+  ]) }).catch(error => { if (!route.request().failure()) throw error; })));
+}
 
 const stub = `
 window.__maps = { created: 0, removed: 0, instances: [] };
@@ -76,6 +64,19 @@ async function fresh({ leaflet = 'stub' } = {}) {
     Object.defineProperty(navigator, 'geolocation', { configurable: true, value: { getCurrentPosition(success, error, options) { window.__geo.push({ success, error, options }); } } });
   });
   const page = await context.newPage();
+  page.on('request', request => {
+    const url = new URL(request.url());
+    if (url.hostname.endsWith('.supabase.co')) databaseRequests.push(url.origin + url.pathname);
+  });
+  page.on('requestfailed', request => {
+    if (new URL(request.url()).pathname === '/api/v1/emergency-facilities.json' && request.failure()?.errorText === 'net::ERR_ABORTED') abortedRequests++;
+  });
+  await page.route('**/api/v1/emergency-facilities.json', async route => {
+    assert.equal(route.request().method(), 'GET', 'The directory must only read data.');
+    dataRequests++;
+    if (delayData) { delayed.push(route); return; }
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(records) });
+  });
   page.setDefaultTimeout(10000);
   page.setDefaultNavigationTimeout(15000);
   const errors = [];
@@ -206,7 +207,7 @@ try {
     await toHome(page);
     delayData = false;
     await toContact(page); await ready(page);
-    delayed.splice(0).forEach(response => response.end(JSON.stringify([{ ...records[0], name: 'STALE FACILITY' }])));
+    await releaseDelayed();
     assert.equal(await page.getByText('STALE FACILITY').count(), 0);
     assert.ok(abortedRequests > 0);
     assert.deepEqual(errors, []); await context.close();
@@ -236,7 +237,7 @@ try {
     await context.addInitScript(() => {
       const fetch = window.fetch;
       window.__uncancellableCompleted = 0;
-      window.fetch = (input, options) => String(input).includes('/emergency_facilities')
+      window.fetch = (input, options) => String(input).includes('/api/v1/emergency-facilities.json')
         ? fetch(input, { ...options, signal: undefined }).then(response => { window.__uncancellableCompleted++; return response; })
         : fetch(input, options);
     });
@@ -245,7 +246,7 @@ try {
     await toHome(page);
     delayData = false;
     await toContact(page); await ready(page);
-    delayed.splice(0).forEach(response => response.end(JSON.stringify([{ ...records[0], name: 'STALE FACILITY' }])));
+    await releaseDelayed();
     await page.waitForFunction(() => window.__uncancellableCompleted === 2);
     assert.equal(await page.getByText('STALE FACILITY').count(), 0);
     assert.equal(await page.locator('.facility-card').count(), 5);
@@ -287,10 +288,9 @@ try {
     await page.locator('section').filter({ has: page.locator('#leaflet-emergency-map') }).screenshot({ path: `${output}/mobile-375-map.png` });
     assert.deepEqual(errors, []); await context.close();
   });
+  assert.deepEqual(databaseRequests, [], 'No database requests');
 } finally {
   await browser.close();
-  delayed.forEach(response => response.destroy());
-  api.closeAllConnections();
-  await new Promise(resolve => api.close(resolve));
+  delayed.length = 0;
   await writeFile(`${output}/regressions.log`, `${log.join('\n')}\n`);
 }

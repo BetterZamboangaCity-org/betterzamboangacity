@@ -103,7 +103,7 @@ export const OrdinanceFilterSidebar: React.FC<Props> = ({
           availableYears.map((yr) => {
             const isSelected = selectedYear === yr;
             const yearCount = ordinances.filter(
-              (o) => String(o.ordinance_year) === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
+              (o) => String(o.ordinance_year).trim() === yr || (o.date_approved && String(new Date(o.date_approved).getFullYear()) === yr)
             ).length;
 
             return (

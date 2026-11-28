@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { fetchCityOfficials } from '../../lib/supabase';
+import { fetchCityOfficials } from '../../lib/civic-data';
 import { CityOfficialsDirectory } from '../../components/officials/CityOfficialsDirectory';
 
 const { data: officials } = await fetchCityOfficials();

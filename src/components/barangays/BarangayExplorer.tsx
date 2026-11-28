@@ -1,29 +1,17 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { fetchBarangays, type Barangay } from '../../lib/supabase';
+import React, { useState, useMemo } from 'react';
+import type { Barangay } from '../../types/civic-data';
 
 interface Props {
   initialBarangays?: Barangay[];
 }
 
 export const BarangayExplorer: React.FC<Props> = ({ initialBarangays = [] }) => {
-  const [barangays, setBarangays] = useState<Barangay[]>(initialBarangays);
-  const [isLoading, setIsLoading] = useState<boolean>(initialBarangays.length === 0);
+  const barangays = initialBarangays;
   const [selectedDistrict, setSelectedDistrict] = useState<'all' | '1' | '2'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  useEffect(() => {
-    if (initialBarangays.length > 0) return;
-    async function loadData() {
-      setIsLoading(true);
-      const res = await fetchBarangays();
-      setBarangays(res.data);
-      setIsLoading(false);
-    }
-    loadData();
-  }, [initialBarangays]);
 
   const district1Count = useMemo(() => barangays.filter((b) => b.district === 1).length, [barangays]);
   const district2Count = useMemo(() => barangays.filter((b) => b.district === 2).length, [barangays]);

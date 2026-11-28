@@ -2,7 +2,7 @@
 
 ## Start here
 
-1. Read [CONTEXT.md](CONTEXT.md) before changing code or civic records. It maps the domain, active data sources, and planned JSON migration.
+1. Read [CONTEXT.md](CONTEXT.md) before changing code or civic records. It maps the domain, active data sources, and snapshot boundaries.
 2. Read the issue and trace its callers. Check `git status --short` and the current branch. Preserve existing changes and use this checkout. Create a worktree only when the user requests one.
 3. For setup, servers, checks, or UI evidence, read [README development guide](README.md#development-and-verification). Read [CONTRIBUTING.md](CONTRIBUTING.md) for contribution coordination.
 

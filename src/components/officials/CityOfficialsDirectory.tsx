@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import type { CityOfficial } from '../../lib/supabase';
+import type { CityOfficial } from '../../types/civic-data';
 
 interface Props {
   initialOfficials: CityOfficial[];

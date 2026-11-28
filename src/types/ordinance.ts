@@ -32,8 +32,8 @@ export interface Ordinance {
   governing_agency?: string | null;
   confidence_score?: number;
   pdf_url?: string | null;
-  amendment_details?: any[];
-  amended_by_details?: any[];
+  amendment_details?: any[] | null;
+  amended_by_details?: any[] | null;
   created_at?: string;
   updated_at?: string;
 }

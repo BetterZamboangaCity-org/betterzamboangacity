@@ -27,7 +27,7 @@ The application architecture and static content pipeline are actively being cons
 The project is built on **Astro** for structured content delivery and React for interactive components.
 
 * **Framework:** [Astro](https://astro.build/) (Static Site Generation / Islands Architecture)
-* **Content:** Imported JSON/CSV snapshots and current Supabase reads; see [project context](CONTEXT.md).
+* **Content:** Repository JSON/CSV files; see [project context](CONTEXT.md).
 * **Styling:** Tailwind CSS
 * **Deployment:** Vercel
 
@@ -47,9 +47,9 @@ npm ci
 
 For an existing checkout, inspect its status and use its root directory. Skip the clone steps.
 
-[.env.example](.env.example) lists the current public configuration. Create `.env` only if needed and preserve any existing file. `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` configure the main data client. The `PUBLIC_ORDINANCES_SUPABASE_*` pair configures a separate ordinance client; it falls back to the main client when omitted. `PUBLIC_CARTO_API_KEY` is also listed in the example.
+Database credentials are not required. Server and build readers import repository JSON. The ordinance and emergency islands read the generated `/api/v1/ordinances.json` and `/api/v1/emergency-facilities.json` assets. See [project context](CONTEXT.md) for data boundaries.
 
-Treat `PUBLIC_*` values as browser-visible. Use only keys intended for public read access. Keep secrets and local environment files out of Git. Without database configuration, loaders use their local or empty fallbacks. That mode supports local UI work but does not supply complete civic data.
+[.env.example](.env.example) lists the optional public Carto setting. Preserve existing local environment files and keep credentials out of Git. Public configuration is browser-visible.
 
 ### Background server
 
@@ -69,7 +69,7 @@ npm run astro -- dev stop
 npm run astro -- dev status
 ```
 
-Restart your server when changing fixture environment variables. Run the fixture setups below sequentially. Do not bypass the Astro server lock to start competing servers in this checkout.
+Run browser suites sequentially against the server you own. Their JSON fixtures run in the browser; they need no database or extra fixture server. Keep the Astro server lock and coordinate shared ports.
 
 ### Choose checks
 
@@ -80,12 +80,13 @@ Restart your server when changing fixture environment variables. Run the fixture
 | Dialogs or focus behavior | `accessibility.mjs` with its local fixture configuration. |
 | Emergency directory or map | `emergency-directory.mjs` with its own fixture configuration. |
 | Metadata or barangay routing | Build and both metadata tests. The barangay test also has a source mode. |
-| Civic data | Trace consumers and compare records to sources. Add focused checks for changed identities, malformed records, and missing-data behavior. UI fixtures cannot verify real contacts. |
+| Civic data | Run `civic-data.mjs`, `data-assets.mjs`, `data-migration.mjs`, and `barangay-data.mjs`. Compare records and provenance; fixtures and parity do not verify real civic facts. |
 
 #### Build and metadata
 
 ```sh
 npm run build
+node tests/data-assets.mjs --built
 node tests/metadata.mjs
 node tests/barangay-metadata.mjs
 ```
@@ -107,31 +108,74 @@ BASE_URL=http://127.0.0.1:4321 SCREENSHOT_DIR=.agents/handoffs/local-check/ui no
 BASE_URL=http://127.0.0.1:4321 SCREENSHOT_DIR=.agents/handoffs/local-check/ui node tests/service-intent.mjs
 ```
 
-#### Accessibility fixtures
+#### Snapshot checks
 
-This suite starts and closes its own read-only fixture API at `127.0.0.1:4322`. Port 4322 must be free. Start Astro with this configuration, then run the test. If your server is already running with other configuration, stop it first.
+Without a running server, check every ordinance against the fixed pre-migration record hashes, all migrated local datasets, and unchanged source files:
 
 ```sh
-PUBLIC_SUPABASE_URL=http://127.0.0.1:4322 PUBLIC_SUPABASE_ANON_KEY=test-key PUBLIC_ORDINANCES_SUPABASE_URL=http://127.0.0.1:4322 PUBLIC_ORDINANCES_SUPABASE_ANON_KEY=test-key npm run astro -- dev --background --host 127.0.0.1 --port 4321
+node tests/civic-data.mjs
+```
+
+With the background server running, check the four public JSON endpoints, directory/filter/error behavior, and all 98 barangay profiles:
+
+```sh
+node tests/data-assets.mjs
+node tests/api-cors.mjs
+node tests/data-migration.mjs
+node tests/barangay-data.mjs
+```
+
+These use `BASE_URL` when the local server URL differs from `http://127.0.0.1:4321`. Browser checks use installed Google Chrome; `BROWSER_CHANNEL` can select another installed channel. The CORS test serves a small consumer page on a temporary local port and closes it after checking the real API. Astro blocks cross-site subresources during development; this test uses the same hostname with a different port to test cross-origin reads without disabling that protection. `TEST_EVIDENCE_DIR` controls the migration suite's screenshots. Record parity preserves known source conflicts and pending states; source reconciliation stays in #16.
+
+### Accessibility fixtures
+
+Run against the same background server. The suite replaces only `/api/v1/ordinances.json` in its browser. Components, keyboard behavior and Astro navigation remain real. External browser requests are blocked.
+
+```sh
 TEST_BASE_URL=http://127.0.0.1:4321 TEST_EVIDENCE_DIR=.agents/handoffs/local-check/accessibility node tests/accessibility.mjs
-npm run astro -- dev stop
-npm run astro -- dev status
 ```
 
-The test defaults to installed Google Chrome; `PLAYWRIGHT_CHANNEL` can select another installed channel. Browser requests to external hosts are blocked in this suite. The synthetic ordinance fixture exercises the real components and focus behavior.
+The test defaults to installed Google Chrome; `PLAYWRIGHT_CHANNEL` selects another installed channel. No fixture API, database variables or additional port is required.
 
-#### Emergency directory fixtures
+### Emergency directory fixtures
 
-This suite starts and closes its own read-only fixture API at `127.0.0.1:4391`. Port 4391 must be free. Use a fresh Astro server on port 4327:
+The suite replaces only `/api/v1/emergency-facilities.json` in its browser. It retains hostile values, delayed/aborted reads, uncancellable stale responses, navigation cleanup, geolocation and map-failure cases.
 
 ```sh
-PUBLIC_SUPABASE_URL=http://127.0.0.1:4391 PUBLIC_SUPABASE_ANON_KEY=fixture-anon-key PUBLIC_ORDINANCES_SUPABASE_URL=http://127.0.0.1:4391 PUBLIC_ORDINANCES_SUPABASE_ANON_KEY=fixture-anon-key npm run astro -- dev --background --host 127.0.0.1 --port 4327
-EMERGENCY_TEST_URL=http://127.0.0.1:4327 EMERGENCY_TEST_OUTPUT=.agents/handoffs/local-check/emergency node tests/emergency-directory.mjs
-npm run astro -- dev stop
-npm run astro -- dev status
+EMERGENCY_TEST_URL=http://127.0.0.1:4321 EMERGENCY_TEST_OUTPUT=.agents/handoffs/local-check/emergency node tests/emergency-directory.mjs
 ```
 
-This suite uses installed Google Chrome. Its real-library case needs network access to the Leaflet CDN. Other cases use a controlled map stub and hostile synthetic records. Report a network failure as a coverage gap. Inspect the output images; synthetic fixture results establish interaction behavior only.
+It uses installed Google Chrome. The real-library case needs the Leaflet CDN; other cases use a controlled map stub. Inspect output images and report unavailable network coverage. Fixture results establish interaction behavior only.
+
+### Data provenance and versions
+
+`src/data/ordinances.json` preserves the captured public records and category relationships. Its adjacent `ordinances.manifest.json` records the upstream source, UTC capture interval, page counts, status counts, checksum and public-read scope. `repository.manifest.json` identifies the pinned repository baselines for barangays and emergency facilities. Existing city/roster/population files retain their paths. A frozen capture is not an administrative backup or agency verification.
+
+The public, read-only API is generated at build time:
+
+| URL | Response |
+| --- | --- |
+| `/api/v1/ordinances.json` | All 862 normalized ordinance records, as an array. |
+| `/api/v1/barangays.json` | All 98 existing public barangay records, as an array. |
+| `/api/v1/emergency-facilities.json` | All 22 emergency facilities, as an array. |
+| `/api/v1/metadata.json` | API version, dataset URLs, record counts, capture dates, source details and revisions. |
+
+```sh
+curl http://127.0.0.1:4321/api/v1/metadata.json
+curl http://127.0.0.1:4321/api/v1/ordinances.json
+```
+
+`v1` identifies the API structure. Correcting or adding records keeps `v1`; an incompatible response structure requires a new major API version. Each dataset's `revision` is `sha256:<digest>` of the exact UTF-8 JSON response body. `sourceRevision` identifies the raw source file instead. The two digests can differ because the ordinance response retains the existing normalization and deterministic ordering. Capture dates identify the source capture, not a new agency verification.
+
+Keep canonical source filenames stable in `src/data/`. Git keeps their history; do not add dated copies or edit revision strings by hand. A reviewed data change followed by a new build/deployment generates the current revisions. These stable URLs use browser revalidation (`public, max-age=0, must-revalidate`), not long immutable caching. The responses allow public cross-origin reads without credentials. `vercel.json` applies the same headers when Vercel serves the generated static files. Verify deployed headers separately from local HTTP checks. This API has no writes, authentication, pagination or runtime database.
+
+For a deliberate data update:
+
+1. Confirm source completeness, redistribution permission and attribution before publishing a new export. Keep credentials out of records and logs.
+2. Capture all pages with a stable unique key. Check exact totals and duplicate IDs. Compare two full reads for drift; retain raw fields and nulls. Replace files only after the full capture validates.
+3. Compare the old and new records, relationships and status counts. Review civic corrections under #16. Record actual source/verification dates separately from capture dates.
+4. Update manifests and fixed test expectations only for reviewed changes. `tests/fixtures/data-parity.json` and `barangay-profiles.json` are independent pre-migration oracles. Never generate expected records from the new production loader just to make a test pass.
+5. Run snapshot, build, metadata and relevant browser checks. Review the full diff before publishing. Builds and app startup must stay independent of external database access.
 
 ### UI evidence and handoff
 
